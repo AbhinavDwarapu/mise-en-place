@@ -1,8 +1,6 @@
 import { LOYALTY_CARDS, type LoyaltyCard } from '../logic/loyalty-cards'
 import { Badge } from '@/shared/ui/badge'
-
-const BARCODE_STRIPES =
-  'repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px, #000 4px 5px, transparent 5px 9px, #000 9px 12px, transparent 12px 14px)'
+import { Barcode } from './barcode'
 
 export function LoyaltyCardStrip() {
   return (
@@ -14,6 +12,10 @@ export function LoyaltyCardStrip() {
       </ul>
     </section>
   )
+}
+
+function groupDigitsForReading(digits: string) {
+  return digits.replace(/(\d{4})(?=\d)/g, '$1 ')
 }
 
 function LoyaltyCardView({
@@ -35,9 +37,9 @@ function LoyaltyCardView({
         {isLikely && <Badge variant="secondary">Nearby</Badge>}
       </div>
       <div className="m-4 mt-3 rounded-lg bg-white p-3">
-        <div className="h-12" style={{ background: BARCODE_STRIPES }} />
+        <Barcode digits={card.codeDigits} />
         <p className="pt-1 text-center font-mono text-xs tracking-widest text-black">
-          {card.codeDigits}
+          {groupDigitsForReading(card.codeDigits)}
         </p>
       </div>
     </li>

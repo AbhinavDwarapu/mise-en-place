@@ -272,8 +272,25 @@ describe('loyalty cards', () => {
 
     const strip = screen.getByRole('region', { name: 'Loyalty cards' })
     const [firstCard] = within(strip).getAllByRole('listitem')
-    expect(within(firstCard).getByText('Greenfield Market')).toBeInTheDocument()
+    expect(within(firstCard).getByText('Morrisons')).toBeInTheDocument()
     expect(within(firstCard).getByText('Nearby')).toBeInTheDocument()
+  })
+
+  it('renders each card as a barcode with its readable number', () => {
+    renderStorePage()
+
+    const strip = screen.getByRole('region', { name: 'Loyalty cards' })
+    const cards = within(strip).getAllByRole('listitem')
+    expect(cards).toHaveLength(2)
+    for (const card of cards) {
+      expect(card.querySelectorAll('svg rect').length).toBeGreaterThan(1)
+    }
+    expect(
+      within(cards[0]).getByText('9826 1358 0251 1343 093')
+    ).toBeInTheDocument()
+    expect(
+      within(cards[1]).getByText('6340 0402 7443 6486 00')
+    ).toBeInTheDocument()
   })
 })
 
