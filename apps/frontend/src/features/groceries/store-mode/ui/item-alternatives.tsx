@@ -6,7 +6,13 @@ import { alternativesFor } from '../logic/alternatives'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { Button } from '@/shared/ui/button'
 
-export function ItemAlternatives({ item }: { item: ShoppingListItem }) {
+export function ItemAlternatives({
+  item,
+  onSwapped,
+}: {
+  item: ShoppingListItem
+  onSwapped: (name: string) => void
+}) {
   const ingredients = useKitchenStore((state) => state.ingredients)
   const renameItem = useShoppingListStore((state) => state.renameItem)
   const swappedFrom = useStoreSessionStore((state) => state.swaps[item.id])
@@ -19,11 +25,13 @@ export function ItemAlternatives({ item }: { item: ShoppingListItem }) {
     recordSwap(item.id, item.name)
     renameItem(item.id, substitute)
     setOpen(false)
+    onSwapped(substitute)
   }
 
   const undoSwap = () => {
     renameItem(item.id, swappedFrom)
     clearSwap(item.id)
+    onSwapped(swappedFrom)
   }
 
   if (!swappedFrom && alternatives.length === 0) {

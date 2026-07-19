@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { inferCategory } from '../../logic/categories'
 import { useShoppingListStore } from '../../state/shopping-list-store'
 import type { IngredientCategory } from '../../types'
 import { groupItemsByAisle, pendingCount } from '../logic/aisles'
@@ -46,6 +47,7 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
                   key={item.id}
                   item={item}
                   status={statuses[item.id]}
+                  onSwapped={(name) => setSelectedCategory(inferCategory(name))}
                 />
               ))}
             </ul>

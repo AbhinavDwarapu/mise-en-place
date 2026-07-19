@@ -15,9 +15,11 @@ function formatQuantity({ amount, unit }: Quantity) {
 export function StoreItemRow({
   item,
   status,
+  onSwapped,
 }: {
   item: ShoppingListItem
   status: StoreItemStatus | undefined
+  onSwapped: (name: string) => void
 }) {
   const toggleChecked = useStoreSessionStore((state) => state.toggleChecked)
   const toggleSkipped = useStoreSessionStore((state) => state.toggleSkipped)
@@ -59,7 +61,7 @@ export function StoreItemRow({
           {formatQuantity(item.quantity)}
           {skipped && ' · skipped'}
         </p>
-        {!checked && <ItemAlternatives item={item} />}
+        {!checked && <ItemAlternatives item={item} onSwapped={onSwapped} />}
       </div>
       <Button
         variant="ghost"

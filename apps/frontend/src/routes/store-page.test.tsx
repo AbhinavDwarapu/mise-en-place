@@ -169,6 +169,38 @@ describe('alternatives', () => {
     expect(useStoreSessionStore.getState().swaps).toEqual({})
   })
 
+  it('follows the item to its new aisle when a swap changes category', async () => {
+    const user = userEvent.setup()
+    const basil = useKitchenStore.getState().addIngredient('Basil')
+    useKitchenStore.getState().addSubstitution(basil.id, 'frozen basil')
+    addListItem('Basil')
+    addListItem('Tomatoes')
+    renderStorePage()
+
+    await user.click(
+      screen.getByRole('button', { name: /Can't find\? Show alternatives/ })
+    )
+    await user.click(screen.getByRole('button', { name: 'frozen basil' }))
+
+    expect(screen.getByRole('button', { name: 'frozen · 1' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+    expect(screen.getByText('frozen basil')).toBeInTheDocument()
+    expect(screen.queryByText('Tomatoes')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Undo swap of Basil' }))
+
+    expect(screen.getByRole('button', { name: 'produce · 2' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    )
+    expect(screen.getByText('Basil')).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /frozen/ })
+    ).not.toBeInTheDocument()
+  })
+
   it('offers no alternatives for items unknown to the kitchen', () => {
     addListItem('Milk')
     renderStorePage()
