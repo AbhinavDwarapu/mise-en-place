@@ -9,8 +9,8 @@ assignees: AbhinavDwarapu
 
 **What needs to be done?**
 A clear and concise list of what needs to be done.
-- [] Placeholder 1
-- [] Placeholder 2
+- [ ] Placeholder 1
+- [ ] Placeholder 2
 
 **Acceptance criteria**
 Done when...
