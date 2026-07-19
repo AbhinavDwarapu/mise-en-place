@@ -97,6 +97,20 @@ classDiagram
   in the kitchen, or on the shopping list — even if no other recipe
   references it anymore. That's not treated as a consequence worth warning
   about; the delete confirmation is a plain "Delete this recipe?".
+- **Deleting an `Ingredient` that a recipe depends on migrates that recipe's
+  source instead of leaving it dangling.** Each affected `RecipeIngredient`
+  is repointed from `{kind: 'kitchen', ingredientId}` to
+  `{kind: 'shopping-list', shoppingListItemId}`, reusing an existing
+  `ShoppingListItem` with the same name if one exists, or creating one
+  (seeded with the deleted ingredient's own quantity) if not. Each recipe
+  keeps its own `needed` amount through the move — this isn't a cascading
+  delete, it's the same "have it vs. need it" transition
+  `RecipeIngredientSource` already models everywhere else. This logic lives
+  in `DeleteIngredientButton` (the UI layer), not inside `kitchen-store`'s
+  `deleteIngredient` action — `kitchen-store` and `shopping-list-store`
+  never import each other, so anything that needs both stores is orchestrated
+  from a component, the same way `RecipeIngredientPicker`'s "create new"
+  flow already does.
 - **`useKitchenStore`** (`groceries/state/kitchen-store.ts`, covering both
   `Ingredient` and `Recipe`) and **`useShoppingListStore`**
   (`groceries/state/shopping-list-store.ts`) are siblings in

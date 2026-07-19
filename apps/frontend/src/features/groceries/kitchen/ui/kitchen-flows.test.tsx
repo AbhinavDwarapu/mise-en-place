@@ -2,11 +2,13 @@ import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { useKitchenStore } from '../../state/kitchen-store'
+import { useShoppingListStore } from '../../state/shopping-list-store'
 import { KitchenScreen } from './kitchen-screen'
 
 beforeEach(() => {
   localStorage.clear()
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
+  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
 })
 
 afterEach(cleanup)
@@ -79,7 +81,9 @@ describe('deleting an ingredient', () => {
 
     const dialog = await screen.findByRole('alertdialog')
     expect(
-      within(dialog).getByText('These recipes will no longer be possible:')
+      within(dialog).getByText(
+        'These recipes will need it from your shopping list instead:'
+      )
     ).toBeInTheDocument()
     expect(within(dialog).getByText('Sat. frittata')).toBeInTheDocument()
     expect(within(dialog).getByText('Green smoothies')).toBeInTheDocument()
@@ -99,6 +103,55 @@ describe('deleting an ingredient', () => {
     await user.click(within(reopened).getByRole('button', { name: 'Delete' }))
 
     expect(screen.queryByText(/Baby spinach/)).not.toBeInTheDocument()
+  })
+
+  it('moves dependent recipes onto a shopping-list item instead of leaving them dangling', async () => {
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+
+    await user.click(screen.getByRole('button', { name: 'Delete ingredient' }))
+    const dialog = await screen.findByRole('alertdialog')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+
+    const spinachItem = useShoppingListStore
+      .getState()
+      .items.find((item) => item.name === 'Baby spinach')
+    expect(spinachItem?.quantity).toEqual({ amount: 1, unit: 'bag' })
+
+    const recipes = useKitchenStore.getState().recipes
+    const frittata = recipes.find((recipe) => recipe.name === 'Sat. frittata')!
+    const smoothies = recipes.find(
+      (recipe) => recipe.name === 'Green smoothies'
+    )!
+    const listSource = {
+      kind: 'shopping-list' as const,
+      shoppingListItemId: spinachItem!.id,
+    }
+    expect(frittata.ingredients).toContainEqual({
+      source: listSource,
+      needed: { amount: 1, unit: 'bag' },
+    })
+    expect(smoothies.ingredients).toContainEqual({
+      source: listSource,
+      needed: { amount: 0.5, unit: 'bag' },
+    })
+  })
+
+  it('reuses an existing shopping-list item with the same name instead of duplicating it', async () => {
+    const existing = useShoppingListStore
+      .getState()
+      .addItem('Baby spinach', { amount: 2, unit: 'bag' })
+
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+    await user.click(screen.getByRole('button', { name: 'Delete ingredient' }))
+    const dialog = await screen.findByRole('alertdialog')
+    await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
+
+    const spinachItems = useShoppingListStore
+      .getState()
+      .items.filter((item) => item.name === 'Baby spinach')
+    expect(spinachItems).toEqual([existing])
   })
 
   it('deletes an unused ingredient without recipe warnings', async () => {

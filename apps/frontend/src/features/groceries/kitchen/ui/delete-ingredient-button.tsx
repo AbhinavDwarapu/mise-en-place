@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { recipesUsing } from '../../logic/recipe-usage'
+import { quantityNeeded, recipesUsing } from '../../logic/recipe-usage'
 import { useKitchenStore } from '../../state/kitchen-store'
+import { useShoppingListStore } from '../../state/shopping-list-store'
 import type { Ingredient } from '../../types'
 import {
   AlertDialog,
@@ -24,13 +25,36 @@ export function DeleteIngredientButton({
 }) {
   const recipes = useKitchenStore((state) => state.recipes)
   const deleteIngredient = useKitchenStore((state) => state.deleteIngredient)
-  const [open, setOpen] = useState(false)
-  const affected = recipesUsing(
-    { kind: 'kitchen', ingredientId: ingredient.id },
-    recipes
+  const addRecipeIngredient = useKitchenStore(
+    (state) => state.addRecipeIngredient
   )
+  const removeRecipeIngredient = useKitchenStore(
+    (state) => state.removeRecipeIngredient
+  )
+  const shoppingListItems = useShoppingListStore((state) => state.items)
+  const addShoppingListItem = useShoppingListStore((state) => state.addItem)
+  const [open, setOpen] = useState(false)
+  const kitchenSource = { kind: 'kitchen' as const, ingredientId: ingredient.id }
+  const affected = recipesUsing(kitchenSource, recipes)
 
   const confirmDelete = () => {
+    if (affected.length > 0) {
+      const existingListItem = shoppingListItems.find(
+        (item) => item.name.toLowerCase() === ingredient.name.toLowerCase()
+      )
+      const listItem =
+        existingListItem ??
+        addShoppingListItem(ingredient.name, ingredient.quantity)
+      const listSource = {
+        kind: 'shopping-list' as const,
+        shoppingListItemId: listItem.id,
+      }
+      for (const recipe of affected) {
+        const needed = quantityNeeded(recipe, kitchenSource) ?? ingredient.quantity
+        removeRecipeIngredient(recipe.id, kitchenSource)
+        addRecipeIngredient(recipe.id, listSource, needed)
+      }
+    }
     deleteIngredient(ingredient.id)
     setOpen(false)
     onDeleted()
@@ -46,7 +70,7 @@ export function DeleteIngredientButton({
           <AlertDialogTitle>Delete {ingredient.name}?</AlertDialogTitle>
           <AlertDialogDescription>
             {affected.length > 0
-              ? 'These recipes will no longer be possible:'
+              ? 'These recipes will need it from your shopping list instead:'
               : 'It is removed from your kitchen.'}
           </AlertDialogDescription>
         </AlertDialogHeader>
