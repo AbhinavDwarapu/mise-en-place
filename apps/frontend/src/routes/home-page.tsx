@@ -1,6 +1,6 @@
 import { IonPage } from '@ionic/react'
-import { ThisWeekRecipes } from '@/features/kitchen'
-import { ShoppingListScreen } from '@/features/shopping-list'
+import { ThisWeekRecipes } from '@/features/groceries/recipes'
+import { ShoppingListScreen } from '@/features/groceries/shopping-list'
 
 export function HomePage() {
   return (
