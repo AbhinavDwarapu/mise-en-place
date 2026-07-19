@@ -8,6 +8,7 @@ import {
   DrawerTitle,
 } from '@/shared/ui/drawer'
 import type { Recipe } from '../types'
+import { DeleteRecipeButton } from './delete-recipe-button'
 import { RecipeIngredientList } from './recipe-ingredient-list'
 import { RecipeIngredientPicker } from './recipe-ingredient-picker'
 import { RecipeNameField } from './recipe-name-field'
@@ -50,6 +51,7 @@ export function RecipeDetailSheet({
             </div>
 
             <DrawerFooter className="flex-row *:flex-1">
+              <DeleteRecipeButton recipe={recipe} onDeleted={onClose} />
               <Button onClick={onClose}>Done</Button>
             </DrawerFooter>
           </>
