@@ -182,3 +182,81 @@ describe('deleteRecipe', () => {
     expect(findRecipe(frittata.id)).toEqual(frittata)
   })
 })
+
+describe('addRecipeIngredient', () => {
+  it('adds a new ingredient to the recipe', () => {
+    const recipe = addRecipe('Cacio e pepe')
+    const source = { kind: 'kitchen' as const, ingredientId: 'ing-parmesan' }
+
+    useKitchenStore
+      .getState()
+      .addRecipeIngredient(recipe.id, source, { amount: 80, unit: 'g' })
+
+    expect(findRecipe(recipe.id)!.ingredients).toEqual([
+      { source, needed: { amount: 80, unit: 'g' } },
+    ])
+  })
+
+  it('does not add the same source twice', () => {
+    const recipe = addRecipe('Cacio e pepe')
+    const { addRecipeIngredient } = useKitchenStore.getState()
+    const source = { kind: 'kitchen' as const, ingredientId: 'ing-parmesan' }
+
+    addRecipeIngredient(recipe.id, source, { amount: 80, unit: 'g' })
+    addRecipeIngredient(recipe.id, source, { amount: 200, unit: 'g' })
+
+    expect(findRecipe(recipe.id)!.ingredients).toEqual([
+      { source, needed: { amount: 80, unit: 'g' } },
+    ])
+  })
+})
+
+describe('removeRecipeIngredient', () => {
+  it('removes only the given source', () => {
+    const recipe = addRecipe('Cacio e pepe')
+    const { addRecipeIngredient, removeRecipeIngredient } =
+      useKitchenStore.getState()
+    const parmesan = { kind: 'kitchen' as const, ingredientId: 'ing-parmesan' }
+    const pepper = { kind: 'kitchen' as const, ingredientId: 'ing-pepper' }
+    addRecipeIngredient(recipe.id, parmesan, { amount: 80, unit: 'g' })
+    addRecipeIngredient(recipe.id, pepper, { amount: 1, unit: 'tsp' })
+
+    removeRecipeIngredient(recipe.id, parmesan)
+
+    expect(findRecipe(recipe.id)!.ingredients).toEqual([
+      { source: pepper, needed: { amount: 1, unit: 'tsp' } },
+    ])
+  })
+})
+
+describe('updateRecipeIngredientQuantity', () => {
+  it('changes the needed quantity for the given source', () => {
+    const recipe = addRecipe('Cacio e pepe')
+    const { addRecipeIngredient, updateRecipeIngredientQuantity } =
+      useKitchenStore.getState()
+    const parmesan = { kind: 'kitchen' as const, ingredientId: 'ing-parmesan' }
+    addRecipeIngredient(recipe.id, parmesan, { amount: 80, unit: 'g' })
+
+    updateRecipeIngredientQuantity(recipe.id, parmesan, {
+      amount: 120,
+      unit: 'g',
+    })
+
+    expect(findRecipe(recipe.id)!.ingredients).toEqual([
+      { source: parmesan, needed: { amount: 120, unit: 'g' } },
+    ])
+  })
+
+  it('ignores sources the recipe does not have', () => {
+    const recipe = addRecipe('Cacio e pepe')
+    const { updateRecipeIngredientQuantity } = useKitchenStore.getState()
+    const parmesan = { kind: 'kitchen' as const, ingredientId: 'ing-parmesan' }
+
+    updateRecipeIngredientQuantity(recipe.id, parmesan, {
+      amount: 120,
+      unit: 'g',
+    })
+
+    expect(findRecipe(recipe.id)!.ingredients).toEqual([])
+  })
+})
