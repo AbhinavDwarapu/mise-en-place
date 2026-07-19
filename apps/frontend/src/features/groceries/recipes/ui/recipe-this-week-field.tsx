@@ -8,9 +8,8 @@ export function RecipeThisWeekField({ recipe }: { recipe: Recipe }) {
 
   return (
     <section className="space-y-2">
-      <Label htmlFor="recipe-this-week">This week</Label>
+      <Label>This week</Label>
       <Button
-        id="recipe-this-week"
         type="button"
         variant={recipe.cookingThisWeek ? 'default' : 'outline'}
         onClick={() =>
