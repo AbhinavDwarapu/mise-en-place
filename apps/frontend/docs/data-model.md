@@ -8,7 +8,10 @@ recipes too (to power its "add or search" recommendations), the whole
 non-UI layer moved up to their common parent, `groceries`, rather than out
 to the generic `shared/`. `groceries/kitchen`, `groceries/recipes`, and
 `groceries/shopping-list` are each pure `ui/` layers over this data — see
-`docs/architecture.md` for the nested-feature rule this follows.
+`docs/architecture.md` for the nested-feature rule this follows. The one
+exception is `StoreShopSession` below: only `groceries/store-mode` reads
+it, so its store stays down in that child's own `state/` — the same
+placement rule, pointing the other way.
 
 ```mermaid
 classDiagram
@@ -67,6 +70,16 @@ classDiagram
     other
   }
 
+  class StoreShopSession {
+    statuses: InStoreStatus by itemId
+  }
+
+  class InStoreStatus {
+    <<union>>
+    checked
+    skipped
+  }
+
   Ingredient "1" *-- "1" Quantity : quantity
   ShoppingListItem "1" *-- "1" Quantity : quantity
   Recipe "1" *-- "*" RecipeIngredient : ingredients
@@ -75,6 +88,8 @@ classDiagram
   RecipeIngredientSource "*" ..> "0..1" Ingredient : ingredientId
   RecipeIngredientSource "*" ..> "0..1" ShoppingListItem : shoppingListItemId
   Ingredient --> IngredientCategory : category
+  StoreShopSession "1" ..> "*" ShoppingListItem : itemId
+  StoreShopSession --> InStoreStatus : statuses
 ```
 
 ## Semantics the diagram cannot show
@@ -126,3 +141,33 @@ classDiagram
   window. It's toggled by hand from the recipe detail sheet and drives which
   recipes appear in the Home page's this-week strip — there's no "week"
   concept or date math backing it.
+- **In-store `statuses` only record deviations** — a `ShoppingListItem`
+  with no entry is pending. `checked` and `skipped` are the only stored
+  values, and the whole map is cleared when a shop completes, so between
+  shops the session is empty rather than a mirror of the list.
+- **`StoreShopSession` holds item ids, nothing else.** It lives in
+  `groceries/store-mode/state/store-session-store.ts` (persisted as
+  `store-session-v1`, so a half-finished shop survives an app restart) and
+  never imports the other stores. If an item is removed from the list
+  mid-shop, its stale id simply stops matching anything.
+- **Completing a shop is the ingredient-delete migration in reverse.** Each
+  checked `ShoppingListItem` becomes a kitchen `Ingredient` — reusing an
+  existing one with the same name (case-insensitive), or creating one
+  carrying the bought quantity — and every `RecipeIngredient` pointing at
+  it is repointed from `{kind: 'shopping-list', shoppingListItemId}` to
+  `{kind: 'kitchen', ingredientId}`, keeping each recipe's own `needed`
+  through the move. Only then is the list item removed; skipped and pending
+  items stay on the list. Like the delete flow, this is orchestrated from a
+  component (`CompleteShopButton`), never inside a store.
+- **Aisles are derived, never stored.** The in-store view groups the list
+  with `inferCategory(item.name)` at render time; `ShoppingListItem` has no
+  category field, and renaming an item re-aisles it automatically.
+- **In-store alternatives rename in place.** Substitutes for a list item
+  come from the same-named kitchen ingredient's `substitutions`; picking
+  one renames the `ShoppingListItem` (`renameItem`), keeping its id so
+  recipe sources and its in-store status survive — though the new name may
+  move it to a different aisle.
+- Loyalty cards are hardcoded display data
+  (`store-mode/logic/loyalty-cards.ts`), not part of this model — no store,
+  no persistence, just a constant list whose first entry is treated as the
+  likely store.
