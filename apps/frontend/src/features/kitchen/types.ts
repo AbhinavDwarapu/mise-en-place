@@ -33,3 +33,8 @@ export interface Recipe {
   color: string
   ingredients: RecipeIngredient[]
 }
+
+export interface KitchenData {
+  ingredients: Ingredient[]
+  recipes: Recipe[]
+}
