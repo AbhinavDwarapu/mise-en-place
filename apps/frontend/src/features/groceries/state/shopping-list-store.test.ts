@@ -51,6 +51,26 @@ describe('updateItemQuantity', () => {
   })
 })
 
+describe('renameItem', () => {
+  it('renames only the targeted item, keeping its id and quantity', () => {
+    const spinach = addItem('Baby spinach', { amount: 1, unit: 'bag' })
+    const spaghetti = addItem('Spaghetti')
+
+    useShoppingListStore.getState().renameItem(spinach.id, 'Kale')
+
+    expect(findItem(spinach.id)).toEqual({ ...spinach, name: 'Kale' })
+    expect(findItem(spaghetti.id)).toEqual(spaghetti)
+  })
+
+  it('trims the new name', () => {
+    const spinach = addItem('Baby spinach')
+
+    useShoppingListStore.getState().renameItem(spinach.id, '  Kale ')
+
+    expect(findItem(spinach.id)?.name).toBe('Kale')
+  })
+})
+
 describe('removeItem', () => {
   it('removes only the given item', () => {
     const pecorino = addItem('Pecorino')

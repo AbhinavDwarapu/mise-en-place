@@ -1,9 +1,11 @@
 import { IonRouterOutlet } from '@ionic/react'
 import { BookOpenIcon, HomeIcon, RefrigeratorIcon } from 'lucide-react'
-import { NavLink, Redirect, Route } from 'react-router-dom'
+import { NavLink, Redirect, Route, useLocation } from 'react-router-dom'
 import { HomePage } from './home-page'
 import { KitchenPage } from './kitchen-page'
 import { RecipesPage } from './recipes-page'
+import { StorePage } from './store-page'
+import { cn } from '@/shared/lib/utils'
 
 const TABS = [
   { to: '/home', label: 'Home', Icon: HomeIcon },
@@ -12,6 +14,8 @@ const TABS = [
 ] as const
 
 export function AppTabs() {
+  const { pathname } = useLocation()
+
   return (
     <div className="flex h-full w-full flex-col">
       <div className="relative flex-1 overflow-hidden">
@@ -19,10 +23,16 @@ export function AppTabs() {
           <Route exact path="/home" component={HomePage} />
           <Route exact path="/kitchen" component={KitchenPage} />
           <Route exact path="/recipes" component={RecipesPage} />
+          <Route exact path="/store" component={StorePage} />
           <Redirect exact from="/" to="/home" />
         </IonRouterOutlet>
       </div>
-      <nav className="flex shrink-0 border-t border-border bg-background">
+      <nav
+        className={cn(
+          'flex shrink-0 border-t border-border bg-background',
+          pathname === '/store' && 'hidden'
+        )}
+      >
         {TABS.map(({ to, label, Icon }) => (
           <NavLink
             key={to}
