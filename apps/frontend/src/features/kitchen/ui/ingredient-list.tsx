@@ -3,7 +3,11 @@ import { formatQuantity } from '../logic/quantity'
 import { useKitchenStore } from '../state/kitchen-store'
 import type { Ingredient } from '../types'
 
-export function IngredientList() {
+export function IngredientList({
+  onSelect,
+}: {
+  onSelect: (id: string) => void
+}) {
   const ingredients = useKitchenStore((state) => state.ingredients)
 
   if (ingredients.length === 0) {
@@ -17,26 +21,42 @@ export function IngredientList() {
   return (
     <ul className="divide-y divide-border">
       {ingredients.map((ingredient) => (
-        <IngredientRow key={ingredient.id} ingredient={ingredient} />
+        <IngredientRow
+          key={ingredient.id}
+          ingredient={ingredient}
+          onSelect={() => onSelect(ingredient.id)}
+        />
       ))}
     </ul>
   )
 }
 
-function IngredientRow({ ingredient }: { ingredient: Ingredient }) {
+function IngredientRow({
+  ingredient,
+  onSelect,
+}: {
+  ingredient: Ingredient
+  onSelect: () => void
+}) {
   const label = expiryLabel(daysUntilExpiry(ingredient))
 
   return (
-    <li className="flex items-center justify-between gap-3 px-4 py-3">
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground">
-          {ingredient.name}
-        </p>
-        <p className="text-sm text-muted-foreground">
-          {formatQuantity(ingredient.quantity)}
-        </p>
-      </div>
-      {label !== null && <ExpiryChip label={label} />}
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50 active:bg-muted"
+      >
+        <div className="min-w-0">
+          <p className="truncate font-medium text-foreground">
+            {ingredient.name}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {formatQuantity(ingredient.quantity)}
+          </p>
+        </div>
+        {label !== null && <ExpiryChip label={label} />}
+      </button>
     </li>
   )
 }

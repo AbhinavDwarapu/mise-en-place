@@ -1,5 +1,15 @@
 import type { IngredientCategory } from '../types'
 
+export const INGREDIENT_CATEGORIES: IngredientCategory[] = [
+  'produce',
+  'dairy',
+  'meat',
+  'bakery',
+  'frozen',
+  'pantry',
+  'other',
+]
+
 export const CATEGORY_KEYWORDS: Record<IngredientCategory, string[]> = {
   produce: [
     'spinach',
