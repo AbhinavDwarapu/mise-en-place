@@ -51,7 +51,7 @@ function RecipeCard({
       <button
         type="button"
         onClick={onSelect}
-        className="block w-36 overflow-hidden rounded-2xl border border-border text-left transition-colors hover:bg-muted/50 active:bg-muted"
+        className="block w-44 overflow-hidden rounded-2xl border border-border text-left transition-colors hover:bg-muted/50 active:bg-muted"
       >
         <div className="h-16" style={{ backgroundColor: recipe.color }} />
         <div className="space-y-0.5 p-2.5">
