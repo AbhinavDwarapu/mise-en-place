@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { COUNT_UNIT } from '../state/kitchen-constants'
 import type { ShoppingListItem } from '../state/shopping-list-store'
 import type { Ingredient } from '../types'
 import { searchIngredientSources } from './ingredient-picker'
@@ -17,7 +18,7 @@ const blackPepper: Ingredient = {
   id: 'ing-black-pepper',
   name: 'Black pepper',
   category: 'pantry',
-  quantity: { amount: 1, unit: 'x' },
+  quantity: { amount: 1, unit: COUNT_UNIT },
   expiresAfterMs: null,
   addedAtIso: '2026-07-18T09:00:00.000Z',
   substitutions: [],

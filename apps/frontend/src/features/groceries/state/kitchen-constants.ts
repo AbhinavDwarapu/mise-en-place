@@ -90,7 +90,7 @@ export const DEFAULT_EXPIRY_DAYS: Record<IngredientCategory, number | null> = {
 
 export const EXPIRY_PRESETS_DAYS = [3, 5, 7]
 
-export const COUNT_UNIT = 'x'
+export const COUNT_UNIT = 'unit'
 
 export const KITCHEN_STORAGE_KEY = 'kitchen-v1'
 

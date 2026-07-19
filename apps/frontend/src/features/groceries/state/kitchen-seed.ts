@@ -1,4 +1,5 @@
 import type { KitchenData } from '../types'
+import { COUNT_UNIT } from './kitchen-constants'
 
 export const defaultKitchenState: KitchenData = {
   ingredients: [
@@ -15,7 +16,7 @@ export const defaultKitchenState: KitchenData = {
       id: 'ing-roma-tomatoes',
       name: 'Roma tomatoes',
       category: 'produce',
-      quantity: { amount: 6, unit: 'x' },
+      quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAfterMs: 432000000,
       addedAtIso: '2026-07-17T09:00:00.000Z',
       substitutions: [],
@@ -33,7 +34,7 @@ export const defaultKitchenState: KitchenData = {
       id: 'ing-tortillas',
       name: 'Tortillas',
       category: 'bakery',
-      quantity: { amount: 12, unit: 'x' },
+      quantity: { amount: 12, unit: COUNT_UNIT },
       expiresAfterMs: 345600000,
       addedAtIso: '2026-07-18T09:00:00.000Z',
       substitutions: [],
@@ -51,7 +52,7 @@ export const defaultKitchenState: KitchenData = {
       id: 'ing-eggs',
       name: 'Eggs',
       category: 'dairy',
-      quantity: { amount: 6, unit: 'x' },
+      quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAfterMs: 604800000,
       addedAtIso: '2026-07-17T09:00:00.000Z',
       substitutions: [],
@@ -71,11 +72,11 @@ export const defaultKitchenState: KitchenData = {
         },
         {
           source: { kind: 'kitchen', ingredientId: 'ing-roma-tomatoes' },
-          needed: { amount: 6, unit: 'x' },
+          needed: { amount: 6, unit: COUNT_UNIT },
         },
         {
           source: { kind: 'kitchen', ingredientId: 'ing-tortillas' },
-          needed: { amount: 12, unit: 'x' },
+          needed: { amount: 12, unit: COUNT_UNIT },
         },
         {
           source: { kind: 'kitchen', ingredientId: 'ing-sour-cream' },
@@ -96,7 +97,7 @@ export const defaultKitchenState: KitchenData = {
         },
         {
           source: { kind: 'kitchen', ingredientId: 'ing-eggs' },
-          needed: { amount: 6, unit: 'x' },
+          needed: { amount: 6, unit: COUNT_UNIT },
         },
       ],
     },

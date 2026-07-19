@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { searchIngredientSources } from '../../logic/ingredient-picker'
 import { recipesUsing } from '../../logic/recipe-usage'
+import { COUNT_UNIT } from '../../state/kitchen-constants'
 import { useKitchenStore } from '../../state/kitchen-store'
 import {
   useShoppingListStore,
@@ -11,7 +12,7 @@ import { Badge } from '@/shared/ui/badge'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
-const DEFAULT_QUANTITY = { amount: 1, unit: 'x' }
+const DEFAULT_QUANTITY = { amount: 1, unit: COUNT_UNIT }
 
 export function AddShoppingListItemInput() {
   const [query, setQuery] = useState('')
@@ -39,7 +40,7 @@ export function AddShoppingListItemInput() {
       .join(', ')
 
   const addFromKitchen = (ingredient: Ingredient) => {
-    addItem(ingredient.name, DEFAULT_QUANTITY)
+    addItem(ingredient.name, ingredient.quantity)
     setQuery('')
   }
 

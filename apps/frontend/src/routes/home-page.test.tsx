@@ -96,7 +96,8 @@ describe('adding to the shopping list', () => {
 
     await user.click(recommendation)
 
-    expect(shoppingListRow('Ground beef')).toBeInTheDocument()
+    const row = shoppingListRow('Ground beef')
+    expect(within(row).getByLabelText('Ground beef unit')).toHaveValue('lb')
   })
 
   it('bumps the quantity instead of duplicating an item already on the list', async () => {
@@ -139,6 +140,23 @@ describe('editing the shopping list', () => {
       screen.getByRole('button', { name: 'Decrease Pecorino amount' })
     )
     expect(within(shoppingListRow('Pecorino')).getByText('1')).toBeInTheDocument()
+  })
+
+  it('sets a unit, defaulting back to a bare count when cleared', async () => {
+    const user = userEvent.setup()
+    render(<HomePage />)
+
+    await createNewItem(user, 'Pecorino')
+
+    const row = shoppingListRow('Pecorino')
+    const unitInput = within(row).getByLabelText('Pecorino unit')
+    expect(unitInput).toHaveValue('')
+
+    await user.type(unitInput, 'g')
+    expect(unitInput).toHaveValue('g')
+
+    await user.clear(unitInput)
+    expect(unitInput).toHaveValue('')
   })
 
   it('removes an item', async () => {

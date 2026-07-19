@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { daysToMs } from '../logic/expiration'
 import {
+  COUNT_UNIT,
   DEFAULT_EXPIRY_DAYS,
   DEFAULT_RECIPE_COLOR,
   DEFAULT_SERVINGS,
@@ -43,7 +44,7 @@ describe('addIngredient', () => {
 
     expect(ingredient.name).toBe('Baby spinach')
     expect(ingredient.category).toBe('produce')
-    expect(ingredient.quantity).toEqual({ amount: 1, unit: 'x' })
+    expect(ingredient.quantity).toEqual({ amount: 1, unit: COUNT_UNIT })
     expect(ingredient.expiresAfterMs).toBe(
       daysToMs(DEFAULT_EXPIRY_DAYS.produce!)
     )

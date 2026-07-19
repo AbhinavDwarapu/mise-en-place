@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { COUNT_UNIT } from './kitchen-constants'
 import { useShoppingListStore } from './shopping-list-store'
 
 const now = new Date('2026-07-19T12:00:00Z')
@@ -13,7 +14,7 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-function addItem(name: string, quantity = { amount: 1, unit: 'x' }) {
+function addItem(name: string, quantity = { amount: 1, unit: COUNT_UNIT }) {
   return useShoppingListStore.getState().addItem(name, quantity)
 }
 

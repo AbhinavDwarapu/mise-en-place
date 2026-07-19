@@ -1,9 +1,11 @@
 import { MinusIcon, PlusIcon, XIcon } from 'lucide-react'
+import { COUNT_UNIT } from '../../state/kitchen-constants'
 import {
   useShoppingListStore,
   type ShoppingListItem,
 } from '../../state/shopping-list-store'
 import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
 
 export function ShoppingList() {
   const items = useShoppingListStore((state) => state.items)
@@ -34,8 +36,14 @@ function ShoppingListRow({ item }: { item: ShoppingListItem }) {
   const setAmount = (amount: number) =>
     updateItemQuantity(item.id, { ...item.quantity, amount })
 
+  const setUnit = (unit: string) =>
+    updateItemQuantity(item.id, {
+      ...item.quantity,
+      unit: unit.trim() === '' ? COUNT_UNIT : unit,
+    })
+
   return (
-    <li className="flex items-center justify-between gap-3 px-4 py-3">
+    <li className="flex items-center justify-between gap-2 px-4 py-3">
       <p className="min-w-0 truncate font-medium text-foreground">
         {item.name}
       </p>
@@ -48,10 +56,8 @@ function ShoppingListRow({ item }: { item: ShoppingListItem }) {
         >
           <MinusIcon />
         </Button>
-        <span className="w-14 text-center text-sm text-foreground">
-          {item.quantity.unit === 'x'
-            ? item.quantity.amount
-            : `${item.quantity.amount} ${item.quantity.unit}`}
+        <span className="w-6 text-center text-sm text-foreground">
+          {item.quantity.amount}
         </span>
         <Button
           variant="outline"
@@ -61,6 +67,13 @@ function ShoppingListRow({ item }: { item: ShoppingListItem }) {
         >
           <PlusIcon />
         </Button>
+        <Input
+          aria-label={`${item.name} unit`}
+          placeholder={COUNT_UNIT}
+          className="h-8 w-14 px-2 text-center text-sm"
+          value={item.quantity.unit === COUNT_UNIT ? '' : item.quantity.unit}
+          onChange={(event) => setUnit(event.target.value)}
+        />
         <Button
           variant="ghost"
           size="icon-sm"

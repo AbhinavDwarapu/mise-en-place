@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { COUNT_UNIT } from '../state/kitchen-constants'
 import type { Recipe } from '../types'
 import { quantityNeeded, recipesUsing, sourceEquals } from './recipe-usage'
 
@@ -15,7 +16,7 @@ const frittata: Recipe = {
     },
     {
       source: { kind: 'kitchen', ingredientId: 'ing-eggs' },
-      needed: { amount: 6, unit: 'x' },
+      needed: { amount: 6, unit: COUNT_UNIT },
     },
   ],
 }

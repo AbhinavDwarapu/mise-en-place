@@ -60,7 +60,7 @@ export function IngredientQuantityField({
         </Button>
         <Input
           aria-label="Unit"
-          placeholder="count"
+          placeholder={COUNT_UNIT}
           className="w-24"
           value={
             ingredient.quantity.unit === COUNT_UNIT

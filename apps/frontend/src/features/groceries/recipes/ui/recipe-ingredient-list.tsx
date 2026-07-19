@@ -1,4 +1,5 @@
 import { XIcon } from 'lucide-react'
+import { COUNT_UNIT } from '../../state/kitchen-constants'
 import { useKitchenStore } from '../../state/kitchen-store'
 import {
   useShoppingListStore,
@@ -99,12 +100,16 @@ export function RecipeIngredientList({ recipe }: { recipe: Recipe }) {
                   />
                   <Input
                     aria-label={`${name} unit`}
+                    placeholder={COUNT_UNIT}
                     className="h-8 w-20"
-                    value={entry.needed.unit}
+                    value={
+                      entry.needed.unit === COUNT_UNIT ? '' : entry.needed.unit
+                    }
                     onChange={(event) => {
+                      const unit = event.target.value
                       const needed: Quantity = {
                         ...entry.needed,
-                        unit: event.target.value,
+                        unit: unit.trim() === '' ? COUNT_UNIT : unit,
                       }
                       updateQuantity(recipe.id, entry.source, needed)
                     }}
