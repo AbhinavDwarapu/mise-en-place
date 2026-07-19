@@ -4,6 +4,7 @@ import type { ShoppingListItem } from '../../state/shopping-list-store'
 import type { Quantity } from '../../types'
 import type { StoreItemStatus } from '../state/store-session-store'
 import { useStoreSessionStore } from '../state/store-session-store'
+import { ItemAlternatives } from './item-alternatives'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 
@@ -58,6 +59,7 @@ export function StoreItemRow({
           {formatQuantity(item.quantity)}
           {skipped && ' · skipped'}
         </p>
+        {!checked && <ItemAlternatives item={item} />}
       </div>
       <Button
         variant="ghost"

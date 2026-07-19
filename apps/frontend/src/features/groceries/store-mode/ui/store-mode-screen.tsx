@@ -4,9 +4,9 @@ import type { IngredientCategory } from '../../types'
 import { groupItemsByAisle, pendingCount } from '../logic/aisles'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { AisleTabs } from './aisle-tabs'
+import { CompleteShopButton } from './complete-shop-button'
 import { LoyaltyCardStrip } from './loyalty-card-strip'
 import { StoreItemRow } from './store-item-row'
-import { Button } from '@/shared/ui/button'
 
 export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
   const items = useShoppingListStore((state) => state.items)
@@ -57,9 +57,7 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
         )}
       </main>
       <footer className="shrink-0 border-t border-border p-4">
-        <Button className="w-full" size="lg" onClick={onComplete}>
-          Complete shop
-        </Button>
+        <CompleteShopButton onComplete={onComplete} />
       </footer>
     </>
   )
