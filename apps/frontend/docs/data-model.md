@@ -72,6 +72,7 @@ classDiagram
 
   class StoreShopSession {
     statuses: InStoreStatus by itemId
+    swaps: original name by itemId
   }
 
   class InStoreStatus {
@@ -145,7 +146,8 @@ classDiagram
   with no entry is pending. `checked` and `skipped` are the only stored
   values, and the whole map is cleared when a shop completes, so between
   shops the session is empty rather than a mirror of the list.
-- **`StoreShopSession` holds item ids, nothing else.** It lives in
+- **`StoreShopSession` references items by id only** — its values are plain
+  strings, never object references into the other stores. It lives in
   `groceries/store-mode/state/store-session-store.ts` (persisted as
   `store-session-v1`, so a half-finished shop survives an app restart) and
   never imports the other stores. If an item is removed from the list
@@ -167,6 +169,12 @@ classDiagram
   one renames the `ShoppingListItem` (`renameItem`), keeping its id so
   recipe sources and its in-store status survive — though the new name may
   move it to a different aisle.
+- **Swaps are undoable until the shop completes.** The session's `swaps`
+  map remembers each item's name from before its first swap (chained swaps
+  keep the original, so Undo always restores what the shopper first wanted).
+  Undo renames the item back and drops the record — a component
+  orchestration across both stores, like the swap itself. Completing a shop
+  clears `swaps` along with `statuses`.
 - Loyalty cards are hardcoded display data
   (`store-mode/logic/loyalty-cards.ts`), not part of this model — no store,
   no persistence, just a constant list whose first entry is treated as the

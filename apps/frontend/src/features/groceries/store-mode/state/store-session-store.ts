@@ -6,11 +6,14 @@ export type StoreItemStatus = 'checked' | 'skipped'
 type StoreSessionActions = {
   toggleChecked: (itemId: string) => void
   toggleSkipped: (itemId: string) => void
+  recordSwap: (itemId: string, originalName: string) => void
+  clearSwap: (itemId: string) => void
   clear: () => void
 }
 
 export type StoreSessionStore = {
   statuses: Record<string, StoreItemStatus>
+  swaps: Record<string, string>
 } & StoreSessionActions
 
 const STORE_SESSION_STORAGE_KEY = 'store-session-v1'
@@ -33,6 +36,7 @@ export const useStoreSessionStore = create<StoreSessionStore>()(
   persist(
     (set) => ({
       statuses: {},
+      swaps: {},
 
       toggleChecked: (itemId) =>
         set((state) => ({
@@ -44,7 +48,21 @@ export const useStoreSessionStore = create<StoreSessionStore>()(
           statuses: toggleStatus(state.statuses, itemId, 'skipped'),
         })),
 
-      clear: () => set({ statuses: {} }),
+      recordSwap: (itemId, originalName) =>
+        set((state) =>
+          itemId in state.swaps
+            ? state
+            : { swaps: { ...state.swaps, [itemId]: originalName } }
+        ),
+
+      clearSwap: (itemId) =>
+        set((state) => {
+          const swaps = { ...state.swaps }
+          delete swaps[itemId]
+          return { swaps }
+        }),
+
+      clear: () => set({ statuses: {}, swaps: {} }),
     }),
     { name: STORE_SESSION_STORAGE_KEY }
   )
