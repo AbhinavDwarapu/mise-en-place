@@ -1,5 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -23,13 +24,9 @@ function App() {
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
+        <Button onClick={() => setCount((count) => count + 1)}>
           Count is {count}
-        </button>
+        </Button>
       </section>
 
       <div className="ticks"></div>
