@@ -8,6 +8,7 @@ import {
   DrawerTitle,
 } from '@/shared/ui/drawer'
 import type { Recipe } from '../types'
+import { RecipeIngredientList } from './recipe-ingredient-list'
 import { RecipeNameField } from './recipe-name-field'
 import { RecipeServingsField } from './recipe-servings-field'
 
@@ -43,6 +44,7 @@ export function RecipeDetailSheet({
             <div className="space-y-6 overflow-y-auto px-4 pb-2">
               <RecipeNameField recipe={recipe} />
               <RecipeServingsField recipe={recipe} />
+              <RecipeIngredientList recipe={recipe} />
             </div>
 
             <DrawerFooter className="flex-row *:flex-1">
