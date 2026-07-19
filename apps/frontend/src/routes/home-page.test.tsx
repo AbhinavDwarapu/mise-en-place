@@ -1,8 +1,17 @@
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { useKitchenStore, useShoppingListStore } from '@/features/groceries'
 import { HomePage } from './home-page'
+
+function renderHomePage() {
+  return render(
+    <MemoryRouter>
+      <HomePage />
+    </MemoryRouter>
+  )
+}
 
 beforeEach(() => {
   localStorage.clear()
@@ -29,7 +38,7 @@ async function createNewItem(user: ReturnType<typeof userEvent.setup>, name: str
 
 describe("this week's recipes", () => {
   it('shows only recipes marked cooking this week', () => {
-    render(<HomePage />)
+    renderHomePage()
 
     expect(
       screen.getByRole('button', { name: /Taco night/ })
@@ -44,7 +53,7 @@ describe("this week's recipes", () => {
 
   it('opens the recipe detail sheet when a card is tapped', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await user.click(screen.getByRole('button', { name: /Taco night/ }))
 
@@ -53,7 +62,7 @@ describe("this week's recipes", () => {
 
   it('drops off the strip when toggled off from the detail sheet', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await user.click(screen.getByRole('button', { name: /Sat\. frittata/ }))
     await screen.findByLabelText('Name')
@@ -72,7 +81,7 @@ describe("this week's recipes", () => {
 describe('adding to the shopping list', () => {
   it('creates a new item when nothing matches', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await createNewItem(user, 'Pecorino')
 
@@ -82,7 +91,7 @@ describe('adding to the shopping list', () => {
 
   it('recommends kitchen ingredients annotated with which recipe needs them', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await user.type(screen.getByLabelText('Add item'), 'beef')
 
@@ -102,7 +111,7 @@ describe('adding to the shopping list', () => {
 
   it('bumps the quantity instead of duplicating an item already on the list', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await createNewItem(user, 'Pecorino')
 
@@ -124,7 +133,7 @@ describe('adding to the shopping list', () => {
 describe('editing the shopping list', () => {
   it('adjusts quantity with the stepper, floored at 1', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await createNewItem(user, 'Pecorino')
 
@@ -144,7 +153,7 @@ describe('editing the shopping list', () => {
 
   it('sets a unit, defaulting back to a bare count when cleared', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await createNewItem(user, 'Pecorino')
 
@@ -161,7 +170,7 @@ describe('editing the shopping list', () => {
 
   it('removes an item', async () => {
     const user = userEvent.setup()
-    render(<HomePage />)
+    renderHomePage()
 
     await createNewItem(user, 'Pecorino')
 
