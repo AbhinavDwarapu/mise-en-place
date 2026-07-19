@@ -1,3 +1,4 @@
+import { IonContent, IonPage } from '@ionic/react'
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
@@ -8,8 +9,9 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <section id="center">
+    <IonPage>
+      <IonContent>
+      <section id="center" className='bg-black'>
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
           <img src={reactLogo} className="framework" alt="React logo" />
@@ -115,7 +117,8 @@ function App() {
 
       <div className="ticks"></div>
       <section id="spacer"></section>
-    </>
+      </IonContent>
+    </IonPage>
   )
 }
 
