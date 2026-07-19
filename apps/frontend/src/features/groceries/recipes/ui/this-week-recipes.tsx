@@ -7,7 +7,7 @@ export function ThisWeekRecipes() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const recipes = useKitchenStore((state) => state.recipes)
   const thisWeek = recipes.filter((recipe) => recipe.cookingThisWeek)
-  const selected = thisWeek.find((recipe) => recipe.id === selectedId) ?? null
+  const selected = recipes.find((recipe) => recipe.id === selectedId) ?? null
 
   return (
     <section className="space-y-2 py-3">
