@@ -36,8 +36,9 @@ export function AisleTabs({
             )}
           >
             {pending === 0 && <CheckIcon className="size-4" />}
-            <span className="capitalize">{aisle.category}</span>
-            {pending > 0 && <span>· {pending}</span>}
+            <span className="capitalize">
+              {pending > 0 ? `${aisle.category} · ${pending}` : aisle.category}
+            </span>
           </button>
         )
       })}
