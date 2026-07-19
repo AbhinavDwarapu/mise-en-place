@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { daysToMs } from '../logic/expiration'
-import { DEFAULT_EXPIRY_DAYS } from './constants'
+import {
+  DEFAULT_EXPIRY_DAYS,
+  DEFAULT_RECIPE_COLOR,
+  DEFAULT_SERVINGS,
+} from './constants'
 import { useKitchenStore } from './kitchen-store'
 
 const now = new Date('2026-07-19T12:00:00Z')
@@ -23,6 +27,14 @@ function findIngredient(id: string) {
   return useKitchenStore
     .getState()
     .ingredients.find((ingredient) => ingredient.id === id)
+}
+
+function addRecipe(name: string) {
+  return useKitchenStore.getState().addRecipe(name)
+}
+
+function findRecipe(id: string) {
+  return useKitchenStore.getState().recipes.find((recipe) => recipe.id === id)
 }
 
 describe('addIngredient', () => {
@@ -113,5 +125,60 @@ describe('substitutions', () => {
     removeSubstitution(ingredient.id, 'tarragon')
 
     expect(findIngredient(ingredient.id)!.substitutions).toEqual([])
+  })
+})
+
+describe('addRecipe', () => {
+  it('fills sensible defaults from the name alone', () => {
+    const recipe = addRecipe('  Cacio e pepe ')
+
+    expect(recipe.name).toBe('Cacio e pepe')
+    expect(recipe.color).toBe(DEFAULT_RECIPE_COLOR)
+    expect(recipe.servings).toBe(DEFAULT_SERVINGS)
+    expect(recipe.ingredients).toEqual([])
+    expect(useKitchenStore.getState().recipes).toContainEqual(recipe)
+  })
+
+  it('assigns a unique id per recipe', () => {
+    expect(addRecipe('Cacio e pepe').id).not.toBe(
+      addRecipe('Cacio e pepe').id
+    )
+  })
+})
+
+describe('updateRecipe', () => {
+  it('changes only the given fields', () => {
+    const recipe = addRecipe('Cacio e pepe')
+
+    useKitchenStore.getState().updateRecipe(recipe.id, {
+      servings: 4,
+      color: '#123456',
+    })
+
+    const updated = findRecipe(recipe.id)!
+    expect(updated.servings).toBe(4)
+    expect(updated.color).toBe('#123456')
+    expect(updated.name).toBe('Cacio e pepe')
+  })
+
+  it('ignores unknown ids', () => {
+    addRecipe('Cacio e pepe')
+    const before = useKitchenStore.getState().recipes
+
+    useKitchenStore.getState().updateRecipe('missing', { name: 'Other' })
+
+    expect(useKitchenStore.getState().recipes).toEqual(before)
+  })
+})
+
+describe('deleteRecipe', () => {
+  it('removes only the given recipe', () => {
+    const tacoNight = addRecipe('Taco night')
+    const frittata = addRecipe('Sat. frittata')
+
+    useKitchenStore.getState().deleteRecipe(tacoNight.id)
+
+    expect(findRecipe(tacoNight.id)).toBeUndefined()
+    expect(findRecipe(frittata.id)).toEqual(frittata)
   })
 })

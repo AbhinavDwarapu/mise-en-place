@@ -93,3 +93,7 @@ export const EXPIRY_PRESETS_DAYS = [3, 5, 7]
 export const COUNT_UNIT = 'x'
 
 export const KITCHEN_STORAGE_KEY = 'kitchen-v1'
+
+export const DEFAULT_RECIPE_COLOR = '#94a3b8'
+
+export const DEFAULT_SERVINGS = 2
