@@ -1,11 +1,12 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalPassThroughEnv": ["JAVA_HOME", "ANDROID_HOME", "ANDROID_SDK_ROOT"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": ["dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]
@@ -13,7 +14,30 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "testing": {
+      "dependsOn": ["^testing"]
+    },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "sync": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
+    "ios": {
+      "dependsOn": ["sync"],
+      "cache": false
+    },
+    "android": {
+      "dependsOn": ["sync"],
+      "cache": false
+    },
+    "dev:ios": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:android": {
       "cache": false,
       "persistent": true
     }
