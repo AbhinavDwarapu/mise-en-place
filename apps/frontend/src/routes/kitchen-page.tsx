@@ -1,5 +1,5 @@
 import { IonPage } from '@ionic/react'
-import { AddIngredientInput, IngredientList } from '@/features/kitchen'
+import { KitchenScreen } from '@/features/kitchen'
 
 export function KitchenPage() {
   return (
@@ -9,8 +9,7 @@ export function KitchenPage() {
           <h1 className="text-3xl font-semibold text-foreground">Kitchen</h1>
         </header>
         <main className="flex-1 overflow-y-auto">
-          <IngredientList />
-          <AddIngredientInput />
+          <KitchenScreen />
         </main>
       </div>
     </IonPage>
