@@ -124,6 +124,7 @@ export const useKitchenStore = create<KitchenStore>()(
           name: name.trim(),
           color: DEFAULT_RECIPE_COLOR,
           servings: DEFAULT_SERVINGS,
+          cookingThisWeek: false,
           ingredients: [],
         }
         set((state) => ({ recipes: [...state.recipes, recipe] }))

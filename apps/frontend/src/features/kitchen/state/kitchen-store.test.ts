@@ -135,6 +135,7 @@ describe('addRecipe', () => {
     expect(recipe.name).toBe('Cacio e pepe')
     expect(recipe.color).toBe(DEFAULT_RECIPE_COLOR)
     expect(recipe.servings).toBe(DEFAULT_SERVINGS)
+    expect(recipe.cookingThisWeek).toBe(false)
     expect(recipe.ingredients).toEqual([])
     expect(useKitchenStore.getState().recipes).toContainEqual(recipe)
   })

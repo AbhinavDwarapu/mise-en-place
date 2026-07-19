@@ -31,6 +31,7 @@ classDiagram
     name: string
     color: string
     servings: number
+    cookingThisWeek: boolean
     ingredients: RecipeIngredient[]
   }
 
@@ -84,13 +85,19 @@ classDiagram
   `ShoppingListItem`. Nothing is faked into the kitchen just because a
   recipe needs it — the source tells you which bucket it's really in.
 - **Deleting a recipe never cascades.** It only removes the `Recipe`. Any
-  `Ingredient` or `ShoppingListItem` it referenced stays exactly as it was,
-  even if no other recipe references it anymore — that case is only
-  surfaced as an informational warning before the delete (see
-  `docs/architecture.md` for where that logic lives:
-  `kitchen/logic/recipe-usage.ts`).
+  `Ingredient` or `ShoppingListItem` it referenced stays exactly as it was —
+  in the kitchen, or on the shopping list — even if no other recipe
+  references it anymore. That's not treated as a consequence worth warning
+  about; the delete confirmation is a plain "Delete this recipe?".
 - **`ShoppingListItem`** lives in `shared/state/shopping-list-store.ts`, not
   inside the `kitchen` feature, because the `kitchen` feature (recipe
-  ingredients) needs to read it and features never import each other. There
-  is no shopping-list screen yet — the store exists only to back recipe
-  ingredient selection.
+  ingredients) needs to read it and features never import each other. The
+  Home page gives the shopping list its own screen, living in a
+  `features/shopping-list` folder — but the store itself stays in
+  `shared/state` since both `kitchen` and `shopping-list` read it. The same
+  reasoning applies in reverse: deleting a `ShoppingListItem` never cascades
+  either, so a recipe can end up with a dangling `shopping-list` source.
+- **`cookingThisWeek`** is a plain flag on `Recipe`, not a computed date
+  window. It's toggled by hand from the recipe detail sheet and drives which
+  recipes appear in the Home page's this-week strip — there's no "week"
+  concept or date math backing it.

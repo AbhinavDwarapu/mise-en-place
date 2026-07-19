@@ -35,6 +35,7 @@ export interface Recipe {
   name: string
   color: string
   servings: number
+  cookingThisWeek: boolean
   ingredients: RecipeIngredient[]
 }
 

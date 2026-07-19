@@ -63,6 +63,7 @@ export const defaultKitchenState: KitchenData = {
       name: 'Taco night',
       color: '#e05252',
       servings: 4,
+      cookingThisWeek: true,
       ingredients: [
         {
           source: { kind: 'kitchen', ingredientId: 'ing-ground-beef' },
@@ -87,6 +88,7 @@ export const defaultKitchenState: KitchenData = {
       name: 'Sat. frittata',
       color: '#e8a33d',
       servings: 2,
+      cookingThisWeek: true,
       ingredients: [
         {
           source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },
@@ -103,6 +105,7 @@ export const defaultKitchenState: KitchenData = {
       name: 'Green smoothies',
       color: '#4caf50',
       servings: 2,
+      cookingThisWeek: false,
       ingredients: [
         {
           source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },

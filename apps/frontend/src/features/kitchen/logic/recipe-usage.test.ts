@@ -7,6 +7,7 @@ const frittata: Recipe = {
   name: 'Sat. frittata',
   color: '#e8a33d',
   servings: 2,
+  cookingThisWeek: false,
   ingredients: [
     {
       source: { kind: 'kitchen', ingredientId: 'ing-spinach' },
@@ -24,6 +25,7 @@ const smoothies: Recipe = {
   name: 'Green smoothies',
   color: '#4caf50',
   servings: 2,
+  cookingThisWeek: false,
   ingredients: [
     {
       source: { kind: 'kitchen', ingredientId: 'ing-spinach' },
@@ -37,6 +39,7 @@ const tacos: Recipe = {
   name: 'Taco night',
   color: '#e05252',
   servings: 4,
+  cookingThisWeek: true,
   ingredients: [
     {
       source: { kind: 'kitchen', ingredientId: 'ing-beef' },
@@ -50,6 +53,7 @@ const cacioEPepe: Recipe = {
   name: 'Cacio e pepe',
   color: '#4a90d9',
   servings: 2,
+  cookingThisWeek: false,
   ingredients: [
     {
       source: { kind: 'shopping-list', shoppingListItemId: 'sl-pecorino' },
