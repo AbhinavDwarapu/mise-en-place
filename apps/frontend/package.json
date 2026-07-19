@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "check-types": "tsc -b",
+    "testing": "vitest run",
     "preview": "vite preview",
     "sync": "cap sync",
     "ios": "cap run ios",
