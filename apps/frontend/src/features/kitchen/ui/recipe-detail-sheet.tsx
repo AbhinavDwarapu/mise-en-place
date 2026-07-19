@@ -13,6 +13,7 @@ import { RecipeIngredientList } from './recipe-ingredient-list'
 import { RecipeIngredientPicker } from './recipe-ingredient-picker'
 import { RecipeNameField } from './recipe-name-field'
 import { RecipeServingsField } from './recipe-servings-field'
+import { RecipeThisWeekField } from './recipe-this-week-field'
 
 interface RecipeDetailSheetProps {
   recipe: Recipe | null
@@ -46,6 +47,7 @@ export function RecipeDetailSheet({
             <div className="space-y-6 overflow-y-auto px-4 pb-2">
               <RecipeNameField recipe={recipe} />
               <RecipeServingsField recipe={recipe} />
+              <RecipeThisWeekField recipe={recipe} />
               <RecipeIngredientList recipe={recipe} />
               <RecipeIngredientPicker recipe={recipe} />
             </div>
