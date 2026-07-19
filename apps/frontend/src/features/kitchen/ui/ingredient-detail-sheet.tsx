@@ -8,6 +8,7 @@ import {
   DrawerTitle,
 } from '@/shared/ui/drawer'
 import type { Ingredient } from '../types'
+import { DeleteIngredientButton } from './delete-ingredient-button'
 import { IngredientCategoryField } from './ingredient-category-field'
 import { IngredientExpiryField } from './ingredient-expiry-field'
 import { IngredientNameField } from './ingredient-name-field'
@@ -51,7 +52,11 @@ export function IngredientDetailSheet({
               <IngredientSubstitutionsField ingredient={ingredient} />
             </div>
 
-            <DrawerFooter>
+            <DrawerFooter className="flex-row *:flex-1">
+              <DeleteIngredientButton
+                ingredient={ingredient}
+                onDeleted={onClose}
+              />
               <Button onClick={onClose}>Done</Button>
             </DrawerFooter>
           </>

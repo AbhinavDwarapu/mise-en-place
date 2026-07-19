@@ -1,5 +1,5 @@
 import { Label } from '@/shared/ui/label'
-import { quantityNeeded, recipesUsing } from '../logic/consequences'
+import { quantityNeeded, recipesUsing } from '../logic/recipe-usage'
 import { formatQuantity } from '../logic/quantity'
 import { useKitchenStore } from '../state/kitchen-store'
 import type { Ingredient } from '../types'
