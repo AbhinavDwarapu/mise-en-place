@@ -62,29 +62,50 @@ export const defaultKitchenState: KitchenData = {
       id: 'rec-taco-night',
       name: 'Taco night',
       color: '#e05252',
+      servings: 4,
       ingredients: [
-        { ingredientId: 'ing-ground-beef', needed: { amount: 1, unit: 'lb' } },
-        { ingredientId: 'ing-roma-tomatoes', needed: { amount: 6, unit: 'x' } },
-        { ingredientId: 'ing-tortillas', needed: { amount: 12, unit: 'x' } },
-        { ingredientId: 'ing-sour-cream', needed: { amount: 1, unit: 'tub' } },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-ground-beef' },
+          needed: { amount: 1, unit: 'lb' },
+        },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-roma-tomatoes' },
+          needed: { amount: 6, unit: 'x' },
+        },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-tortillas' },
+          needed: { amount: 12, unit: 'x' },
+        },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-sour-cream' },
+          needed: { amount: 1, unit: 'tub' },
+        },
       ],
     },
     {
       id: 'rec-sat-frittata',
       name: 'Sat. frittata',
       color: '#e8a33d',
+      servings: 2,
       ingredients: [
-        { ingredientId: 'ing-baby-spinach', needed: { amount: 1, unit: 'bag' } },
-        { ingredientId: 'ing-eggs', needed: { amount: 6, unit: 'x' } },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },
+          needed: { amount: 1, unit: 'bag' },
+        },
+        {
+          source: { kind: 'kitchen', ingredientId: 'ing-eggs' },
+          needed: { amount: 6, unit: 'x' },
+        },
       ],
     },
     {
       id: 'rec-green-smoothies',
       name: 'Green smoothies',
       color: '#4caf50',
+      servings: 2,
       ingredients: [
         {
-          ingredientId: 'ing-baby-spinach',
+          source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },
           needed: { amount: 0.5, unit: 'bag' },
         },
       ],

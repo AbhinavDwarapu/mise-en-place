@@ -10,7 +10,8 @@ export function IngredientUsedByList({
   ingredient: Ingredient
 }) {
   const recipes = useKitchenStore((state) => state.recipes)
-  const usedBy = recipesUsing(ingredient.id, recipes)
+  const source = { kind: 'kitchen' as const, ingredientId: ingredient.id }
+  const usedBy = recipesUsing(source, recipes)
 
   if (usedBy.length === 0) return null
 
@@ -19,7 +20,7 @@ export function IngredientUsedByList({
       <Label>Used by</Label>
       <ul className="divide-y divide-border rounded-3xl border">
         {usedBy.map((recipe) => {
-          const needed = quantityNeeded(recipe, ingredient.id)
+          const needed = quantityNeeded(recipe, source)
           return (
             <li key={recipe.id} className="flex items-center gap-2.5 px-3 py-2.5">
               <span

@@ -25,7 +25,10 @@ export function DeleteIngredientButton({
   const recipes = useKitchenStore((state) => state.recipes)
   const deleteIngredient = useKitchenStore((state) => state.deleteIngredient)
   const [open, setOpen] = useState(false)
-  const affected = recipesUsing(ingredient.id, recipes)
+  const affected = recipesUsing(
+    { kind: 'kitchen', ingredientId: ingredient.id },
+    recipes
+  )
 
   const confirmDelete = () => {
     deleteIngredient(ingredient.id)

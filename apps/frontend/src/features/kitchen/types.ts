@@ -1,3 +1,7 @@
+import type { Quantity } from '@/shared/types'
+
+export type { Quantity }
+
 export type IngredientCategory =
   | 'produce'
   | 'dairy'
@@ -6,11 +10,6 @@ export type IngredientCategory =
   | 'frozen'
   | 'pantry'
   | 'other'
-
-export interface Quantity {
-  amount: number
-  unit: string
-}
 
 export interface Ingredient {
   id: string
@@ -22,8 +21,12 @@ export interface Ingredient {
   substitutions: string[]
 }
 
+export type RecipeIngredientSource =
+  | { kind: 'kitchen'; ingredientId: string }
+  | { kind: 'shopping-list'; shoppingListItemId: string }
+
 export interface RecipeIngredient {
-  ingredientId: string
+  source: RecipeIngredientSource
   needed: Quantity
 }
 
@@ -31,6 +34,7 @@ export interface Recipe {
   id: string
   name: string
   color: string
+  servings: number
   ingredients: RecipeIngredient[]
 }
 
