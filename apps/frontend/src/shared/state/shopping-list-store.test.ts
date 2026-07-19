@@ -36,6 +36,20 @@ describe('addItem', () => {
   })
 })
 
+describe('updateItemQuantity', () => {
+  it('updates only the targeted item', () => {
+    const pecorino = addItem('Pecorino', { amount: 80, unit: 'g' })
+    const spaghetti = addItem('Spaghetti')
+
+    useShoppingListStore
+      .getState()
+      .updateItemQuantity(pecorino.id, { amount: 120, unit: 'g' })
+
+    expect(findItem(pecorino.id)?.quantity).toEqual({ amount: 120, unit: 'g' })
+    expect(findItem(spaghetti.id)).toEqual(spaghetti)
+  })
+})
+
 describe('removeItem', () => {
   it('removes only the given item', () => {
     const pecorino = addItem('Pecorino')

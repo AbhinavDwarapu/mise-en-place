@@ -11,6 +11,7 @@ export interface ShoppingListItem {
 
 type ShoppingListActions = {
   addItem: (name: string, quantity: Quantity) => ShoppingListItem
+  updateItemQuantity: (id: string, quantity: Quantity) => void
   removeItem: (id: string) => void
 }
 
@@ -33,6 +34,13 @@ export const useShoppingListStore = create<ShoppingListStore>()(
         set((state) => ({ items: [...state.items, item] }))
         return item
       },
+
+      updateItemQuantity: (id, quantity) =>
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id ? { ...item, quantity } : item
+          ),
+        })),
 
       removeItem: (id) =>
         set((state) => ({
