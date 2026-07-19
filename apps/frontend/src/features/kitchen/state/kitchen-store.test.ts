@@ -19,6 +19,12 @@ function addIngredient(name: string) {
   return useKitchenStore.getState().addIngredient(name)
 }
 
+function findIngredient(id: string) {
+  return useKitchenStore
+    .getState()
+    .ingredients.find((ingredient) => ingredient.id === id)
+}
+
 describe('addIngredient', () => {
   it('fills sensible defaults from the name alone', () => {
     const ingredient = addIngredient('  Baby spinach ')
@@ -31,7 +37,7 @@ describe('addIngredient', () => {
     )
     expect(ingredient.addedAtIso).toBe(now.toISOString())
     expect(ingredient.substitutions).toEqual([])
-    expect(useKitchenStore.getState().ingredients).toEqual([ingredient])
+    expect(useKitchenStore.getState().ingredients).toContainEqual(ingredient)
   })
 
   it('assigns a unique id per ingredient', () => {
@@ -55,53 +61,57 @@ describe('updateIngredient', () => {
       expiresAfterMs: daysToMs(3),
     })
 
-    const updated = useKitchenStore.getState().ingredients[0]!
+    const updated = findIngredient(ingredient.id)!
     expect(updated.quantity).toEqual({ amount: 2, unit: 'bag' })
     expect(updated.expiresAfterMs).toBe(daysToMs(3))
     expect(updated.name).toBe('Baby spinach')
   })
 
   it('ignores unknown ids', () => {
-    const ingredient = addIngredient('Baby spinach')
+    addIngredient('Baby spinach')
+    const before = useKitchenStore.getState().ingredients
+
     useKitchenStore.getState().updateIngredient('missing', { name: 'Kale' })
-    expect(useKitchenStore.getState().ingredients).toEqual([ingredient])
+
+    expect(useKitchenStore.getState().ingredients).toEqual(before)
   })
 })
 
 describe('deleteIngredient', () => {
-  it('removes the ingredient', () => {
+  it('removes only the given ingredient', () => {
     const spinach = addIngredient('Baby spinach')
     const milk = addIngredient('Whole milk')
 
     useKitchenStore.getState().deleteIngredient(spinach.id)
 
-    expect(useKitchenStore.getState().ingredients).toEqual([milk])
+    expect(findIngredient(spinach.id)).toBeUndefined()
+    expect(findIngredient(milk.id)).toEqual(milk)
   })
 })
 
 describe('substitutions', () => {
   it('adds trimmed, deduplicated substitutes', () => {
-    const ingredient = addIngredient('Baby spinach')
+    const ingredient = addIngredient('Fresh dill')
     const { addSubstitution } = useKitchenStore.getState()
 
-    addSubstitution(ingredient.id, ' frozen spinach ')
-    addSubstitution(ingredient.id, 'frozen spinach')
+    addSubstitution(ingredient.id, ' dried dill ')
+    addSubstitution(ingredient.id, 'dried dill')
     addSubstitution(ingredient.id, '   ')
-    addSubstitution(ingredient.id, 'kale')
+    addSubstitution(ingredient.id, 'tarragon')
 
-    expect(useKitchenStore.getState().ingredients[0]!.substitutions).toEqual([
-      'frozen spinach',
-      'kale',
+    expect(findIngredient(ingredient.id)!.substitutions).toEqual([
+      'dried dill',
+      'tarragon',
     ])
   })
 
   it('removes a substitute', () => {
-    const ingredient = addIngredient('Baby spinach')
+    const ingredient = addIngredient('Fresh dill')
     const { addSubstitution, removeSubstitution } = useKitchenStore.getState()
-    addSubstitution(ingredient.id, 'kale')
+    addSubstitution(ingredient.id, 'tarragon')
 
-    removeSubstitution(ingredient.id, 'kale')
+    removeSubstitution(ingredient.id, 'tarragon')
 
-    expect(useKitchenStore.getState().ingredients[0]!.substitutions).toEqual([])
+    expect(findIngredient(ingredient.id)!.substitutions).toEqual([])
   })
 })
