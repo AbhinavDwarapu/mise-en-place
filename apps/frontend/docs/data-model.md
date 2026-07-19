@@ -1,4 +1,14 @@
-# Kitchen data model
+# Data model
+
+Every type and store on this page lives in `features/groceries/`
+(`types.ts`, `state/`, `logic/`) — the parent feature, not `shared/`.
+`Ingredient`/`Recipe`/etc. started out inside a single `kitchen` feature, but
+once a `shopping-list` feature needed to read kitchen ingredients and
+recipes too (to power its "add or search" recommendations), the whole
+non-UI layer moved up to their common parent, `groceries`, rather than out
+to the generic `shared/`. `groceries/kitchen`, `groceries/recipes`, and
+`groceries/shopping-list` are each pure `ui/` layers over this data — see
+`docs/architecture.md` for the nested-feature rule this follows.
 
 ```mermaid
 classDiagram
@@ -31,6 +41,7 @@ classDiagram
     name: string
     color: string
     servings: number
+    cookingThisWeek: boolean
     ingredients: RecipeIngredient[]
   }
 
@@ -70,9 +81,7 @@ classDiagram
 
 - **Expiry** is a duration, not a date: an ingredient expires at
   `addedAtIso + expiresAfterMs`. `null` means it never expires.
-- **Quantity's `unit`** is free text (`g`, `bag`, `tub`). `Quantity` lives in
-  `shared/types.ts` since both `Ingredient`/`RecipeIngredient` (kitchen) and
-  `ShoppingListItem` (shopping list) need it.
+- **Quantity's `unit`** is free text (`g`, `bag`, `tub`).
 - **`substitutions`** are free-text names ("frozen spinach", "kale"), not
   links to other `Ingredient` records. An ingredient can list a substitute
   that is not in the kitchen.
@@ -84,13 +93,36 @@ classDiagram
   `ShoppingListItem`. Nothing is faked into the kitchen just because a
   recipe needs it — the source tells you which bucket it's really in.
 - **Deleting a recipe never cascades.** It only removes the `Recipe`. Any
-  `Ingredient` or `ShoppingListItem` it referenced stays exactly as it was,
-  even if no other recipe references it anymore — that case is only
-  surfaced as an informational warning before the delete (see
-  `docs/architecture.md` for where that logic lives:
-  `kitchen/logic/recipe-usage.ts`).
-- **`ShoppingListItem`** lives in `shared/state/shopping-list-store.ts`, not
-  inside the `kitchen` feature, because the `kitchen` feature (recipe
-  ingredients) needs to read it and features never import each other. There
-  is no shopping-list screen yet — the store exists only to back recipe
-  ingredient selection.
+  `Ingredient` or `ShoppingListItem` it referenced stays exactly as it was —
+  in the kitchen, or on the shopping list — even if no other recipe
+  references it anymore. That's not treated as a consequence worth warning
+  about; the delete confirmation is a plain "Delete this recipe?".
+- **Deleting an `Ingredient` that a recipe depends on migrates that recipe's
+  source instead of leaving it dangling.** Each affected `RecipeIngredient`
+  is repointed from `{kind: 'kitchen', ingredientId}` to
+  `{kind: 'shopping-list', shoppingListItemId}`, reusing an existing
+  `ShoppingListItem` with the same name if one exists, or creating one
+  (seeded with the deleted ingredient's own quantity) if not. Each recipe
+  keeps its own `needed` amount through the move — this isn't a cascading
+  delete, it's the same "have it vs. need it" transition
+  `RecipeIngredientSource` already models everywhere else. This logic lives
+  in `DeleteIngredientButton` (the UI layer), not inside `kitchen-store`'s
+  `deleteIngredient` action — `kitchen-store` and `shopping-list-store`
+  never import each other, so anything that needs both stores is orchestrated
+  from a component, the same way `RecipeIngredientPicker`'s "create new"
+  flow already does.
+- **`useKitchenStore`** (`groceries/state/kitchen-store.ts`, covering both
+  `Ingredient` and `Recipe`) and **`useShoppingListStore`**
+  (`groceries/state/shopping-list-store.ts`) are siblings in
+  `groceries/state/`, read by more than one child: `groceries/recipes`'
+  ingredient picker reads the shopping list, and `groceries/shopping-list`'s
+  "add or search" reads kitchen ingredients and recipes (to show
+  "In kitchen" / "Needed by \<recipe\>"). No child feature imports another
+  child — they only read their shared parent's `state/`/`logic/`.
+- Deleting a `ShoppingListItem` never cascades either, so a recipe can end up
+  with a dangling `shopping-list` source — same rule as deleting a recipe,
+  just in reverse.
+- **`cookingThisWeek`** is a plain flag on `Recipe`, not a computed date
+  window. It's toggled by hand from the recipe detail sheet and drives which
+  recipes appear in the Home page's this-week strip — there's no "week"
+  concept or date math backing it.
