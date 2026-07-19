@@ -1,6 +1,6 @@
 import { IonContent, IonPage } from '@ionic/react'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/ui/button'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'

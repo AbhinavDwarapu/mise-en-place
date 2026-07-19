@@ -43,8 +43,8 @@ Each feature has the same four segments inside it:
 | --- | --- |
 | `ui/` | React components |
 | `boundary/` | calls to the Encore backend, Capacitor native plugins, local storage |
-| `state/` | Zustand stores and hooks |
-| `logic/` | the business rules: pure, framework-free functions and constant data |
+| `state/` | Zustand stores and hooks, plus the constant data they are seeded from |
+| `logic/` | the business rules: pure, framework-free functions |
 
 Edge cases:
 

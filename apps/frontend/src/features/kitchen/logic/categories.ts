@@ -1,0 +1,20 @@
+import type { IngredientCategory } from '../types'
+import { CATEGORY_KEYWORDS } from '../state/constants'
+
+export function inferCategory(name: string): IngredientCategory {
+  const normalized = name.toLowerCase()
+
+  let longestMatch: { category: IngredientCategory; keyword: string } | null =
+    null
+  const categories = Object.keys(CATEGORY_KEYWORDS) as IngredientCategory[]
+  for (const category of categories) {
+    for (const keyword of CATEGORY_KEYWORDS[category]) {
+      const beatsCurrent =
+        longestMatch === null || keyword.length > longestMatch.keyword.length
+      if (beatsCurrent && normalized.includes(keyword)) {
+        longestMatch = { category, keyword }
+      }
+    }
+  }
+  return longestMatch?.category ?? 'other'
+}
