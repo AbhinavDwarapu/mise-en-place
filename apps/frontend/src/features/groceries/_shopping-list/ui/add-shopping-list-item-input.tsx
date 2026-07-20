@@ -10,7 +10,6 @@ import {
 import type { Ingredient, RecipeIngredientSource } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Input } from '@/shared/ui/input'
-import { Label } from '@/shared/ui/label'
 
 const DEFAULT_QUANTITY = { amount: 1, unit: COUNT_UNIT }
 
@@ -60,10 +59,9 @@ export function AddShoppingListItemInput() {
   }
 
   return (
-    <section className="space-y-2 p-4">
-      <Label htmlFor="shopping-list-search">Add item</Label>
+    <section className="space-y-2 px-4 pb-3">
       <Input
-        id="shopping-list-search"
+        aria-label="Add item"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
         placeholder="Search or add an item…"

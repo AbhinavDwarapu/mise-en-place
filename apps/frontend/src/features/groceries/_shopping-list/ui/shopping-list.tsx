@@ -13,7 +13,7 @@ export function ShoppingList() {
   if (items.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-muted-foreground">
-        Your shopping list is empty. Add your first item below.
+        Your shopping list is empty. Add your first item above.
       </p>
     )
   }

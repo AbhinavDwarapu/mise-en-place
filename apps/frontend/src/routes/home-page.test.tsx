@@ -195,7 +195,7 @@ describe('editing the shopping list', () => {
     expect(screen.queryByText('Pecorino')).not.toBeInTheDocument()
     expect(
       screen.getByText(
-        'Your shopping list is empty. Add your first item below.'
+        'Your shopping list is empty. Add your first item above.'
       )
     ).toBeInTheDocument()
   })
