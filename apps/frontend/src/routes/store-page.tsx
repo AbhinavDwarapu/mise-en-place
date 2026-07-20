@@ -1,6 +1,6 @@
 import { IonPage } from '@ionic/react'
 import { useHistory } from 'react-router-dom'
-import { StoreModeScreen } from '@/features/groceries/store-mode'
+import { StoreModeScreen } from '@/features/groceries/_store-mode'
 
 export function StorePage() {
   const history = useHistory()

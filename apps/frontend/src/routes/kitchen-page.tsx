@@ -1,5 +1,5 @@
 import { IonPage } from '@ionic/react'
-import { KitchenScreen } from '@/features/groceries/kitchen'
+import { KitchenScreen } from '@/features/groceries/_kitchen'
 
 export function KitchenPage() {
   return (

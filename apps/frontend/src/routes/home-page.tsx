@@ -1,8 +1,8 @@
 import { IonPage } from '@ionic/react'
 import { ShoppingCartIcon } from 'lucide-react'
 import { useHistory } from 'react-router-dom'
-import { ThisWeekRecipes } from '@/features/groceries/recipes'
-import { ShoppingListScreen } from '@/features/groceries/shopping-list'
+import { ThisWeekRecipes } from '@/features/groceries/_recipes'
+import { ShoppingListScreen } from '@/features/groceries/_shopping-list'
 import { Button } from '@/shared/ui/button'
 
 export function HomePage() {
