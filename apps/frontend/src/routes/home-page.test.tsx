@@ -16,7 +16,7 @@ function renderHomePage() {
 beforeEach(() => {
   localStorage.clear()
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useShoppingListStore.setState({ items: [] })
 })
 
 afterEach(cleanup)

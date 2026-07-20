@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { inferCategory } from '../../logic/categories'
 import { useShoppingListStore } from '../../state/shopping-list-store'
+import { useLlmCategories } from '../../state/use-llm-categories'
 import type { IngredientCategory } from '../../types'
 import { groupItemsByAisle, pendingCount } from '../logic/aisles'
 import { useStoreSessionStore } from '../state/store-session-store'
@@ -15,7 +15,8 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
   const [selectedCategory, setSelectedCategory] =
     useState<IngredientCategory | null>(null)
 
-  const aisles = groupItemsByAisle(items)
+  const categoryFor = useLlmCategories(items.map((item) => item.name))
+  const aisles = groupItemsByAisle(items, categoryFor)
   const fallbackCategory =
     aisles.find((aisle) => pendingCount(aisle.items, statuses) > 0)?.category ??
     aisles[0]?.category
@@ -47,7 +48,7 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
                   key={item.id}
                   item={item}
                   status={statuses[item.id]}
-                  onSwapped={(name) => setSelectedCategory(inferCategory(name))}
+                  onSwapped={(name) => setSelectedCategory(categoryFor(name))}
                 />
               ))}
             </ul>

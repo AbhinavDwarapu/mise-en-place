@@ -1,6 +1,17 @@
 import type { IngredientCategory } from '../types'
 import { CATEGORY_KEYWORDS } from '../state/kitchen-constants'
 
+export function normalizeIngredientName(name: string): string {
+  return name.trim().toLowerCase()
+}
+
+export function categoryFor(
+  name: string,
+  cached: Record<string, IngredientCategory>
+): IngredientCategory {
+  return cached[normalizeIngredientName(name)] ?? inferCategory(name)
+}
+
 export function inferCategory(name: string): IngredientCategory {
   const normalized = name.toLowerCase()
 

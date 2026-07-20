@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Quantity } from '../types'
+import { defaultShoppingListItems } from './shopping-list-seed'
 
 export interface ShoppingListItem {
   id: string
@@ -23,7 +24,7 @@ const SHOPPING_LIST_STORAGE_KEY = 'shopping-list-v1'
 export const useShoppingListStore = create<ShoppingListStore>()(
   persist(
     (set) => ({
-      items: [],
+      items: defaultShoppingListItems,
 
       addItem: (name, quantity) => {
         const item: ShoppingListItem = {

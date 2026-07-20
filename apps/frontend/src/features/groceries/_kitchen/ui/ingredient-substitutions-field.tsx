@@ -1,6 +1,7 @@
-import { XIcon } from 'lucide-react'
+import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useKitchenStore } from '../../state/kitchen-store'
+import { useSubstituteSuggestions } from '../../state/use-substitute-suggestions'
 import type { Ingredient } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -16,7 +17,15 @@ export function IngredientSubstitutionsField({
   const removeSubstitution = useKitchenStore(
     (state) => state.removeSubstitution
   )
+  const { suggestions, status, refresh } = useSubstituteSuggestions(ingredient)
   const [draft, setDraft] = useState('')
+
+  const remainingSuggestions = suggestions.filter(
+    (suggestion) =>
+      !ingredient.substitutions.some(
+        (existing) => existing.toLowerCase() === suggestion.toLowerCase()
+      )
+  )
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -27,7 +36,19 @@ export function IngredientSubstitutionsField({
 
   return (
     <section className="space-y-2">
-      <Label htmlFor="substitute-input">Substitutes</Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor="substitute-input">Substitutes</Label>
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          onClick={refresh}
+          disabled={status === 'loading'}
+        >
+          <SparklesIcon />
+          {status === 'loading' ? 'Suggesting…' : 'Suggest More'}
+        </Button>
+      </div>
       {ingredient.substitutions.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {ingredient.substitutions.map((substitute) => (
@@ -44,6 +65,30 @@ export function IngredientSubstitutionsField({
             </Badge>
           ))}
         </div>
+      )}
+      {remainingSuggestions.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-muted-foreground">Suggested:</span>
+          {remainingSuggestions.map((suggestion) => (
+            <Badge
+              key={suggestion}
+              variant="outline"
+              render={
+                <button
+                  type="button"
+                  onClick={() => addSubstitution(ingredient.id, suggestion)}
+                />
+              }
+              className="cursor-pointer hover:bg-muted"
+            >
+              <PlusIcon />
+              {suggestion}
+            </Badge>
+          ))}
+        </div>
+      )}
+      {status === 'failed' && (
+        <p className="text-xs text-destructive">Couldn't get suggestions</p>
       )}
       <form onSubmit={submit} className="flex gap-2">
         <Input

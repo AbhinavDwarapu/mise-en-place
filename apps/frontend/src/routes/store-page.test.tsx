@@ -1,17 +1,23 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useKitchenStore, useShoppingListStore } from '@/features/groceries'
-import { useStoreSessionStore } from '@/features/groceries/store-mode'
+import { useStoreSessionStore } from '@/features/groceries/_store-mode'
+import { fetchCategories } from '@/features/groceries/boundary/suggestions-api'
+import { useCategoryCacheStore } from '@/features/groceries/state/category-cache-store'
 import { COUNT_UNIT } from '@/features/groceries/state/kitchen-constants'
 import { StorePage } from './store-page'
+
+vi.mock('@/features/groceries/boundary/suggestions-api')
 
 beforeEach(() => {
   localStorage.clear()
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useShoppingListStore.setState({ items: [] })
   useStoreSessionStore.setState(useStoreSessionStore.getInitialState(), true)
+  useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
+  vi.mocked(fetchCategories).mockReset().mockResolvedValue({})
 })
 
 afterEach(cleanup)
@@ -63,6 +69,42 @@ describe('aisle tabs', () => {
 
     expect(screen.getByText('Milk')).toBeInTheDocument()
     expect(screen.queryByText('Tomatoes')).not.toBeInTheDocument()
+  })
+})
+
+describe('LLM aisles', () => {
+  it('moves an unknown item into the aisle the LLM assigns', async () => {
+    vi.mocked(fetchCategories).mockResolvedValue({
+      'dragon fruit': 'produce',
+      tomatoes: 'produce',
+    })
+    addListItem('Dragon fruit')
+    addListItem('Tomatoes')
+    renderStorePage()
+
+    expect(
+      await screen.findByRole('button', { name: 'produce · 2' })
+    ).toBeInTheDocument()
+    expect(fetchCategories).toHaveBeenCalledWith(['dragon fruit', 'tomatoes'])
+    expect(
+      screen.queryByRole('button', { name: /other/ })
+    ).not.toBeInTheDocument()
+    expect(screen.getByText('Dragon fruit')).toBeInTheDocument()
+    expect(screen.getByText('Tomatoes')).toBeInTheDocument()
+  })
+
+  it('keeps the keyword aisle when suggestions are unreachable', async () => {
+    vi.mocked(fetchCategories).mockRejectedValue(new Error('offline'))
+    addListItem('Dragon fruit')
+    renderStorePage()
+
+    await waitFor(() =>
+      expect(fetchCategories).toHaveBeenCalledWith(['dragon fruit'])
+    )
+    expect(
+      screen.getByRole('button', { name: 'other · 1' })
+    ).toBeInTheDocument()
+    expect(screen.getByText('Dragon fruit')).toBeInTheDocument()
   })
 })
 

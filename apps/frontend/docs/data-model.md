@@ -1,7 +1,8 @@
 # Data model
 
 Every type and store on this page lives in `features/groceries/`
-(`types.ts`, `state/`, `logic/`) — the parent feature, not `shared/`.
+(`types.ts`, `state/`, `logic/`, `boundary/`) — the parent feature, not
+`shared/`.
 `Ingredient`/`Recipe`/etc. started out inside a single `kitchen` feature, but
 once a `shopping-list` feature needed to read kitchen ingredients and
 recipes too (to power its "add or search" recommendations), the whole
@@ -81,6 +82,14 @@ classDiagram
     skipped
   }
 
+  class CategoryCache {
+    categories: IngredientCategory by normalized name
+  }
+
+  class SubstituteSuggestionsCache {
+    suggestions: string[] by normalized name
+  }
+
   Ingredient "1" *-- "1" Quantity : quantity
   ShoppingListItem "1" *-- "1" Quantity : quantity
   Recipe "1" *-- "*" RecipeIngredient : ingredients
@@ -91,6 +100,7 @@ classDiagram
   Ingredient --> IngredientCategory : category
   StoreShopSession "1" ..> "*" ShoppingListItem : itemId
   StoreShopSession --> InStoreStatus : statuses
+  CategoryCache --> IngredientCategory : categories
 ```
 
 ## Semantics the diagram cannot show
@@ -100,7 +110,18 @@ classDiagram
 - **Quantity's `unit`** is free text (`g`, `bag`, `tub`).
 - **`substitutions`** are free-text names ("frozen spinach", "kale"), not
   links to other `Ingredient` records. An ingredient can list a substitute
-  that is not in the kitchen.
+  that is not in the kitchen. The backend's `suggestions` service
+  recommends 2–3 substitutes through an LLM, fetched automatically when
+  the ingredient sheet opens with nothing cached for that name. Results
+  are cached per normalized ingredient name in `SubstituteSuggestionsCache`
+  (an in-memory map inside `groceries/state/use-substitute-suggestions.ts`,
+  living for the app session, not across restarts); a reopened sheet
+  serves the cached set as-is — no background refresh that would swap
+  chips mid-view — and a new fetch only happens on demand from the sheet's
+  refresh action. A
+  suggestion only becomes ingredient data when the user taps it — tapping
+  adds it through the same `addSubstitution` path as a typed entry, so
+  `Ingredient` never gains a "suggested" state.
 - **`RecipeIngredientSource`** is a tagged union, not a class with both
   fields present at once:
   `{ kind: 'kitchen'; ingredientId: string } | { kind: 'shopping-list';
@@ -162,8 +183,22 @@ classDiagram
   items stay on the list. Like the delete flow, this is orchestrated from a
   component (`CompleteShopButton`), never inside a store.
 - **Aisles are derived, never stored.** The in-store view groups the list
-  with `inferCategory(item.name)` at render time; `ShoppingListItem` has no
-  category field, and renaming an item re-aisles it automatically.
+  at render time by resolving each item's name through `CategoryCache`,
+  falling back to `inferCategory(item.name)` keywords for names the LLM
+  hasn't answered yet; `ShoppingListItem` has no category field, and
+  renaming an item re-aisles it automatically.
+- **`CategoryCache` is how LLM inference stays synchronous at render.**
+  It's a persisted map (`groceries/state/category-cache-store.ts`, stored
+  as `category-cache-v1`) from normalized name to `IngredientCategory`,
+  filled asynchronously by the Encore `suggestions` service through
+  `groceries/boundary/suggestions-api.ts` — the first thing in this app
+  that leaves the device. Reads always resolve instantly (cache hit, else
+  keyword guess); the LLM answer lands later and re-renders whatever
+  derives from it. Offline, or on any failed call, the keyword result
+  simply stands. When an ingredient is added its keyword category is
+  assigned immediately and the LLM's answer replaces it when it arrives.
+  Expiry defaults are chosen once at creation and never revisited by a
+  late category change.
 - **In-store alternatives rename in place.** Substitutes for a list item
   come from the same-named kitchen ingredient's `substitutions`; picking
   one renames the `ShoppingListItem` (`renameItem`), keeping its id so
