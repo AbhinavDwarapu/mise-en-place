@@ -4,6 +4,7 @@ import { daysUntilExpiry } from '../../logic/expiration'
 import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient } from '../../types'
 import { expiringFirst, shortExpiryLabel } from '../logic/expiring-first'
+import { recipeIdeasKey } from '../state/use-recipe-ideas'
 import { AlreadyPlanned } from './already-planned'
 import { IdeaCards } from './idea-cards'
 import { cn } from '@/shared/lib/utils'
@@ -73,6 +74,7 @@ export function IdeasScreen() {
       {selectedNames.length > 0 && (
         <>
           <IdeaCards
+            key={recipeIdeasKey(selectedNames)}
             selectedNames={selectedNames}
             kitchenNames={kitchenNames}
           />
