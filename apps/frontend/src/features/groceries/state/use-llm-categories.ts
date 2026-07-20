@@ -8,25 +8,22 @@ export function useLlmCategories(
   names: string[]
 ): (name: string) => IngredientCategory {
   const categories = useCategoryCacheStore((state) => state.categories)
-  const setCategories = useCategoryCacheStore((state) => state.setCategories)
 
-  const missingKey = JSON.stringify(
-    [
-      ...new Set(
-        names
-          .map(normalizeIngredientName)
-          .filter((name) => name !== '' && categories[name] === undefined)
-      ),
-    ].sort()
-  )
+  const namesKey = [...new Set(names.map(normalizeIngredientName))]
+    .sort()
+    .join('\n')
 
   useEffect(() => {
-    const missing = JSON.parse(missingKey) as string[]
+    const { categories: cached, setCategories } =
+      useCategoryCacheStore.getState()
+    const missing = namesKey
+      .split('\n')
+      .filter((name) => name !== '' && cached[name] === undefined)
     if (missing.length === 0) return
     fetchCategories(missing)
       .then(setCategories)
       .catch(() => {})
-  }, [missingKey, setCategories])
+  }, [namesKey])
 
   return (name) => categoryFor(name, categories)
 }
