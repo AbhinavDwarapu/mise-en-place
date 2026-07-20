@@ -5,6 +5,6 @@ const aiGatewayApiKey = secret("AIGatewayApiKey");
 
 export function gatewayModel(): LanguageModel {
   return createGateway({ apiKey: aiGatewayApiKey() })(
-    "anthropic/claude-opus-4.8",
+    "google/gemini-2.5-flash-lite",
   );
 }
