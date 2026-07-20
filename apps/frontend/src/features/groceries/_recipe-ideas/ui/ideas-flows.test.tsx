@@ -140,6 +140,44 @@ describe('exploring ideas', () => {
   })
 })
 
+describe('already planned recipes', () => {
+  it('points at an existing recipe using a selected ingredient and plans it', async () => {
+    const kitchen = useKitchenStore.getState()
+    const spinach = kitchen.ingredients.find(
+      (entry) => entry.name === 'Spinach'
+    )!
+    const frittata = kitchen.addRecipe('Sat. frittata')
+    kitchen.addRecipeIngredient(
+      frittata.id,
+      { kind: 'kitchen', ingredientId: spinach.id },
+      { amount: 1, unit: 'unit' }
+    )
+    const user = userEvent.setup()
+    renderApp('/ideas')
+
+    await user.click(screen.getByRole('button', { name: /Spinach/ }))
+    await screen.findByText('Saag-style greens')
+
+    expect(
+      screen.getByText('Or: your Sat. frittata already uses Spinach')
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Add to this week' }))
+
+    expect(
+      screen.getByText('Already planned for this week')
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Add to this week' })
+    ).not.toBeInTheDocument()
+    expect(
+      useKitchenStore
+        .getState()
+        .recipes.find((entry) => entry.id === frittata.id)?.cookingThisWeek
+    ).toBe(true)
+  })
+})
+
 describe('adding an idea', () => {
   it('puts the recipe on this week and its extras on the shopping list', async () => {
     const user = userEvent.setup()

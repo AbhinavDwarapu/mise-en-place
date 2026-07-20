@@ -4,6 +4,7 @@ import { daysUntilExpiry } from '../../logic/expiration'
 import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient } from '../../types'
 import { expiringFirst, shortExpiryLabel } from '../logic/expiring-first'
+import { AlreadyPlanned } from './already-planned'
 import { IdeaCards } from './idea-cards'
 import { cn } from '@/shared/lib/utils'
 
@@ -15,12 +16,13 @@ export function IdeasScreen() {
   const [showAll, setShowAll] = useState(false)
 
   const sorted = useMemo(() => expiringFirst(ingredients), [ingredients])
-  const selectedNames = useMemo(
-    () =>
-      sorted
-        .filter((ingredient) => selectedIds.includes(ingredient.id))
-        .map((ingredient) => ingredient.name),
+  const selectedIngredients = useMemo(
+    () => sorted.filter((ingredient) => selectedIds.includes(ingredient.id)),
     [sorted, selectedIds]
+  )
+  const selectedNames = useMemo(
+    () => selectedIngredients.map((ingredient) => ingredient.name),
+    [selectedIngredients]
   )
   const kitchenNames = useMemo(
     () => sorted.map((ingredient) => ingredient.name),
@@ -69,7 +71,13 @@ export function IdeasScreen() {
         )}
       </ul>
       {selectedNames.length > 0 && (
-        <IdeaCards selectedNames={selectedNames} kitchenNames={kitchenNames} />
+        <>
+          <IdeaCards
+            selectedNames={selectedNames}
+            kitchenNames={kitchenNames}
+          />
+          <AlreadyPlanned selected={selectedIngredients} />
+        </>
       )}
     </div>
   )
