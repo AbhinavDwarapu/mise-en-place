@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { Ingredient } from '../types'
-import { daysToMs, daysUntilExpiry, expiresAt, expiryLabel } from './expiration'
+import {
+  daysToMs,
+  daysUntilExpiry,
+  expiresAfterMsForDate,
+  expiresAt,
+  expiryDateInputValue,
+  expiryLabel,
+} from './expiration'
 
 const spinach: Ingredient = {
   id: 'ing-1',
@@ -52,5 +59,24 @@ describe('expiryLabel', () => {
     expect(expiryLabel(0)).toBe('Expires today')
     expect(expiryLabel(-1)).toBe('Expired')
     expect(expiryLabel(null)).toBeNull()
+  })
+})
+
+describe('expiryDateInputValue', () => {
+  it('formats the expiry date for a date input', () => {
+    expect(expiryDateInputValue(spinach)).toBe('2026-07-15')
+  })
+
+  it('is empty for ingredients that do not expire', () => {
+    expect(expiryDateInputValue(salt)).toBe('')
+  })
+})
+
+describe('expiresAfterMsForDate', () => {
+  it('round-trips a chosen expiry date back through expiryDateInputValue', () => {
+    const expiresAfterMs = expiresAfterMsForDate(spinach.addedAtIso, '2026-08-01')
+    expect(expiryDateInputValue({ ...spinach, expiresAfterMs })).toBe(
+      '2026-08-01'
+    )
   })
 })

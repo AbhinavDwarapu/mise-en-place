@@ -1,4 +1,10 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
@@ -83,6 +89,30 @@ describe('editing an ingredient', () => {
 
     const row = screen.getByRole('button', { name: /Baby spinach!/ })
     expect(within(row).getByText('2 bag')).toBeInTheDocument()
+  })
+
+  it('sets expiration from a preset and keeps the date input in sync', async () => {
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+
+    await user.click(screen.getByRole('button', { name: '14d' }))
+
+    expect(screen.getByLabelText('Expiration date')).toHaveValue(
+      '2026-08-02'
+    )
+  })
+
+  it('sets expiration from a custom date', async () => {
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+
+    fireEvent.change(screen.getByLabelText('Expiration date'), {
+      target: { value: '2026-09-01' },
+    })
+
+    expect(screen.getByLabelText('Expiration date')).toHaveValue(
+      '2026-09-01'
+    )
   })
 
   it('adds and removes substitutes', async () => {

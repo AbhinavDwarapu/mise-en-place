@@ -38,6 +38,7 @@ export interface Recipe {
   servings: number
   cookingThisWeek: boolean
   ingredients: RecipeIngredient[]
+  notes?: string
 }
 
 export interface KitchenData {

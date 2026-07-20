@@ -12,6 +12,7 @@ import { DeleteRecipeButton } from './delete-recipe-button'
 import { RecipeIngredientList } from './recipe-ingredient-list'
 import { RecipeIngredientPicker } from './recipe-ingredient-picker'
 import { RecipeNameField } from './recipe-name-field'
+import { RecipeNotesField } from './recipe-notes-field'
 import { RecipeServingsField } from './recipe-servings-field'
 import { RecipeThisWeekField } from './recipe-this-week-field'
 
@@ -50,6 +51,7 @@ export function RecipeDetailSheet({
               <RecipeThisWeekField recipe={recipe} />
               <RecipeIngredientList recipe={recipe} />
               <RecipeIngredientPicker recipe={recipe} />
+              <RecipeNotesField recipe={recipe} />
             </div>
 
             <DrawerFooter className="flex-row *:flex-1">

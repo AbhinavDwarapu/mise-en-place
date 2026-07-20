@@ -101,7 +101,7 @@ describe('adding to the shopping list', () => {
 
     await createNewItem(user, 'Pecorino')
 
-    expect(within(shoppingListRow('Pecorino')).getByText('1')).toBeInTheDocument()
+    expect(screen.getByLabelText('Pecorino amount')).toHaveValue(1)
     expect(screen.getByLabelText('Add item')).toHaveValue('')
   })
 
@@ -142,7 +142,7 @@ describe('adding to the shopping list', () => {
 
     await user.click(match)
 
-    expect(within(shoppingListRow('Pecorino')).getByText('2')).toBeInTheDocument()
+    expect(screen.getByLabelText('Pecorino amount')).toHaveValue(2)
   })
 })
 
@@ -156,7 +156,7 @@ describe('editing the shopping list', () => {
     await user.click(
       screen.getByRole('button', { name: 'Increase Pecorino amount' })
     )
-    expect(within(shoppingListRow('Pecorino')).getByText('2')).toBeInTheDocument()
+    expect(screen.getByLabelText('Pecorino amount')).toHaveValue(2)
 
     await user.click(
       screen.getByRole('button', { name: 'Decrease Pecorino amount' })
@@ -164,7 +164,7 @@ describe('editing the shopping list', () => {
     await user.click(
       screen.getByRole('button', { name: 'Decrease Pecorino amount' })
     )
-    expect(within(shoppingListRow('Pecorino')).getByText('1')).toBeInTheDocument()
+    expect(screen.getByLabelText('Pecorino amount')).toHaveValue(1)
   })
 
   it('sets a unit, defaulting back to a bare count when cleared', async () => {
@@ -195,7 +195,7 @@ describe('editing the shopping list', () => {
     expect(screen.queryByText('Pecorino')).not.toBeInTheDocument()
     expect(
       screen.getByText(
-        'Your shopping list is empty. Add your first item below.'
+        'Your shopping list is empty. Add your first item above.'
       )
     ).toBeInTheDocument()
   })

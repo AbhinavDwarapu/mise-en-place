@@ -363,6 +363,8 @@ export const defaultKitchenState: KitchenData = {
       color: '#e05252',
       servings: 4,
       cookingThisWeek: true,
+      notes:
+        'Char the tortillas straight on the flame — about 10 seconds a side.',
       ingredients: [
         {
           source: { kind: 'kitchen', ingredientId: 'ing-ground-beef' },

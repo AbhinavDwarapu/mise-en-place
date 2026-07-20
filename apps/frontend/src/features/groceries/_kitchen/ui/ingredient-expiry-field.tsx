@@ -1,12 +1,15 @@
 import {
   daysToMs,
   daysUntilExpiry,
+  expiresAfterMsForDate,
+  expiryDateInputValue,
   expiryLabel,
 } from '../../logic/expiration'
 import { EXPIRY_PRESETS_DAYS } from '../../state/kitchen-constants'
 import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient } from '../../types'
 import { Button } from '@/shared/ui/button'
+import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
 export function IngredientExpiryField({
@@ -25,7 +28,7 @@ export function IngredientExpiryField({
           <span className="text-xs text-muted-foreground">{expiryStatus}</span>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {EXPIRY_PRESETS_DAYS.map((days) => (
           <Button
             key={days}
@@ -52,6 +55,20 @@ export function IngredientExpiryField({
           Never
         </Button>
       </div>
+      <Input
+        type="date"
+        aria-label="Expiration date"
+        value={expiryDateInputValue(ingredient)}
+        onChange={(event) => {
+          if (event.target.value === '') return
+          updateIngredient(ingredient.id, {
+            expiresAfterMs: expiresAfterMsForDate(
+              ingredient.addedAtIso,
+              event.target.value
+            ),
+          })
+        }}
+      />
     </section>
   )
 }
