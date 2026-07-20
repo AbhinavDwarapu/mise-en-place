@@ -30,3 +30,15 @@ export function expiryLabel(daysLeft: number | null): string | null {
   if (daysLeft === 0) return 'Expires today'
   return `Exp ~${daysLeft}d`
 }
+
+export function expiryDateInputValue(ingredient: Ingredient): string {
+  const expiry = expiresAt(ingredient)
+  return expiry === null ? '' : dayjs(expiry).format('YYYY-MM-DD')
+}
+
+export function expiresAfterMsForDate(
+  addedAtIso: string,
+  expiryDateInput: string
+): number {
+  return dayjs(expiryDateInput).diff(dayjs(addedAtIso), 'millisecond')
+}

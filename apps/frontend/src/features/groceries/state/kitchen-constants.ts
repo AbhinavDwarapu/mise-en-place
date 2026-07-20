@@ -88,7 +88,7 @@ export const DEFAULT_EXPIRY_DAYS: Record<IngredientCategory, number | null> = {
   other: null,
 }
 
-export const EXPIRY_PRESETS_DAYS = [3, 5, 7]
+export const EXPIRY_PRESETS_DAYS = [3, 5, 7, 14]
 
 export const COUNT_UNIT = 'unit'
 
