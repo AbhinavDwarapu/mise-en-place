@@ -1,4 +1,5 @@
 import { IonPage } from '@ionic/react'
+import { IdeasScreen } from '@/features/groceries/_recipe-ideas'
 
 export function IdeasPage() {
   return (
@@ -12,7 +13,9 @@ export function IdeasPage() {
             Pick from the kitchen — expiring first
           </p>
         </header>
-        <main className="flex-1 overflow-y-auto" />
+        <main className="flex-1 overflow-y-auto">
+          <IdeasScreen />
+        </main>
       </div>
     </IonPage>
   )
