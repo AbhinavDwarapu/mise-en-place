@@ -111,16 +111,16 @@ classDiagram
 - **`substitutions`** are free-text names ("frozen spinach", "kale"), not
   links to other `Ingredient` records. An ingredient can list a substitute
   that is not in the kitchen. The backend's `suggestions` service
-  recommends 2–3 substitutes through an LLM, fetched automatically each
-  time the ingredient sheet opens. Results are cached per normalized
-  ingredient name in `SubstituteSuggestionsCache`
+  recommends 2–3 substitutes through an LLM, fetched automatically when
+  the ingredient sheet opens with nothing cached for that name. Results
+  are cached per normalized ingredient name in `SubstituteSuggestionsCache`
   (`groceries/state/substitute-suggestions-store.ts`, persisted as
-  `substitute-suggestions-v1`), so a reopened sheet shows the previous set
-  instantly while the fresh call is in flight — and keeps it when the call
-  fails or the device is offline. A suggestion only becomes ingredient data
-  when the user taps it — tapping adds it through the same
-  `addSubstitution` path as a typed entry, so `Ingredient` never gains a
-  "suggested" state.
+  `substitute-suggestions-v1`); a reopened sheet serves the cached set
+  as-is — no background refresh that would swap chips mid-view — and a new
+  fetch only happens on demand from the sheet's refresh action. A
+  suggestion only becomes ingredient data when the user taps it — tapping
+  adds it through the same `addSubstitution` path as a typed entry, so
+  `Ingredient` never gains a "suggested" state.
 - **`RecipeIngredientSource`** is a tagged union, not a class with both
   fields present at once:
   `{ kind: 'kitchen'; ingredientId: string } | { kind: 'shopping-list';

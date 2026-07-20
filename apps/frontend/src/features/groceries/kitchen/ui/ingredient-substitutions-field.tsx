@@ -19,15 +19,15 @@ export function IngredientSubstitutionsField({
   const removeSubstitution = useKitchenStore(
     (state) => state.removeSubstitution
   )
-  const suggestions =
-    useSubstituteSuggestionsStore(
-      (state) => state.suggestions[normalizeIngredientName(ingredient.name)]
-    ) ?? []
+  const cachedSuggestions = useSubstituteSuggestionsStore(
+    (state) => state.suggestions[normalizeIngredientName(ingredient.name)]
+  )
+  const suggestions = cachedSuggestions ?? []
   const setSuggestions = useSubstituteSuggestionsStore(
     (state) => state.setSuggestions
   )
   const [draft, setDraft] = useState('')
-  const [suggesting, setSuggesting] = useState(true)
+  const [suggesting, setSuggesting] = useState(cachedSuggestions === undefined)
   const [suggestionsFailed, setSuggestionsFailed] = useState(false)
 
   const remainingSuggestions = suggestions.filter(
@@ -51,6 +51,11 @@ export function IngredientSubstitutionsField({
 
   const ingredientName = ingredient.name
   useEffect(() => {
+    const alreadyCached =
+      useSubstituteSuggestionsStore.getState().suggestions[
+        normalizeIngredientName(ingredientName)
+      ] !== undefined
+    if (alreadyCached) return
     const existing =
       useKitchenStore
         .getState()

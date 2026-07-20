@@ -133,6 +133,22 @@ describe('substitute suggestions', () => {
     ).toBeInTheDocument()
   })
 
+  it('serves cached suggestions on reopen without refetching', async () => {
+    vi.mocked(fetchSubstituteSuggestions).mockResolvedValue(['chard'])
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+    await screen.findByRole('button', { name: 'chard' })
+
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+    await user.click(screen.getByRole('button', { name: /Baby spinach/ }))
+    await screen.findByLabelText('Name')
+
+    expect(
+      await screen.findByRole('button', { name: 'chard' })
+    ).toBeInTheDocument()
+    expect(fetchSubstituteSuggestions).toHaveBeenCalledTimes(1)
+  })
+
   it("shows an error when suggestions can't be fetched", async () => {
     vi.mocked(fetchSubstituteSuggestions).mockRejectedValue(
       new Error('offline')
