@@ -56,9 +56,20 @@ function ShoppingListRow({ item }: { item: ShoppingListItem }) {
         >
           <MinusIcon />
         </Button>
-        <span className="w-6 text-center text-sm text-foreground">
-          {item.quantity.amount}
-        </span>
+        <Input
+          type="number"
+          min={0}
+          step="any"
+          aria-label={`${item.name} amount`}
+          className="h-8 w-14 px-1 text-center text-sm"
+          value={item.quantity.amount}
+          onChange={(event) => {
+            const amount = Number(event.target.value)
+            if (Number.isFinite(amount) && amount > 0) {
+              setAmount(amount)
+            }
+          }}
+        />
         <Button
           variant="outline"
           size="icon-sm"
