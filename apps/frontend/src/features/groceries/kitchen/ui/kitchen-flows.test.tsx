@@ -1,14 +1,29 @@
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  fetchCategories,
+  fetchSubstituteSuggestions,
+} from '../../boundary/suggestions-api'
+import { useCategoryCacheStore } from '../../state/category-cache-store'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { useShoppingListStore } from '../../state/shopping-list-store'
+import { useSubstituteSuggestionsStore } from '../../state/substitute-suggestions-store'
 import { KitchenScreen } from './kitchen-screen'
+
+vi.mock('../../boundary/suggestions-api')
 
 beforeEach(() => {
   localStorage.clear()
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
   useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
+  useSubstituteSuggestionsStore.setState(
+    useSubstituteSuggestionsStore.getInitialState(),
+    true
+  )
+  vi.mocked(fetchSubstituteSuggestions).mockReset().mockResolvedValue([])
+  vi.mocked(fetchCategories).mockReset().mockResolvedValue({})
 })
 
 afterEach(cleanup)
@@ -31,6 +46,22 @@ describe('adding an ingredient', () => {
     expect(within(row).getByText('×1')).toBeInTheDocument()
     expect(within(row).getByText('Exp ~5d')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Add ingredient…')).toHaveValue('')
+  })
+
+  it('upgrades an unknown name to the LLM category', async () => {
+    vi.mocked(fetchCategories).mockResolvedValue({ 'Dragon fruit': 'produce' })
+    const user = userEvent.setup()
+    render(<KitchenScreen />)
+
+    await user.type(
+      screen.getByPlaceholderText('Add ingredient…'),
+      'Dragon fruit{enter}'
+    )
+    await user.click(screen.getByRole('button', { name: /Dragon fruit/ }))
+    await screen.findByLabelText('Name')
+
+    expect(fetchCategories).toHaveBeenCalledWith(['Dragon fruit'])
+    expect(screen.getByLabelText('Category')).toHaveTextContent('produce')
   })
 })
 
@@ -69,6 +100,49 @@ describe('editing an ingredient', () => {
 
     expect(screen.getByText('frozen spinach')).toBeInTheDocument()
     expect(screen.getByText('kale')).toBeInTheDocument()
+  })
+})
+
+describe('substitute suggestions', () => {
+  it('suggests substitutes when the sheet opens and adds one on tap', async () => {
+    vi.mocked(fetchSubstituteSuggestions).mockResolvedValue([
+      'chard',
+      'collard greens',
+    ])
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+
+    expect(
+      await screen.findByRole('button', { name: 'chard' })
+    ).toBeInTheDocument()
+    expect(fetchSubstituteSuggestions).toHaveBeenCalledWith('Baby spinach', [
+      'frozen spinach',
+      'kale',
+    ])
+
+    await user.click(screen.getByRole('button', { name: 'chard' }))
+
+    expect(
+      screen.getByRole('button', { name: 'Remove chard' })
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'chard' })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'collard greens' })
+    ).toBeInTheDocument()
+  })
+
+  it("shows an error when suggestions can't be fetched", async () => {
+    vi.mocked(fetchSubstituteSuggestions).mockRejectedValue(
+      new Error('offline')
+    )
+    const user = userEvent.setup()
+    await openDetailSheet(user, /Baby spinach/)
+
+    expect(
+      await screen.findByText("Couldn't get suggestions")
+    ).toBeInTheDocument()
   })
 })
 

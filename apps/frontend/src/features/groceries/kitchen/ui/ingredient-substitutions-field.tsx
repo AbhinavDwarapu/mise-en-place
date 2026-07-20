@@ -84,7 +84,7 @@ export function IngredientSubstitutionsField({
           disabled={suggesting}
         >
           <SparklesIcon />
-          {suggesting ? 'Suggesting…' : 'Suggest'}
+          {suggesting ? 'Suggesting…' : 'Suggest More'}
         </Button>
       </div>
       {ingredient.substitutions.length > 0 && (
