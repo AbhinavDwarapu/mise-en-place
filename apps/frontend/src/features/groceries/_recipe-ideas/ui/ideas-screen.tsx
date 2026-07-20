@@ -47,7 +47,7 @@ export function IdeasScreen() {
 
   return (
     <div className="space-y-4 px-4 pb-6">
-      <ul className="flex flex-wrap gap-2">
+      <ul aria-label="Kitchen ingredients" className="flex flex-wrap gap-2">
         {visible.map((ingredient) => (
           <IngredientChip
             key={ingredient.id}
