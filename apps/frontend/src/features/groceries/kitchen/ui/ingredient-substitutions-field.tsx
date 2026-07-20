@@ -50,19 +50,15 @@ export function IngredientSubstitutionsField({
   )
 
   const ingredientName = ingredient.name
+  const existingSubstitutions = ingredient.substitutions
   useEffect(() => {
     const alreadyCached =
       useSubstituteSuggestionsStore.getState().suggestions[
         normalizeIngredientName(ingredientName)
       ] !== undefined
     if (alreadyCached) return
-    const existing =
-      useKitchenStore
-        .getState()
-        .ingredients.find((item) => item.name === ingredientName)
-        ?.substitutions ?? []
-    requestSuggestions(ingredientName, existing)
-  }, [ingredientName, requestSuggestions])
+    requestSuggestions(ingredientName, existingSubstitutions)
+  }, [ingredientName, existingSubstitutions, requestSuggestions])
 
   const suggestNow = () => {
     setSuggesting(true)

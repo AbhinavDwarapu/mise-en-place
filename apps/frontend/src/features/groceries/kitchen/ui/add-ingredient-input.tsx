@@ -19,11 +19,7 @@ export function AddIngredientInput() {
       .then((categories) => {
         setCategories(categories)
         const category = categories[ingredient.name]
-        if (category === undefined) return
-        const current = useKitchenStore
-          .getState()
-          .ingredients.find((existing) => existing.id === ingredient.id)
-        if (current?.category === ingredient.category) {
+        if (category !== undefined) {
           updateIngredient(ingredient.id, { category })
         }
       })

@@ -195,10 +195,9 @@ classDiagram
   keyword guess); the LLM answer lands later and re-renders whatever
   derives from it. Offline, or on any failed call, the keyword result
   simply stands. When an ingredient is added its keyword category is
-  assigned immediately; the LLM's category replaces it only while the
-  ingredient still holds that creation-time value, so a manual edit that
-  races the response always wins. Expiry defaults are chosen once at
-  creation and never revisited by a late category change.
+  assigned immediately and the LLM's answer replaces it when it arrives.
+  Expiry defaults are chosen once at creation and never revisited by a
+  late category change.
 - **In-store alternatives rename in place.** Substitutes for a list item
   come from the same-named kitchen ingredient's `substitutions`; picking
   one renames the `ShoppingListItem` (`renameItem`), keeping its id so
