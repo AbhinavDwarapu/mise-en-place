@@ -47,6 +47,7 @@ classDiagram
     servings: number
     cookingThisWeek: boolean
     ingredients: RecipeIngredient[]
+    notes: string?
   }
 
   class RecipeIngredient {
