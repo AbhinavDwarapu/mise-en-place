@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import type { Ingredient } from '../../types'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import type { GroceryItem, GroceryLocation } from '../../types'
 import { alternativesFor } from './alternatives'
 
-function ingredient(name: string, substitutions: string[] = []): Ingredient {
+function item(
+  name: string,
+  location: GroceryLocation,
+  substitutions: string[] = []
+): GroceryItem {
   return {
-    id: name.toLowerCase(),
+    id: `${location}-${name.toLowerCase()}`,
     name,
+    location,
     quantity: { amount: 1, unit: COUNT_UNIT },
     expiresAtIso: null,
     addedAtIso: '2026-07-19T12:00:00.000Z',
@@ -14,29 +19,31 @@ function ingredient(name: string, substitutions: string[] = []): Ingredient {
   }
 }
 
-const spinach = ingredient('Baby spinach', ['frozen spinach', 'kale'])
-const onions = ingredient('Onions')
+const spinach = item('Baby spinach', 'kitchen', ['frozen spinach', 'kale'])
+const onions = item('Onions', 'kitchen')
 
 describe('alternativesFor', () => {
-  it('returns the substitutions of the same-named kitchen ingredient', () => {
+  it('returns the substitutions of the same-named kitchen item', () => {
     expect(alternativesFor('Baby spinach', [onions, spinach])).toEqual([
       'frozen spinach',
       'kale',
     ])
   })
 
-  it('matches names case-insensitively and ignores surrounding spaces', () => {
+  it('matches case-insensitively', () => {
     expect(alternativesFor('  baby SPINACH ', [spinach])).toEqual([
       'frozen spinach',
       'kale',
     ])
   })
 
-  it('returns nothing when no kitchen ingredient has that name', () => {
-    expect(alternativesFor('Cilantro', [spinach])).toEqual([])
+  it('is empty when no kitchen item has that name', () => {
+    expect(alternativesFor('Cilantro', [spinach, onions])).toEqual([])
   })
 
-  it('returns nothing when the matching ingredient has no substitutions', () => {
-    expect(alternativesFor('Onions', [onions])).toEqual([])
+  it('ignores same-named items that are only on the shopping list', () => {
+    const listSpinach = item('Baby spinach', 'shopping-list', ['chard'])
+
+    expect(alternativesFor('Baby spinach', [listSpinach])).toEqual([])
   })
 })

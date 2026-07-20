@@ -2,7 +2,7 @@ import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { useKitchenStore, useShoppingListStore } from '@/features/groceries'
+import { useGroceryStore } from '@/features/groceries'
 import { HomePage } from './home-page'
 
 function renderHomePage() {
@@ -15,8 +15,12 @@ function renderHomePage() {
 
 beforeEach(() => {
   localStorage.clear()
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState({ items: [] })
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
+  useGroceryStore.setState({
+    items: useGroceryStore
+      .getState()
+      .items.filter((item) => item.location === 'kitchen'),
+  })
 })
 
 afterEach(cleanup)

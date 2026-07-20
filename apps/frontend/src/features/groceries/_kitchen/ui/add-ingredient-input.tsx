@@ -1,15 +1,15 @@
 import { useState, type FormEvent } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import { Button } from '@/shared/ui/button'
 
 export function AddIngredientInput() {
-  const addIngredient = useKitchenStore((state) => state.addIngredient)
+  const addItem = useGroceryStore((state) => state.addItem)
   const [name, setName] = useState('')
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     if (name.trim() === '') return
-    addIngredient(name)
+    addItem(name, 'kitchen')
     setName('')
   }
 

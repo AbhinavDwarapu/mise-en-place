@@ -35,9 +35,9 @@ A parent feature typically ends up holding `state/`, `logic/`, and
 
 ```
 features/groceries/
-├─ types.ts             Ingredient, Recipe, RecipeIngredientSource, ShoppingListItem, Quantity
-├─ state/                kitchen-store.ts, shopping-list-store.ts, ...
-├─ logic/                categories.ts, recipe-usage.ts, ingredient-picker.ts, ...
+├─ types.ts             GroceryItem, GroceryLocation, Recipe, Quantity
+├─ state/                grocery-store.ts, category-cache-store.ts, ...
+├─ logic/                categories.ts, recipe-usage.ts, item-search.ts, ...
 ├─ kitchen/               ui/ only: ingredient inventory screen
 │  └─ ui/
 ├─ recipes/               ui/ only: recipe management + this-week strip
@@ -46,11 +46,13 @@ features/groceries/
    └─ ui/
 ```
 
-`ingredient-picker.ts` is the clearest example of why this beats a flat
-`shared/`: it reads both `Ingredient` and `ShoppingListItem` to power
-search. It isn't owned by `kitchen` or `shopping-list` individually. It's
-owned by `groceries`, their common parent, where it sits next to the two
-stores it reads without either of *them* knowing about each other.
+`item-search.ts` is the clearest example of why this beats a flat
+`shared/`: it searches every `GroceryItem`, kitchen and shopping list
+alike, to power both the shopping list's "add or search" and the recipe
+ingredient picker. It isn't owned by `kitchen` or `shopping-list`
+individually. It's owned by `groceries`, their common parent, where it
+sits next to the store it reads without the children knowing about each
+other.
 
 This nests as deep as needed. If `recipes` later grows its own
 sub-concepts that need to be split further, it becomes a parent in turn.

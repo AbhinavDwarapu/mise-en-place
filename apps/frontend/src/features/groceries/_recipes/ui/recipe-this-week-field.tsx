@@ -1,10 +1,10 @@
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import type { Recipe } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Label } from '@/shared/ui/label'
 
 export function RecipeThisWeekField({ recipe }: { recipe: Recipe }) {
-  const updateRecipe = useKitchenStore((state) => state.updateRecipe)
+  const updateRecipe = useGroceryStore((state) => state.updateRecipe)
 
   return (
     <section className="space-y-2">

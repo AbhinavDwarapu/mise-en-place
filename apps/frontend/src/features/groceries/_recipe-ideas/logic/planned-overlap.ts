@@ -1,5 +1,5 @@
 import { recipesUsing } from '../../logic/recipe-usage'
-import type { Ingredient, Recipe } from '../../types'
+import type { GroceryItem, Recipe } from '../../types'
 
 export interface PlannedOverlap {
   recipe: Recipe
@@ -8,17 +8,13 @@ export interface PlannedOverlap {
 
 export function plannedOverlaps(
   recipes: Recipe[],
-  selected: Ingredient[]
+  selected: GroceryItem[]
 ): PlannedOverlap[] {
   const overlaps = new Map<string, PlannedOverlap>()
-  for (const ingredient of selected) {
-    const using = recipesUsing(
-      { kind: 'kitchen', ingredientId: ingredient.id },
-      recipes
-    )
-    for (const recipe of using) {
+  for (const item of selected) {
+    for (const recipe of recipesUsing(item.id, recipes)) {
       const overlap = overlaps.get(recipe.id) ?? { recipe, ingredientNames: [] }
-      overlap.ingredientNames.push(ingredient.name)
+      overlap.ingredientNames.push(item.name)
       overlaps.set(recipe.id, overlap)
     }
   }

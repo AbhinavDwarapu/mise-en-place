@@ -1,11 +1,12 @@
-import type { KitchenData } from '../types'
-import { COUNT_UNIT } from './kitchen-constants'
+import type { GroceryData } from '../types'
+import { COUNT_UNIT } from './grocery-constants'
 
-export const defaultKitchenState: KitchenData = {
-  ingredients: [
+export const defaultGroceryState: GroceryData = {
+  items: [
     {
       id: 'ing-ground-beef',
       name: 'Ground beef',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -14,6 +15,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-roma-tomatoes',
       name: 'Roma tomatoes',
+      location: 'kitchen',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -22,6 +24,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-baby-spinach',
       name: 'Baby spinach',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-07-24T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -30,6 +33,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-tortillas',
       name: 'Tortillas',
+      location: 'kitchen',
       quantity: { amount: 12, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -38,6 +42,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sour-cream',
       name: 'Sour cream',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-07-23T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -46,6 +51,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-eggs',
       name: 'Eggs',
+      location: 'kitchen',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-24T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -54,6 +60,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-yellow-onion',
       name: 'Yellow onion',
+      location: 'kitchen',
       quantity: { amount: 3, unit: COUNT_UNIT },
       expiresAtIso: '2026-08-02T09:00:00.000Z',
       addedAtIso: '2026-07-12T09:00:00.000Z',
@@ -62,6 +69,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-garlic',
       name: 'Garlic',
+      location: 'kitchen',
       quantity: { amount: 2, unit: 'head' },
       expiresAtIso: '2026-08-07T09:00:00.000Z',
       addedAtIso: '2026-07-08T09:00:00.000Z',
@@ -70,6 +78,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bell-peppers',
       name: 'Bell peppers',
+      location: 'kitchen',
       quantity: { amount: 3, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-25T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -78,6 +87,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-avocados',
       name: 'Avocados',
+      location: 'kitchen',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-23T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -86,6 +96,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-limes',
       name: 'Limes',
+      location: 'kitchen',
       quantity: { amount: 4, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-27T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -94,6 +105,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-broccoli',
       name: 'Broccoli',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'head' },
       expiresAtIso: '2026-07-19T09:00:00.000Z',
       addedAtIso: '2026-07-14T09:00:00.000Z',
@@ -102,6 +114,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-carrots',
       name: 'Carrots',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-07-31T09:00:00.000Z',
       addedAtIso: '2026-07-10T09:00:00.000Z',
@@ -110,6 +123,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-russet-potatoes',
       name: 'Russet potatoes',
+      location: 'kitchen',
       quantity: { amount: 5, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-31T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -118,6 +132,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bananas',
       name: 'Bananas',
+      location: 'kitchen',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-20T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -126,6 +141,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-whole-milk',
       name: 'Whole milk',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'gallon' },
       expiresAtIso: '2026-07-28T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -134,6 +150,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-shredded-cheddar',
       name: 'Shredded cheddar',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-08-04T09:00:00.000Z',
       addedAtIso: '2026-07-14T09:00:00.000Z',
@@ -142,6 +159,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-parmesan',
       name: 'Parmesan',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'wedge' },
       expiresAtIso: '2026-08-19T09:00:00.000Z',
       addedAtIso: '2026-07-05T09:00:00.000Z',
@@ -150,6 +168,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-greek-yogurt',
       name: 'Greek yogurt',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-07-29T09:00:00.000Z',
       addedAtIso: '2026-07-15T09:00:00.000Z',
@@ -158,6 +177,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-butter',
       name: 'Unsalted butter',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-08-30T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -166,6 +186,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-chicken-breast',
       name: 'Chicken breast',
+      location: 'kitchen',
       quantity: { amount: 2, unit: 'lb' },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -174,6 +195,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bacon',
       name: 'Bacon',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'pack' },
       expiresAtIso: '2026-07-18T09:00:00.000Z',
       addedAtIso: '2026-07-11T09:00:00.000Z',
@@ -182,6 +204,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-salmon',
       name: 'Salmon fillets',
+      location: 'kitchen',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -190,6 +213,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-ground-turkey',
       name: 'Ground turkey',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-07-20T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -198,6 +222,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sandwich-bread',
       name: 'Sandwich bread',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'loaf' },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -206,6 +231,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bagels',
       name: 'Bagels',
+      location: 'kitchen',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -214,6 +240,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-frozen-peas',
       name: 'Frozen peas',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-09-18T09:00:00.000Z',
       addedAtIso: '2026-06-20T09:00:00.000Z',
@@ -222,6 +249,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-frozen-berries',
       name: 'Frozen mixed berries',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-09-13T09:00:00.000Z',
       addedAtIso: '2026-06-15T09:00:00.000Z',
@@ -230,6 +258,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-vanilla-ice-cream',
       name: 'Vanilla ice cream',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-09-29T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -238,6 +267,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-jasmine-rice',
       name: 'Jasmine rice',
+      location: 'kitchen',
       quantity: { amount: 2, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-06-01T09:00:00.000Z',
@@ -246,6 +276,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-spaghetti',
       name: 'Spaghetti',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'box' },
       expiresAtIso: null,
       addedAtIso: '2026-06-01T09:00:00.000Z',
@@ -254,6 +285,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-olive-oil',
       name: 'Olive oil',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bottle' },
       expiresAtIso: null,
       addedAtIso: '2026-05-10T09:00:00.000Z',
@@ -262,6 +294,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-black-beans',
       name: 'Canned black beans',
+      location: 'kitchen',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: null,
       addedAtIso: '2026-06-10T09:00:00.000Z',
@@ -270,6 +303,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-marinara-sauce',
       name: 'Marinara sauce',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'jar' },
       expiresAtIso: null,
       addedAtIso: '2026-06-25T09:00:00.000Z',
@@ -278,6 +312,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-kosher-salt',
       name: 'Kosher salt',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'box' },
       expiresAtIso: null,
       addedAtIso: '2026-01-05T09:00:00.000Z',
@@ -286,6 +321,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-flour',
       name: 'All-purpose flour',
+      location: 'kitchen',
       quantity: { amount: 5, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-05-01T09:00:00.000Z',
@@ -294,6 +330,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sugar',
       name: 'Granulated sugar',
+      location: 'kitchen',
       quantity: { amount: 4, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-05-01T09:00:00.000Z',
@@ -302,6 +339,7 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-dark-chocolate',
       name: 'Dark chocolate bar',
+      location: 'kitchen',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: null,
       addedAtIso: '2026-06-15T09:00:00.000Z',
@@ -310,9 +348,82 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-coffee-beans',
       name: 'Coffee beans',
+      location: 'kitchen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: null,
       addedAtIso: '2026-07-05T09:00:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-cilantro',
+      name: 'Cilantro',
+      location: 'shopping-list',
+      quantity: { amount: 1, unit: 'bunch' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-19T18:00:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-jalapenos',
+      name: 'Jalapenos',
+      location: 'shopping-list',
+      quantity: { amount: 4, unit: COUNT_UNIT },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-19T18:00:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-feta-cheese',
+      name: 'Feta cheese',
+      location: 'shopping-list',
+      quantity: { amount: 1, unit: 'block' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-19T18:05:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-chicken-thighs',
+      name: 'Chicken thighs',
+      location: 'shopping-list',
+      quantity: { amount: 1.5, unit: 'lb' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-20T08:00:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-sourdough-bread',
+      name: 'Sourdough bread',
+      location: 'shopping-list',
+      quantity: { amount: 1, unit: 'loaf' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-20T08:10:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-frozen-waffles',
+      name: 'Frozen waffles',
+      location: 'shopping-list',
+      quantity: { amount: 1, unit: 'box' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-20T08:15:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-ground-cumin',
+      name: 'Ground cumin',
+      location: 'shopping-list',
+      quantity: { amount: 1, unit: 'jar' },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-20T08:20:00.000Z',
+      substitutions: [],
+    },
+    {
+      id: 'sl-paper-towels',
+      name: 'Paper towels',
+      location: 'shopping-list',
+      quantity: { amount: 2, unit: COUNT_UNIT },
+      expiresAtIso: null,
+      addedAtIso: '2026-07-20T08:25:00.000Z',
       substitutions: [],
     },
   ],
@@ -327,19 +438,19 @@ export const defaultKitchenState: KitchenData = {
         'Char the tortillas straight on the flame — about 10 seconds a side.',
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-ground-beef' },
+          itemId: 'ing-ground-beef',
           needed: { amount: 1, unit: 'lb' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-roma-tomatoes' },
+          itemId: 'ing-roma-tomatoes',
           needed: { amount: 6, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-tortillas' },
+          itemId: 'ing-tortillas',
           needed: { amount: 12, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-sour-cream' },
+          itemId: 'ing-sour-cream',
           needed: { amount: 1, unit: 'tub' },
         },
       ],
@@ -352,11 +463,11 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: true,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },
+          itemId: 'ing-baby-spinach',
           needed: { amount: 1, unit: 'bag' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-eggs' },
+          itemId: 'ing-eggs',
           needed: { amount: 6, unit: COUNT_UNIT },
         },
       ],
@@ -369,7 +480,7 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: false,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-baby-spinach' },
+          itemId: 'ing-baby-spinach',
           needed: { amount: 0.5, unit: 'bag' },
         },
       ],
@@ -382,19 +493,19 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: true,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-chicken-breast' },
+          itemId: 'ing-chicken-breast',
           needed: { amount: 2, unit: 'lb' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-yellow-onion' },
+          itemId: 'ing-yellow-onion',
           needed: { amount: 1, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-carrots' },
+          itemId: 'ing-carrots',
           needed: { amount: 4, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-russet-potatoes' },
+          itemId: 'ing-russet-potatoes',
           needed: { amount: 4, unit: COUNT_UNIT },
         },
       ],
@@ -407,19 +518,19 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: false,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-ground-turkey' },
+          itemId: 'ing-ground-turkey',
           needed: { amount: 1, unit: 'lb' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-bell-peppers' },
+          itemId: 'ing-bell-peppers',
           needed: { amount: 2, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-broccoli' },
+          itemId: 'ing-broccoli',
           needed: { amount: 1, unit: 'head' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-jasmine-rice' },
+          itemId: 'ing-jasmine-rice',
           needed: { amount: 2, unit: 'cup' },
         },
       ],
@@ -432,15 +543,15 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: true,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-bacon' },
+          itemId: 'ing-bacon',
           needed: { amount: 4, unit: 'slice' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-sandwich-bread' },
+          itemId: 'ing-sandwich-bread',
           needed: { amount: 2, unit: 'slice' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-avocados' },
+          itemId: 'ing-avocados',
           needed: { amount: 1, unit: COUNT_UNIT },
         },
       ],
@@ -453,15 +564,15 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: false,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-salmon' },
+          itemId: 'ing-salmon',
           needed: { amount: 2, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-jasmine-rice' },
+          itemId: 'ing-jasmine-rice',
           needed: { amount: 1, unit: 'cup' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-limes' },
+          itemId: 'ing-limes',
           needed: { amount: 1, unit: COUNT_UNIT },
         },
       ],
@@ -474,15 +585,15 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: false,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-spaghetti' },
+          itemId: 'ing-spaghetti',
           needed: { amount: 1, unit: 'box' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-marinara-sauce' },
+          itemId: 'ing-marinara-sauce',
           needed: { amount: 1, unit: 'jar' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-parmesan' },
+          itemId: 'ing-parmesan',
           needed: { amount: 2, unit: 'oz' },
         },
       ],
@@ -495,19 +606,19 @@ export const defaultKitchenState: KitchenData = {
       cookingThisWeek: false,
       ingredients: [
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-eggs' },
+          itemId: 'ing-eggs',
           needed: { amount: 2, unit: COUNT_UNIT },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-whole-milk' },
+          itemId: 'ing-whole-milk',
           needed: { amount: 1, unit: 'cup' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-flour' },
+          itemId: 'ing-flour',
           needed: { amount: 2, unit: 'cup' },
         },
         {
-          source: { kind: 'kitchen', ingredientId: 'ing-butter' },
+          itemId: 'ing-butter',
           needed: { amount: 2, unit: 'tbsp' },
         },
       ],

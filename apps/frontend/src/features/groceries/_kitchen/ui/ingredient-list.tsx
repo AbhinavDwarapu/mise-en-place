@@ -1,16 +1,17 @@
 import { groupByCategory } from '../../logic/categories'
 import { daysUntilExpiry, expiryLabel } from '../../logic/expiration'
 import { formatQuantity } from '../../logic/quantity'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import { useLlmCategories } from '../../state/use-llm-categories'
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 
 export function IngredientList({
   onSelect,
 }: {
   onSelect: (id: string) => void
 }) {
-  const ingredients = useKitchenStore((state) => state.ingredients)
+  const items = useGroceryStore((state) => state.items)
+  const ingredients = items.filter((item) => item.location === 'kitchen')
   const categoryFor = useLlmCategories(
     ingredients.map((ingredient) => ingredient.name)
   )
@@ -51,7 +52,7 @@ function IngredientRow({
   ingredient,
   onSelect,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
   onSelect: () => void
 }) {
   const label = expiryLabel(daysUntilExpiry(ingredient))

@@ -1,5 +1,5 @@
 import type { Quantity } from '../types'
-import { COUNT_UNIT } from '../state/kitchen-constants'
+import { COUNT_UNIT } from '../state/grocery-constants'
 
 export function formatQuantity(quantity: Quantity): string {
   if (quantity.unit === COUNT_UNIT) return `×${quantity.amount}`

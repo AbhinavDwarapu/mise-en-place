@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import type { ShoppingListItem } from '../../state/shopping-list-store'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import type { GroceryItem } from '../../types'
 import { pendingCount } from './aisles'
 
-function listItem(id: string, name: string): ShoppingListItem {
+function listItem(id: string, name: string): GroceryItem {
   return {
     id,
     name,
+    location: 'shopping-list',
     quantity: { amount: 1, unit: COUNT_UNIT },
+    expiresAtIso: null,
+    addedAtIso: '2026-07-19T12:00:00.000Z',
+    substitutions: [],
   }
 }
 

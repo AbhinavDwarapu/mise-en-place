@@ -12,8 +12,7 @@ import {
   fetchSubstituteSuggestions,
 } from '../../boundary/suggestions-api'
 import { useCategoryCacheStore } from '../../state/category-cache-store'
-import { useKitchenStore } from '../../state/kitchen-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import { clearSubstituteSuggestionsCache } from '../../state/use-substitute-suggestions'
 import { KitchenScreen } from './kitchen-screen'
 
@@ -21,8 +20,12 @@ vi.mock('../../boundary/suggestions-api')
 
 beforeEach(() => {
   localStorage.clear()
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState({ items: [] })
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
+  useGroceryStore.setState({
+    items: useGroceryStore
+      .getState()
+      .items.filter((item) => item.location === 'kitchen'),
+  })
   useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
   clearSubstituteSuggestionsCache()
   vi.mocked(fetchSubstituteSuggestions).mockReset().mockResolvedValue([])
@@ -230,34 +233,33 @@ describe('deleting an ingredient', () => {
     const dialog = await screen.findByRole('alertdialog')
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
 
-    const spinachItem = useShoppingListStore
+    const spinachItem = useGroceryStore
       .getState()
-      .items.find((item) => item.name === 'Baby spinach')
+      .items.find(
+        (item) =>
+          item.location === 'shopping-list' && item.name === 'Baby spinach'
+      )
     expect(spinachItem?.quantity).toEqual({ amount: 1, unit: 'bag' })
 
-    const recipes = useKitchenStore.getState().recipes
+    const recipes = useGroceryStore.getState().recipes
     const frittata = recipes.find((recipe) => recipe.name === 'Sat. frittata')!
     const smoothies = recipes.find(
       (recipe) => recipe.name === 'Green smoothies'
     )!
-    const listSource = {
-      kind: 'shopping-list' as const,
-      shoppingListItemId: spinachItem!.id,
-    }
     expect(frittata.ingredients).toContainEqual({
-      source: listSource,
+      itemId: spinachItem!.id,
       needed: { amount: 1, unit: 'bag' },
     })
     expect(smoothies.ingredients).toContainEqual({
-      source: listSource,
+      itemId: spinachItem!.id,
       needed: { amount: 0.5, unit: 'bag' },
     })
   })
 
   it('reuses an existing shopping-list item with the same name instead of duplicating it', async () => {
-    const existing = useShoppingListStore
+    const existing = useGroceryStore
       .getState()
-      .addItem('Baby spinach', { amount: 2, unit: 'bag' })
+      .addItem('Baby spinach', 'shopping-list', { amount: 2, unit: 'bag' })
 
     const user = userEvent.setup()
     await openDetailSheet(user, /Baby spinach/)
@@ -265,9 +267,12 @@ describe('deleting an ingredient', () => {
     const dialog = await screen.findByRole('alertdialog')
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
 
-    const spinachItems = useShoppingListStore
+    const spinachItems = useGroceryStore
       .getState()
-      .items.filter((item) => item.name === 'Baby spinach')
+      .items.filter(
+        (item) =>
+          item.location === 'shopping-list' && item.name === 'Baby spinach'
+      )
     expect(spinachItems).toEqual([existing])
   })
 

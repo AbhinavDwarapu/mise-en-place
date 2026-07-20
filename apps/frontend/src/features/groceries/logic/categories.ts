@@ -2,7 +2,7 @@ import type { IngredientCategory } from '../types'
 import {
   CATEGORY_KEYWORDS,
   INGREDIENT_CATEGORIES,
-} from '../state/kitchen-constants'
+} from '../state/grocery-constants'
 
 export interface CategoryGroup<T> {
   category: IngredientCategory

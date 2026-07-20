@@ -1,10 +1,10 @@
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
-export function IngredientNameField({ ingredient }: { ingredient: Ingredient }) {
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
+export function IngredientNameField({ ingredient }: { ingredient: GroceryItem }) {
+  const updateItem = useGroceryStore((state) => state.updateItem)
 
   return (
     <section className="space-y-2">
@@ -13,7 +13,7 @@ export function IngredientNameField({ ingredient }: { ingredient: Ingredient }) 
         id="ingredient-name"
         value={ingredient.name}
         onChange={(event) =>
-          updateIngredient(ingredient.id, { name: event.target.value })
+          updateItem(ingredient.id, { name: event.target.value })
         }
       />
     </section>

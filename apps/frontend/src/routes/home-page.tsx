@@ -1,14 +1,17 @@
 import { IonPage } from '@ionic/react'
 import { ShoppingCartIcon, SparklesIcon } from 'lucide-react'
 import { useHistory } from 'react-router-dom'
-import { useShoppingListStore } from '@/features/groceries'
+import { useGroceryStore } from '@/features/groceries'
 import { ThisWeekRecipes } from '@/features/groceries/_recipes'
 import { ShoppingListScreen } from '@/features/groceries/_shopping-list'
 import { Button } from '@/shared/ui/button'
 
 export function HomePage() {
   const history = useHistory()
-  const itemCount = useShoppingListStore((state) => state.items.length)
+  const itemCount = useGroceryStore(
+    (state) =>
+      state.items.filter((item) => item.location === 'shopping-list').length
+  )
 
   return (
     <IonPage>

@@ -1,11 +1,11 @@
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { plannedOverlaps } from '../logic/planned-overlap'
 import { Button } from '@/shared/ui/button'
 
-export function AlreadyPlanned({ selected }: { selected: Ingredient[] }) {
-  const recipes = useKitchenStore((state) => state.recipes)
-  const updateRecipe = useKitchenStore((state) => state.updateRecipe)
+export function AlreadyPlanned({ selected }: { selected: GroceryItem[] }) {
+  const recipes = useGroceryStore((state) => state.recipes)
+  const updateRecipe = useGroceryStore((state) => state.updateRecipe)
   const overlaps = plannedOverlaps(recipes, selected)
 
   if (overlaps.length === 0) return null

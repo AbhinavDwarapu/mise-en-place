@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { Ingredient } from '../types'
+import type { GroceryItem } from '../types'
 import {
   daysUntilExpiry,
   expiresAt,
@@ -9,16 +9,17 @@ import {
   expiryLabel,
 } from './expiration'
 
-const spinach: Ingredient = {
+const spinach: GroceryItem = {
   id: 'ing-1',
   name: 'Baby spinach',
+  location: 'kitchen',
   quantity: { amount: 1, unit: 'bag' },
   expiresAtIso: '2026-07-15T12:00:00.000Z',
   addedAtIso: '2026-07-10T12:00:00.000Z',
   substitutions: [],
 }
 
-const salt: Ingredient = {
+const salt: GroceryItem = {
   ...spinach,
   id: 'ing-2',
   name: 'Salt',

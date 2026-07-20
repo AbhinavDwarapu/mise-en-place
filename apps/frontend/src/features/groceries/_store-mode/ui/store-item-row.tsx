@@ -1,23 +1,18 @@
 import { CheckIcon } from 'lucide-react'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import type { ShoppingListItem } from '../../state/shopping-list-store'
-import type { Quantity } from '../../types'
+import { formatQuantity } from '../../logic/quantity'
+import type { GroceryItem } from '../../types'
 import type { StoreItemStatus } from '../state/store-session-store'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { ItemAlternatives } from './item-alternatives'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 
-function formatQuantity({ amount, unit }: Quantity) {
-  return unit === COUNT_UNIT ? `×${amount}` : `${amount} ${unit}`
-}
-
 export function StoreItemRow({
   item,
   status,
   onSwapped,
 }: {
-  item: ShoppingListItem
+  item: GroceryItem
   status: StoreItemStatus | undefined
   onSwapped: (name: string) => void
 }) {

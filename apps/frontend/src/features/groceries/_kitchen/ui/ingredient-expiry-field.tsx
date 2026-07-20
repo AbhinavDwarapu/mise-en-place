@@ -5,9 +5,9 @@ import {
   expiryFromDays,
   expiryLabel,
 } from '../../logic/expiration'
-import { EXPIRY_PRESETS_DAYS } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { EXPIRY_PRESETS_DAYS } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
@@ -15,9 +15,9 @@ import { Label } from '@/shared/ui/label'
 export function IngredientExpiryField({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
+  const updateItem = useGroceryStore((state) => state.updateItem)
   const expiryStatus = expiryLabel(daysUntilExpiry(ingredient))
 
   return (
@@ -39,7 +39,7 @@ export function IngredientExpiryField({
                 ingredient.expiresAtIso === presetIso ? 'default' : 'outline'
               }
               onClick={() =>
-                updateIngredient(ingredient.id, { expiresAtIso: presetIso })
+                updateItem(ingredient.id, { expiresAtIso: presetIso })
               }
             >
               {days}d
@@ -50,7 +50,7 @@ export function IngredientExpiryField({
           size="sm"
           variant={ingredient.expiresAtIso === null ? 'default' : 'outline'}
           onClick={() =>
-            updateIngredient(ingredient.id, { expiresAtIso: null })
+            updateItem(ingredient.id, { expiresAtIso: null })
           }
         >
           Never
@@ -62,7 +62,7 @@ export function IngredientExpiryField({
         value={expiryDateInputValue(ingredient)}
         onChange={(event) => {
           if (event.target.value === '') return
-          updateIngredient(ingredient.id, {
+          updateItem(ingredient.id, {
             expiresAtIso: expiryFromDateInput(event.target.value),
           })
         }}

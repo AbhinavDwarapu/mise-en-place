@@ -1,17 +1,8 @@
 import { useState } from 'react'
-import { searchIngredientSources } from '../../logic/ingredient-picker'
-import { sourceEquals } from '../../logic/recipe-usage'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import {
-  useShoppingListStore,
-  type ShoppingListItem,
-} from '../../state/shopping-list-store'
-import type {
-  Ingredient,
-  Recipe,
-  RecipeIngredientSource,
-} from '../../types'
+import { searchGroceryItems } from '../../logic/item-search'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem, Recipe } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
@@ -20,55 +11,33 @@ const DEFAULT_QUANTITY = { amount: 1, unit: COUNT_UNIT }
 
 export function RecipeIngredientPicker({ recipe }: { recipe: Recipe }) {
   const [query, setQuery] = useState('')
-  const ingredients = useKitchenStore((state) => state.ingredients)
-  const shoppingListItems = useShoppingListStore((state) => state.items)
-  const addShoppingListItem = useShoppingListStore((state) => state.addItem)
-  const addRecipeIngredient = useKitchenStore(
+  const items = useGroceryStore((state) => state.items)
+  const addItem = useGroceryStore((state) => state.addItem)
+  const addRecipeIngredient = useGroceryStore(
     (state) => state.addRecipeIngredient
   )
 
-  const alreadyInRecipe = (source: RecipeIngredientSource) =>
-    recipe.ingredients.some((entry) => sourceEquals(entry.source, source))
+  const alreadyInRecipe = (itemId: string) =>
+    recipe.ingredients.some((entry) => entry.itemId === itemId)
 
-  const results = searchIngredientSources(query, ingredients, shoppingListItems)
-  const haveMatches = results.haveMatches.filter(
-    (ingredient) =>
-      !alreadyInRecipe({ kind: 'kitchen', ingredientId: ingredient.id })
+  const results = searchGroceryItems(query, items)
+  const inKitchen = results.inKitchen.filter(
+    (item) => !alreadyInRecipe(item.id)
   )
-  const onListMatches = results.onListMatches.filter(
-    (item) =>
-      !alreadyInRecipe({ kind: 'shopping-list', shoppingListItemId: item.id })
-  )
+  const onList = results.onList.filter((item) => !alreadyInRecipe(item.id))
   const hasResults =
-    haveMatches.length > 0 || onListMatches.length > 0 || results.canCreateNew
+    inKitchen.length > 0 || onList.length > 0 || results.canCreateNew
 
-  const selectKitchen = (ingredient: Ingredient) => {
-    addRecipeIngredient(
-      recipe.id,
-      { kind: 'kitchen', ingredientId: ingredient.id },
-      DEFAULT_QUANTITY
-    )
-    setQuery('')
-  }
-
-  const selectShoppingList = (item: ShoppingListItem) => {
-    addRecipeIngredient(
-      recipe.id,
-      { kind: 'shopping-list', shoppingListItemId: item.id },
-      DEFAULT_QUANTITY
-    )
+  const select = (item: GroceryItem) => {
+    addRecipeIngredient(recipe.id, item.id, DEFAULT_QUANTITY)
     setQuery('')
   }
 
   const createNew = () => {
     const trimmed = query.trim()
     if (trimmed === '') return
-    const item = addShoppingListItem(trimmed, DEFAULT_QUANTITY)
-    addRecipeIngredient(
-      recipe.id,
-      { kind: 'shopping-list', shoppingListItemId: item.id },
-      DEFAULT_QUANTITY
-    )
+    const item = addItem(trimmed, 'shopping-list')
+    addRecipeIngredient(recipe.id, item.id, DEFAULT_QUANTITY)
     setQuery('')
   }
 
@@ -83,25 +52,25 @@ export function RecipeIngredientPicker({ recipe }: { recipe: Recipe }) {
       />
       {query.trim() !== '' && hasResults && (
         <ul className="divide-y divide-border rounded-3xl border">
-          {haveMatches.map((ingredient) => (
-            <li key={ingredient.id}>
+          {inKitchen.map((item) => (
+            <li key={item.id}>
               <button
                 type="button"
-                onClick={() => selectKitchen(ingredient)}
+                onClick={() => select(item)}
                 className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-muted/50 active:bg-muted"
               >
                 <span className="truncate text-sm font-medium text-foreground">
-                  {ingredient.name}
+                  {item.name}
                 </span>
                 <Badge variant="secondary">In kitchen</Badge>
               </button>
             </li>
           ))}
-          {onListMatches.map((item) => (
+          {onList.map((item) => (
             <li key={item.id}>
               <button
                 type="button"
-                onClick={() => selectShoppingList(item)}
+                onClick={() => select(item)}
                 className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-muted/50 active:bg-muted"
               >
                 <span className="truncate text-sm font-medium text-foreground">

@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import type { Recipe } from '../../types'
 import { RecipeDetailSheet } from './recipe-detail-sheet'
 
 export function ThisWeekRecipes() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const recipes = useKitchenStore((state) => state.recipes)
+  const recipes = useGroceryStore((state) => state.recipes)
   const thisWeek = recipes.filter((recipe) => recipe.cookingThisWeek)
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? null
 

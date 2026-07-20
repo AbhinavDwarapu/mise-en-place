@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { expiryFromDays } from '../../logic/expiration'
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 import { expiringFirst, shortExpiryLabel } from './expiring-first'
 
 const now = new Date('2026-07-10T12:00:00.000Z')
 
-function ingredient(name: string, expiresInDays: number | null): Ingredient {
+function ingredient(name: string, expiresInDays: number | null): GroceryItem {
   return {
     id: name,
     name,
+    location: 'kitchen',
     quantity: { amount: 1, unit: 'x' },
     expiresAtIso:
       expiresInDays === null

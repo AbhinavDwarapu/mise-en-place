@@ -1,21 +1,25 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useKitchenStore } from '../../state/kitchen-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import { addIdeaToThisWeek } from './add-idea'
 
 beforeEach(() => {
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
 })
 
 function findRecipe(id: string) {
-  return useKitchenStore.getState().recipes.find((recipe) => recipe.id === id)
+  return useGroceryStore.getState().recipes.find((recipe) => recipe.id === id)
+}
+
+function listItems() {
+  return useGroceryStore
+    .getState()
+    .items.filter((item) => item.location === 'shopping-list')
 }
 
 describe('addIdeaToThisWeek', () => {
-  it('creates a this-week recipe linked to the matching kitchen ingredients', () => {
-    const spinach = useKitchenStore.getState().addIngredient('Spinach')
-    const yogurt = useKitchenStore.getState().addIngredient('Yogurt')
+  it('creates a this-week recipe linked to the matching kitchen items', () => {
+    const spinach = useGroceryStore.getState().addItem('Spinach', 'kitchen')
+    const yogurt = useGroceryStore.getState().addItem('Yogurt', 'kitchen')
 
     const recipe = addIdeaToThisWeek(
       {
@@ -30,43 +34,45 @@ describe('addIdeaToThisWeek', () => {
     expect(stored?.name).toBe('Saag-style greens')
     expect(stored?.cookingThisWeek).toBe(true)
     expect(stored?.color).toBe('#86efac')
-    expect(stored?.ingredients.map((entry) => entry.source)).toEqual([
-      { kind: 'kitchen', ingredientId: spinach.id },
-      { kind: 'kitchen', ingredientId: yogurt.id },
+    expect(stored?.ingredients.map((entry) => entry.itemId)).toEqual([
+      spinach.id,
+      yogurt.id,
     ])
   })
 
   it('puts extras on the shopping list and links them to the recipe', () => {
     const recipe = addIdeaToThisWeek(
-      { name: 'Yogurt flatbreads', usedIngredients: [], extraIngredients: ['flour'] },
+      {
+        name: 'Yogurt flatbreads',
+        usedIngredients: [],
+        extraIngredients: ['flour'],
+      },
       '#fcd34d'
     )
 
-    const flour = useShoppingListStore
-      .getState()
-      .items.find((item) => item.name === 'flour')
+    const flour = listItems().find((item) => item.name === 'flour')
     expect(flour).toBeDefined()
-    expect(findRecipe(recipe.id)?.ingredients.map((entry) => entry.source)).toEqual([
-      { kind: 'shopping-list', shoppingListItemId: flour?.id },
-    ])
+    expect(findRecipe(recipe.id)?.ingredients.map((entry) => entry.itemId)).toEqual(
+      [flour?.id]
+    )
   })
 
   it('reuses a shopping-list item that already has the same name', () => {
-    const existing = useShoppingListStore
+    const existing = useGroceryStore
       .getState()
-      .addItem('flour', { amount: 1, unit: 'unit' })
+      .addItem('flour', 'shopping-list')
 
     const recipe = addIdeaToThisWeek(
       { name: 'Flatbreads', usedIngredients: [], extraIngredients: ['Flour'] },
       '#fcd34d'
     )
 
-    const flourItems = useShoppingListStore
-      .getState()
-      .items.filter((item) => item.name.toLowerCase() === 'flour')
+    const flourItems = listItems().filter(
+      (item) => item.name.toLowerCase() === 'flour'
+    )
     expect(flourItems).toHaveLength(1)
-    expect(findRecipe(recipe.id)?.ingredients.map((entry) => entry.source)).toEqual([
-      { kind: 'shopping-list', shoppingListItemId: existing.id },
-    ])
+    expect(findRecipe(recipe.id)?.ingredients.map((entry) => entry.itemId)).toEqual(
+      [existing.id]
+    )
   })
 })

@@ -1,7 +1,7 @@
 import { categoryFor } from '../../logic/categories'
 import { useCategoryCacheStore } from '../../state/category-cache-store'
-import { INGREDIENT_CATEGORIES } from '../../state/kitchen-constants'
-import type { Ingredient, IngredientCategory } from '../../types'
+import { INGREDIENT_CATEGORIES } from '../../state/grocery-constants'
+import type { GroceryItem, IngredientCategory } from '../../types'
 import { Label } from '@/shared/ui/label'
 import {
   Select,
@@ -14,7 +14,7 @@ import {
 export function IngredientCategoryField({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
   const categories = useCategoryCacheStore((state) => state.categories)
   const setCategories = useCategoryCacheStore((state) => state.setCategories)

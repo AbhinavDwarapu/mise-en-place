@@ -1,4 +1,4 @@
-import type { Ingredient } from '../types'
+import type { GroceryItem } from '../types'
 
 const DAY_MS = 86_400_000
 
@@ -6,17 +6,17 @@ export function expiryFromDays(fromIso: string, days: number): string {
   return new Date(new Date(fromIso).getTime() + days * DAY_MS).toISOString()
 }
 
-export function expiresAt(ingredient: Ingredient): Date | null {
-  return ingredient.expiresAtIso === null
+export function expiresAt(item: GroceryItem): Date | null {
+  return item.expiresAtIso === null
     ? null
-    : new Date(ingredient.expiresAtIso)
+    : new Date(item.expiresAtIso)
 }
 
 export function daysUntilExpiry(
-  ingredient: Ingredient,
+  item: GroceryItem,
   now: Date = new Date()
 ): number | null {
-  const expiry = expiresAt(ingredient)
+  const expiry = expiresAt(item)
   if (expiry === null) return null
   return Math.ceil((expiry.getTime() - now.getTime()) / DAY_MS)
 }
@@ -28,8 +28,8 @@ export function expiryLabel(daysLeft: number | null): string | null {
   return `Exp ~${daysLeft}d`
 }
 
-export function expiryDateInputValue(ingredient: Ingredient): string {
-  const expiry = expiresAt(ingredient)
+export function expiryDateInputValue(item: GroceryItem): string {
+  const expiry = expiresAt(item)
   if (expiry === null) return ''
   const pad = (value: number) => String(value).padStart(2, '0')
   return `${expiry.getFullYear()}-${pad(expiry.getMonth() + 1)}-${pad(expiry.getDate())}`

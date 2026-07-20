@@ -1,8 +1,8 @@
 import { CheckIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { daysUntilExpiry } from '../../logic/expiration'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { expiringFirst, shortExpiryLabel } from '../logic/expiring-first'
 import { recipeIdeasKey } from '../state/use-recipe-ideas'
 import { AlreadyPlanned } from './already-planned'
@@ -12,11 +12,14 @@ import { cn } from '@/shared/lib/utils'
 const VISIBLE_CHIPS = 8
 
 export function IdeasScreen() {
-  const ingredients = useKitchenStore((state) => state.ingredients)
+  const items = useGroceryStore((state) => state.items)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [showAll, setShowAll] = useState(false)
 
-  const sorted = useMemo(() => expiringFirst(ingredients), [ingredients])
+  const sorted = useMemo(
+    () => expiringFirst(items.filter((item) => item.location === 'kitchen')),
+    [items]
+  )
   const selectedIngredients = useMemo(
     () => sorted.filter((ingredient) => selectedIds.includes(ingredient.id)),
     [sorted, selectedIds]
@@ -30,7 +33,7 @@ export function IdeasScreen() {
     [sorted]
   )
 
-  if (ingredients.length === 0) {
+  if (sorted.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-muted-foreground">
         Your kitchen is empty — add ingredients to get recipe ideas.
@@ -90,7 +93,7 @@ function IngredientChip({
   selected,
   onToggle,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
   selected: boolean
   onToggle: () => void
 }) {

@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { recipesUsing, sourceEquals } from '../../logic/recipe-usage'
-import { useKitchenStore } from '../../state/kitchen-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
-import type { Ingredient } from '../../types'
+import { recipesUsing } from '../../logic/recipe-usage'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,45 +19,21 @@ export function DeleteIngredientButton({
   ingredient,
   onDeleted,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
   onDeleted: () => void
 }) {
-  const recipes = useKitchenStore((state) => state.recipes)
-  const deleteIngredient = useKitchenStore((state) => state.deleteIngredient)
-  const addRecipeIngredient = useKitchenStore(
-    (state) => state.addRecipeIngredient
-  )
-  const removeRecipeIngredient = useKitchenStore(
-    (state) => state.removeRecipeIngredient
-  )
-  const shoppingListItems = useShoppingListStore((state) => state.items)
-  const addShoppingListItem = useShoppingListStore((state) => state.addItem)
+  const recipes = useGroceryStore((state) => state.recipes)
+  const deleteItem = useGroceryStore((state) => state.deleteItem)
+  const moveItem = useGroceryStore((state) => state.moveItem)
   const [open, setOpen] = useState(false)
-  const kitchenSource = { kind: 'kitchen' as const, ingredientId: ingredient.id }
-  const affected = recipesUsing(kitchenSource, recipes)
+  const affected = recipesUsing(ingredient.id, recipes)
 
   const confirmDelete = () => {
     if (affected.length > 0) {
-      const existingListItem = shoppingListItems.find(
-        (item) => item.name.toLowerCase() === ingredient.name.toLowerCase()
-      )
-      const listItem =
-        existingListItem ??
-        addShoppingListItem(ingredient.name, ingredient.quantity)
-      const listSource = {
-        kind: 'shopping-list' as const,
-        shoppingListItemId: listItem.id,
-      }
-      for (const recipe of affected) {
-        for (const entry of recipe.ingredients) {
-          if (sourceEquals(entry.source, kitchenSource)) {
-            removeRecipeIngredient(recipe.id, kitchenSource)
-            addRecipeIngredient(recipe.id, listSource, entry.needed)
-          }
-        }
-      }
+      moveItem(ingredient.id, 'shopping-list')
+    } else {
+      deleteItem(ingredient.id)
     }
-    deleteIngredient(ingredient.id)
     setOpen(false)
     onDeleted()
   }

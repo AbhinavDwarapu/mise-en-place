@@ -1,7 +1,7 @@
 import { MinusIcon, PlusIcon } from 'lucide-react'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient, Quantity } from '../../types'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem, Quantity } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
@@ -9,12 +9,12 @@ import { Label } from '@/shared/ui/label'
 export function IngredientQuantityField({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
+  const updateItem = useGroceryStore((state) => state.updateItem)
 
   const updateQuantity = (changes: Partial<Quantity>) =>
-    updateIngredient(ingredient.id, {
+    updateItem(ingredient.id, {
       quantity: { ...ingredient.quantity, ...changes },
     })
 

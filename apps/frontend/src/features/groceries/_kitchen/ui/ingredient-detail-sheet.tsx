@@ -1,6 +1,6 @@
 import { categoryFor } from '../../logic/categories'
 import { useCategoryCacheStore } from '../../state/category-cache-store'
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 import { Button } from '@/shared/ui/button'
 import {
   Drawer,
@@ -19,7 +19,7 @@ import { IngredientSubstitutionsField } from './ingredient-substitutions-field'
 import { IngredientUsedByList } from './ingredient-used-by-list'
 
 interface IngredientDetailSheetProps {
-  ingredient: Ingredient | null
+  ingredient: GroceryItem | null
   onClose: () => void
 }
 
