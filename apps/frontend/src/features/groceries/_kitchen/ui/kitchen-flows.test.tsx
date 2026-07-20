@@ -63,7 +63,7 @@ describe('adding an ingredient', () => {
     await user.click(screen.getByRole('button', { name: /Dragon fruit/ }))
     await screen.findByLabelText('Name')
 
-    expect(fetchCategories).toHaveBeenCalledWith(['Dragon fruit'])
+    expect(fetchCategories).toHaveBeenCalledWith(['dragon fruit'])
     expect(screen.getByLabelText('Category')).toHaveTextContent('produce')
   })
 })

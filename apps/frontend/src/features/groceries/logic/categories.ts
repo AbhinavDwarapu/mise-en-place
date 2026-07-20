@@ -1,5 +1,23 @@
 import type { IngredientCategory } from '../types'
-import { CATEGORY_KEYWORDS } from '../state/kitchen-constants'
+import {
+  CATEGORY_KEYWORDS,
+  INGREDIENT_CATEGORIES,
+} from '../state/kitchen-constants'
+
+export interface CategoryGroup<T> {
+  category: IngredientCategory
+  items: T[]
+}
+
+export function groupByCategory<T extends { name: string }>(
+  items: T[],
+  categoryOf: (name: string) => IngredientCategory
+): CategoryGroup<T>[] {
+  return INGREDIENT_CATEGORIES.map((category) => ({
+    category,
+    items: items.filter((item) => categoryOf(item.name) === category),
+  })).filter((group) => group.items.length > 0)
+}
 
 export function normalizeIngredientName(name: string): string {
   return name.trim().toLowerCase()

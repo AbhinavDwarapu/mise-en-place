@@ -7,7 +7,6 @@ import { searchIngredientSources } from './ingredient-picker'
 const pecorinoRomano: Ingredient = {
   id: 'ing-pecorino-romano',
   name: 'Pecorino romano',
-  category: 'dairy',
   quantity: { amount: 80, unit: 'g' },
   expiresAtIso: null,
   addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -17,7 +16,6 @@ const pecorinoRomano: Ingredient = {
 const blackPepper: Ingredient = {
   id: 'ing-black-pepper',
   name: 'Black pepper',
-  category: 'pantry',
   quantity: { amount: 1, unit: COUNT_UNIT },
   expiresAtIso: null,
   addedAtIso: '2026-07-18T09:00:00.000Z',

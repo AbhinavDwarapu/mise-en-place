@@ -1,8 +1,9 @@
 import { useState } from 'react'
+import { groupByCategory } from '../../logic/categories'
 import { useShoppingListStore } from '../../state/shopping-list-store'
 import { useLlmCategories } from '../../state/use-llm-categories'
 import type { IngredientCategory } from '../../types'
-import { groupItemsByAisle, pendingCount } from '../logic/aisles'
+import { pendingCount } from '../logic/aisles'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { AisleTabs } from './aisle-tabs'
 import { CompleteShopButton } from './complete-shop-button'
@@ -16,7 +17,7 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
     useState<IngredientCategory | null>(null)
 
   const categoryFor = useLlmCategories(items.map((item) => item.name))
-  const aisles = groupItemsByAisle(items, categoryFor)
+  const aisles = groupByCategory(items, categoryFor)
   const fallbackCategory =
     aisles.find((aisle) => pendingCount(aisle.items, statuses) > 0)?.category ??
     aisles[0]?.category

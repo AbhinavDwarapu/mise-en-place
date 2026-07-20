@@ -9,7 +9,6 @@ function ingredient(name: string, expiresInDays: number | null): Ingredient {
   return {
     id: name,
     name,
-    category: 'produce',
     quantity: { amount: 1, unit: 'x' },
     expiresAtIso:
       expiresInDays === null

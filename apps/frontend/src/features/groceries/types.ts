@@ -15,7 +15,6 @@ export type IngredientCategory =
 export interface Ingredient {
   id: string
   name: string
-  category: IngredientCategory
   quantity: Quantity
   expiresAtIso: string | null
   addedAtIso: string

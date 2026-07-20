@@ -1,5 +1,6 @@
+import { categoryFor } from '../../logic/categories'
+import { useCategoryCacheStore } from '../../state/category-cache-store'
 import { INGREDIENT_CATEGORIES } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient, IngredientCategory } from '../../types'
 import { Label } from '@/shared/ui/label'
 import {
@@ -15,17 +16,16 @@ export function IngredientCategoryField({
 }: {
   ingredient: Ingredient
 }) {
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
+  const categories = useCategoryCacheStore((state) => state.categories)
+  const setCategories = useCategoryCacheStore((state) => state.setCategories)
 
   return (
     <section className="space-y-2">
       <Label htmlFor="ingredient-category">Category</Label>
       <Select
-        value={ingredient.category}
+        value={categoryFor(ingredient.name, categories)}
         onValueChange={(value) =>
-          updateIngredient(ingredient.id, {
-            category: value as IngredientCategory,
-          })
+          setCategories({ [ingredient.name]: value as IngredientCategory })
         }
       >
         <SelectTrigger id="ingredient-category" className="w-full">

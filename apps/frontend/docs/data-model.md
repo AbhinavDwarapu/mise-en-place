@@ -21,7 +21,6 @@ classDiagram
   class Ingredient {
     id: string
     name: string
-    category: IngredientCategory
     quantity: Quantity
     expiresAtIso: string | null
     addedAtIso: string
@@ -97,7 +96,6 @@ classDiagram
   RecipeIngredient "1" --> "1" RecipeIngredientSource : source
   RecipeIngredientSource "*" ..> "0..1" Ingredient : ingredientId
   RecipeIngredientSource "*" ..> "0..1" ShoppingListItem : shoppingListItemId
-  Ingredient --> IngredientCategory : category
   StoreShopSession "1" ..> "*" ShoppingListItem : itemId
   StoreShopSession --> InStoreStatus : statuses
   CategoryCache --> IngredientCategory : categories
@@ -185,23 +183,27 @@ classDiagram
   through the move. Only then is the list item removed; skipped and pending
   items stay on the list. Like the delete flow, this is orchestrated from a
   component (`CompleteShopButton`), never inside a store.
-- **Aisles are derived, never stored.** The in-store view groups the list
-  at render time by resolving each item's name through `CategoryCache`,
-  falling back to `inferCategory(item.name)` keywords for names the LLM
-  hasn't answered yet; `ShoppingListItem` has no category field, and
-  renaming an item re-aisles it automatically.
+- **Categories are derived, never stored.** Kitchen sections and in-store
+  aisles are both grouped at render time by resolving each name through
+  `CategoryCache`, falling back to `inferCategory(name)` keywords for
+  names the LLM hasn't answered yet. Neither `Ingredient` nor
+  `ShoppingListItem` has a category field, so the same name lands in the
+  same section everywhere, and renaming an item re-categorizes it
+  automatically.
 - **`CategoryCache` is how LLM inference stays synchronous at render.**
   It's a persisted map (`groceries/state/category-cache-store.ts`, stored
-  as `category-cache-v1`) from normalized name to `IngredientCategory`,
-  filled asynchronously by the Encore `suggestions` service through
+  as `category-cache-v2` and seeded with the demo kitchen's categories)
+  from normalized name to `IngredientCategory`, filled asynchronously by
+  the Encore `suggestions` service through
   `groceries/boundary/suggestions-api.ts`, the first thing in this app
   that leaves the device. Reads always resolve instantly (cache hit, else
   keyword guess); the LLM answer lands later and re-renders whatever
   derives from it. Offline, or on any failed call, the keyword result
-  simply stands. When an ingredient is added its keyword category is
-  assigned immediately and the LLM's answer replaces it when it arrives.
-  Expiry defaults are chosen once at creation and never revisited by a
-  late category change.
+  simply stands. The kitchen and in-store screens request only names the
+  cache is missing, and picking a category in the ingredient sheet writes
+  straight into the cache under the ingredient's name. Expiry defaults
+  are keyword-guessed once at creation and never revisited by a late
+  category change.
 - **In-store alternatives rename in place.** Substitutes for a list item
   come from the same-named kitchen ingredient's `substitutions`; picking
   one renames the `ShoppingListItem` (`renameItem`), keeping its id so

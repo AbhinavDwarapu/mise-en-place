@@ -1,29 +1,16 @@
 import { useState, type FormEvent } from 'react'
-import { fetchCategories } from '../../boundary/suggestions-api'
-import { useCategoryCacheStore } from '../../state/category-cache-store'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { Button } from '@/shared/ui/button'
 
 export function AddIngredientInput() {
   const addIngredient = useKitchenStore((state) => state.addIngredient)
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
-  const setCategories = useCategoryCacheStore((state) => state.setCategories)
   const [name, setName] = useState('')
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
     if (name.trim() === '') return
-    const ingredient = addIngredient(name)
+    addIngredient(name)
     setName('')
-    fetchCategories([ingredient.name])
-      .then((categories) => {
-        setCategories(categories)
-        const category = categories[ingredient.name]
-        if (category !== undefined) {
-          updateIngredient(ingredient.id, { category })
-        }
-      })
-      .catch(() => {})
   }
 
   return (

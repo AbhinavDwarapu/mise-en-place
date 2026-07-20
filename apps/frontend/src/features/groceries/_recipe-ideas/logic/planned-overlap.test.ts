@@ -6,7 +6,6 @@ function ingredient(id: string, name: string): Ingredient {
   return {
     id,
     name,
-    category: 'produce',
     quantity: { amount: 1, unit: 'x' },
     expiresAtIso: null,
     addedAtIso: '2026-07-10T12:00:00.000Z',

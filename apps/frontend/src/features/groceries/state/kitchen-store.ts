@@ -63,13 +63,11 @@ export const useKitchenStore = create<KitchenStore>()(
       ...defaultKitchenState,
 
       addIngredient: (name) => {
-        const category = inferCategory(name)
-        const defaultExpiryDays = DEFAULT_EXPIRY_DAYS[category]
+        const defaultExpiryDays = DEFAULT_EXPIRY_DAYS[inferCategory(name)]
         const addedAtIso = new Date().toISOString()
         const ingredient: Ingredient = {
           id: crypto.randomUUID(),
           name: name.trim(),
-          category,
           quantity: { amount: 1, unit: COUNT_UNIT },
           expiresAtIso:
             defaultExpiryDays === null

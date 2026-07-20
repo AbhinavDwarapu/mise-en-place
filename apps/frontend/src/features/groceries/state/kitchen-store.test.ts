@@ -43,7 +43,6 @@ describe('addIngredient', () => {
     const ingredient = addIngredient('  Baby spinach ')
 
     expect(ingredient.name).toBe('Baby spinach')
-    expect(ingredient.category).toBe('produce')
     expect(ingredient.quantity).toEqual({ amount: 1, unit: COUNT_UNIT })
     expect(ingredient.expiresAtIso).toBe(
       expiryFromDays(now.toISOString(), DEFAULT_EXPIRY_DAYS.produce!)

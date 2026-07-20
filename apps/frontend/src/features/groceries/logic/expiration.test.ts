@@ -12,7 +12,6 @@ import {
 const spinach: Ingredient = {
   id: 'ing-1',
   name: 'Baby spinach',
-  category: 'produce',
   quantity: { amount: 1, unit: 'bag' },
   expiresAtIso: '2026-07-15T12:00:00.000Z',
   addedAtIso: '2026-07-10T12:00:00.000Z',
@@ -23,7 +22,6 @@ const salt: Ingredient = {
   ...spinach,
   id: 'ing-2',
   name: 'Salt',
-  category: 'pantry',
   expiresAtIso: null,
 }
 

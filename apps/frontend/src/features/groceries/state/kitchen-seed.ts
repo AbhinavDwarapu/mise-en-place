@@ -6,7 +6,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-ground-beef',
       name: 'Ground beef',
-      category: 'meat',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -15,7 +14,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-roma-tomatoes',
       name: 'Roma tomatoes',
-      category: 'produce',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -24,7 +22,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-baby-spinach',
       name: 'Baby spinach',
-      category: 'produce',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-07-24T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -33,7 +30,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-tortillas',
       name: 'Tortillas',
-      category: 'bakery',
       quantity: { amount: 12, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -42,7 +38,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sour-cream',
       name: 'Sour cream',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-07-23T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -51,7 +46,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-eggs',
       name: 'Eggs',
-      category: 'dairy',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-24T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -60,7 +54,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-yellow-onion',
       name: 'Yellow onion',
-      category: 'produce',
       quantity: { amount: 3, unit: COUNT_UNIT },
       expiresAtIso: '2026-08-02T09:00:00.000Z',
       addedAtIso: '2026-07-12T09:00:00.000Z',
@@ -69,7 +62,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-garlic',
       name: 'Garlic',
-      category: 'produce',
       quantity: { amount: 2, unit: 'head' },
       expiresAtIso: '2026-08-07T09:00:00.000Z',
       addedAtIso: '2026-07-08T09:00:00.000Z',
@@ -78,7 +70,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bell-peppers',
       name: 'Bell peppers',
-      category: 'produce',
       quantity: { amount: 3, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-25T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -87,7 +78,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-avocados',
       name: 'Avocados',
-      category: 'produce',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-23T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -96,7 +86,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-limes',
       name: 'Limes',
-      category: 'produce',
       quantity: { amount: 4, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-27T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -105,7 +94,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-broccoli',
       name: 'Broccoli',
-      category: 'produce',
       quantity: { amount: 1, unit: 'head' },
       expiresAtIso: '2026-07-19T09:00:00.000Z',
       addedAtIso: '2026-07-14T09:00:00.000Z',
@@ -114,7 +102,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-carrots',
       name: 'Carrots',
-      category: 'produce',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-07-31T09:00:00.000Z',
       addedAtIso: '2026-07-10T09:00:00.000Z',
@@ -123,7 +110,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-russet-potatoes',
       name: 'Russet potatoes',
-      category: 'produce',
       quantity: { amount: 5, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-31T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -132,7 +118,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bananas',
       name: 'Bananas',
-      category: 'produce',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-20T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -141,7 +126,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-whole-milk',
       name: 'Whole milk',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'gallon' },
       expiresAtIso: '2026-07-28T09:00:00.000Z',
       addedAtIso: '2026-07-18T09:00:00.000Z',
@@ -150,7 +134,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-shredded-cheddar',
       name: 'Shredded cheddar',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-08-04T09:00:00.000Z',
       addedAtIso: '2026-07-14T09:00:00.000Z',
@@ -159,7 +142,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-parmesan',
       name: 'Parmesan',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'wedge' },
       expiresAtIso: '2026-08-19T09:00:00.000Z',
       addedAtIso: '2026-07-05T09:00:00.000Z',
@@ -168,7 +150,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-greek-yogurt',
       name: 'Greek yogurt',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-07-29T09:00:00.000Z',
       addedAtIso: '2026-07-15T09:00:00.000Z',
@@ -177,7 +158,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-butter',
       name: 'Unsalted butter',
-      category: 'dairy',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-08-30T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -186,7 +166,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-chicken-breast',
       name: 'Chicken breast',
-      category: 'meat',
       quantity: { amount: 2, unit: 'lb' },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -195,7 +174,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bacon',
       name: 'Bacon',
-      category: 'meat',
       quantity: { amount: 1, unit: 'pack' },
       expiresAtIso: '2026-07-18T09:00:00.000Z',
       addedAtIso: '2026-07-11T09:00:00.000Z',
@@ -204,7 +182,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-salmon',
       name: 'Salmon fillets',
-      category: 'meat',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-19T09:00:00.000Z',
@@ -213,7 +190,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-ground-turkey',
       name: 'Ground turkey',
-      category: 'meat',
       quantity: { amount: 1, unit: 'lb' },
       expiresAtIso: '2026-07-20T09:00:00.000Z',
       addedAtIso: '2026-07-17T09:00:00.000Z',
@@ -222,7 +198,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sandwich-bread',
       name: 'Sandwich bread',
-      category: 'bakery',
       quantity: { amount: 1, unit: 'loaf' },
       expiresAtIso: '2026-07-22T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -231,7 +206,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-bagels',
       name: 'Bagels',
-      category: 'bakery',
       quantity: { amount: 6, unit: COUNT_UNIT },
       expiresAtIso: '2026-07-21T09:00:00.000Z',
       addedAtIso: '2026-07-16T09:00:00.000Z',
@@ -240,7 +214,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-frozen-peas',
       name: 'Frozen peas',
-      category: 'frozen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-09-18T09:00:00.000Z',
       addedAtIso: '2026-06-20T09:00:00.000Z',
@@ -249,7 +222,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-frozen-berries',
       name: 'Frozen mixed berries',
-      category: 'frozen',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: '2026-09-13T09:00:00.000Z',
       addedAtIso: '2026-06-15T09:00:00.000Z',
@@ -258,7 +230,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-vanilla-ice-cream',
       name: 'Vanilla ice cream',
-      category: 'frozen',
       quantity: { amount: 1, unit: 'tub' },
       expiresAtIso: '2026-09-29T09:00:00.000Z',
       addedAtIso: '2026-07-01T09:00:00.000Z',
@@ -267,7 +238,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-jasmine-rice',
       name: 'Jasmine rice',
-      category: 'pantry',
       quantity: { amount: 2, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-06-01T09:00:00.000Z',
@@ -276,7 +246,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-spaghetti',
       name: 'Spaghetti',
-      category: 'pantry',
       quantity: { amount: 1, unit: 'box' },
       expiresAtIso: null,
       addedAtIso: '2026-06-01T09:00:00.000Z',
@@ -285,7 +254,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-olive-oil',
       name: 'Olive oil',
-      category: 'pantry',
       quantity: { amount: 1, unit: 'bottle' },
       expiresAtIso: null,
       addedAtIso: '2026-05-10T09:00:00.000Z',
@@ -294,7 +262,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-black-beans',
       name: 'Canned black beans',
-      category: 'pantry',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: null,
       addedAtIso: '2026-06-10T09:00:00.000Z',
@@ -303,7 +270,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-marinara-sauce',
       name: 'Marinara sauce',
-      category: 'pantry',
       quantity: { amount: 1, unit: 'jar' },
       expiresAtIso: null,
       addedAtIso: '2026-06-25T09:00:00.000Z',
@@ -312,7 +278,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-kosher-salt',
       name: 'Kosher salt',
-      category: 'pantry',
       quantity: { amount: 1, unit: 'box' },
       expiresAtIso: null,
       addedAtIso: '2026-01-05T09:00:00.000Z',
@@ -321,7 +286,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-flour',
       name: 'All-purpose flour',
-      category: 'pantry',
       quantity: { amount: 5, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-05-01T09:00:00.000Z',
@@ -330,7 +294,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-sugar',
       name: 'Granulated sugar',
-      category: 'pantry',
       quantity: { amount: 4, unit: 'lb' },
       expiresAtIso: null,
       addedAtIso: '2026-05-01T09:00:00.000Z',
@@ -339,7 +302,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-dark-chocolate',
       name: 'Dark chocolate bar',
-      category: 'other',
       quantity: { amount: 2, unit: COUNT_UNIT },
       expiresAtIso: null,
       addedAtIso: '2026-06-15T09:00:00.000Z',
@@ -348,7 +310,6 @@ export const defaultKitchenState: KitchenData = {
     {
       id: 'ing-coffee-beans',
       name: 'Coffee beans',
-      category: 'other',
       quantity: { amount: 1, unit: 'bag' },
       expiresAtIso: null,
       addedAtIso: '2026-07-05T09:00:00.000Z',

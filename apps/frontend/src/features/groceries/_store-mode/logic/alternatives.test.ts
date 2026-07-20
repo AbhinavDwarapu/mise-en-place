@@ -7,7 +7,6 @@ function ingredient(name: string, substitutions: string[] = []): Ingredient {
   return {
     id: name.toLowerCase(),
     name,
-    category: 'produce',
     quantity: { amount: 1, unit: COUNT_UNIT },
     expiresAtIso: null,
     addedAtIso: '2026-07-19T12:00:00.000Z',

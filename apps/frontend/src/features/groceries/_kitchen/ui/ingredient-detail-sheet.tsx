@@ -1,3 +1,5 @@
+import { categoryFor } from '../../logic/categories'
+import { useCategoryCacheStore } from '../../state/category-cache-store'
 import type { Ingredient } from '../../types'
 import { Button } from '@/shared/ui/button'
 import {
@@ -25,6 +27,8 @@ export function IngredientDetailSheet({
   ingredient,
   onClose,
 }: IngredientDetailSheetProps) {
+  const categories = useCategoryCacheStore((state) => state.categories)
+
   return (
     <Drawer
       open={ingredient !== null}
@@ -39,7 +43,7 @@ export function IngredientDetailSheet({
             <DrawerHeader>
               <DrawerTitle>{ingredient.name}</DrawerTitle>
               <DrawerDescription className="capitalize">
-                {ingredient.category}
+                {categoryFor(ingredient.name, categories)}
               </DrawerDescription>
             </DrawerHeader>
 
