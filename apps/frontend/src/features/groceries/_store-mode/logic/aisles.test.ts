@@ -9,7 +9,6 @@ function listItem(id: string, name: string): ShoppingListItem {
     id,
     name,
     quantity: { amount: 1, unit: COUNT_UNIT },
-    addedAtIso: '2026-07-19T12:00:00.000Z',
   }
 }
 

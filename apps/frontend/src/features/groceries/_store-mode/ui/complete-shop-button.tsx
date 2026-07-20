@@ -1,4 +1,4 @@
-import { quantityNeeded, recipesUsing } from '../../logic/recipe-usage'
+import { sourceEquals } from '../../logic/recipe-usage'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { useShoppingListStore } from '../../state/shopping-list-store'
 import { useStoreSessionStore } from '../state/store-session-store'
@@ -36,10 +36,13 @@ export function CompleteShopButton({ onComplete }: { onComplete: () => void }) {
       kind: 'kitchen' as const,
       ingredientId: ingredient.id,
     }
-    for (const recipe of recipesUsing(listSource, recipes)) {
-      const needed = quantityNeeded(recipe, listSource) ?? item.quantity
-      removeRecipeIngredient(recipe.id, listSource)
-      addRecipeIngredient(recipe.id, kitchenSource, needed)
+    for (const recipe of recipes) {
+      for (const entry of recipe.ingredients) {
+        if (sourceEquals(entry.source, listSource)) {
+          removeRecipeIngredient(recipe.id, listSource)
+          addRecipeIngredient(recipe.id, kitchenSource, entry.needed)
+        }
+      }
     }
   }
 

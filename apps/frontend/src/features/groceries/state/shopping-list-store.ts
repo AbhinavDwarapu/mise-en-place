@@ -7,7 +7,6 @@ export interface ShoppingListItem {
   id: string
   name: string
   quantity: Quantity
-  addedAtIso: string
 }
 
 type ShoppingListActions = {
@@ -31,7 +30,6 @@ export const useShoppingListStore = create<ShoppingListStore>()(
           id: crypto.randomUUID(),
           name: name.trim(),
           quantity,
-          addedAtIso: new Date().toISOString(),
         }
         set((state) => ({ items: [...state.items, item] }))
         return item

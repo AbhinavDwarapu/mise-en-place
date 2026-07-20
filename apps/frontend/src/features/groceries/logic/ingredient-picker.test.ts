@@ -30,7 +30,6 @@ const goodParmesan: ShoppingListItem = {
   id: 'sl-good-parmesan',
   name: 'Good parmesan',
   quantity: { amount: 200, unit: 'g' },
-  addedAtIso: '2026-07-18T09:00:00.000Z',
 }
 
 const shoppingListItems = [goodParmesan]

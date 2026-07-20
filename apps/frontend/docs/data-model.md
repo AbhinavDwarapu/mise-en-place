@@ -32,7 +32,6 @@ classDiagram
     id: string
     name: string
     quantity: Quantity
-    addedAtIso: string
   }
 
   class Quantity {

@@ -1,17 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { COUNT_UNIT } from './kitchen-constants'
 import { useShoppingListStore } from './shopping-list-store'
 
-const now = new Date('2026-07-19T12:00:00Z')
-
 beforeEach(() => {
   useShoppingListStore.setState({ items: [] })
-  vi.useFakeTimers()
-  vi.setSystemTime(now)
-})
-
-afterEach(() => {
-  vi.useRealTimers()
 })
 
 function addItem(name: string, quantity = { amount: 1, unit: COUNT_UNIT }) {
@@ -23,12 +15,11 @@ function findItem(id: string) {
 }
 
 describe('addItem', () => {
-  it('trims the name and stamps when it was added', () => {
+  it('trims the name and keeps the given quantity', () => {
     const item = addItem('  Pecorino ', { amount: 200, unit: 'g' })
 
     expect(item.name).toBe('Pecorino')
     expect(item.quantity).toEqual({ amount: 200, unit: 'g' })
-    expect(item.addedAtIso).toBe(now.toISOString())
     expect(useShoppingListStore.getState().items).toContainEqual(item)
   })
 

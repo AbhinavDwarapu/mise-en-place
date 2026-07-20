@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { quantityNeeded, recipesUsing } from '../../logic/recipe-usage'
+import { recipesUsing, sourceEquals } from '../../logic/recipe-usage'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { useShoppingListStore } from '../../state/shopping-list-store'
 import type { Ingredient } from '../../types'
@@ -50,9 +50,12 @@ export function DeleteIngredientButton({
         shoppingListItemId: listItem.id,
       }
       for (const recipe of affected) {
-        const needed = quantityNeeded(recipe, kitchenSource) ?? ingredient.quantity
-        removeRecipeIngredient(recipe.id, kitchenSource)
-        addRecipeIngredient(recipe.id, listSource, needed)
+        for (const entry of recipe.ingredients) {
+          if (sourceEquals(entry.source, kitchenSource)) {
+            removeRecipeIngredient(recipe.id, kitchenSource)
+            addRecipeIngredient(recipe.id, listSource, entry.needed)
+          }
+        }
       }
     }
     deleteIngredient(ingredient.id)
