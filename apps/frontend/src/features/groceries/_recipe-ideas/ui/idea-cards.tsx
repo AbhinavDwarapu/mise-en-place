@@ -1,5 +1,7 @@
-import { PlusIcon } from 'lucide-react'
+import { CheckIcon, PlusIcon } from 'lucide-react'
+import { useState } from 'react'
 import type { RecipeIdea } from '../../boundary/suggestions-api'
+import { addIdeaToThisWeek } from '../state/add-idea'
 import { useRecipeIdeas } from '../state/use-recipe-ideas'
 import { Button } from '@/shared/ui/button'
 
@@ -13,6 +15,12 @@ export function IdeaCards({
   kitchenNames: string[]
 }) {
   const { ideas, status, refresh } = useRecipeIdeas(selectedNames, kitchenNames)
+  const [addedNames, setAddedNames] = useState<string[]>([])
+
+  const add = (idea: RecipeIdea, color: string) => {
+    addIdeaToThisWeek(idea, color)
+    setAddedNames((current) => [...current, idea.name])
+  }
 
   return (
     <section className="space-y-2">
@@ -39,20 +47,35 @@ export function IdeaCards({
           </p>
         ) : (
           <ul className="grid grid-cols-2 gap-3 pb-2">
-            {ideas.map((idea, index) => (
-              <IdeaCard
-                key={idea.name}
-                idea={idea}
-                color={IDEA_COLORS[index % IDEA_COLORS.length]}
-              />
-            ))}
+            {ideas.map((idea, index) => {
+              const color = IDEA_COLORS[index % IDEA_COLORS.length]
+              return (
+                <IdeaCard
+                  key={idea.name}
+                  idea={idea}
+                  color={color}
+                  added={addedNames.includes(idea.name)}
+                  onAdd={() => add(idea, color)}
+                />
+              )
+            })}
           </ul>
         ))}
     </section>
   )
 }
 
-function IdeaCard({ idea, color }: { idea: RecipeIdea; color: string }) {
+function IdeaCard({
+  idea,
+  color,
+  added,
+  onAdd,
+}: {
+  idea: RecipeIdea
+  color: string
+  added: boolean
+  onAdd: () => void
+}) {
   const extras = idea.extraIngredients
 
   return (
@@ -75,9 +98,9 @@ function IdeaCard({ idea, color }: { idea: RecipeIdea; color: string }) {
               )}
             </p>
           </div>
-          <Button size="sm" className="w-full" disabled>
-            <PlusIcon />
-            Add to recipes
+          <Button size="sm" className="w-full" disabled={added} onClick={onAdd}>
+            {added ? <CheckIcon /> : <PlusIcon />}
+            {added ? 'Added' : 'Add to recipes'}
           </Button>
         </div>
       </div>
