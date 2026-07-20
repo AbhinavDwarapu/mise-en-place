@@ -1,5 +1,6 @@
-import { XIcon } from 'lucide-react'
+import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
+import { fetchSubstituteSuggestions } from '../../boundary/suggestions-api'
 import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient } from '../../types'
 import { Badge } from '@/shared/ui/badge'
@@ -17,6 +18,33 @@ export function IngredientSubstitutionsField({
     (state) => state.removeSubstitution
   )
   const [draft, setDraft] = useState('')
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [suggesting, setSuggesting] = useState(false)
+  const [suggestionsFailed, setSuggestionsFailed] = useState(false)
+
+  const remainingSuggestions = suggestions.filter(
+    (suggestion) =>
+      !ingredient.substitutions.some(
+        (existing) => existing.toLowerCase() === suggestion.toLowerCase()
+      )
+  )
+
+  const suggest = async () => {
+    setSuggesting(true)
+    setSuggestionsFailed(false)
+    try {
+      setSuggestions(
+        await fetchSubstituteSuggestions(
+          ingredient.name,
+          ingredient.substitutions
+        )
+      )
+    } catch {
+      setSuggestionsFailed(true)
+    } finally {
+      setSuggesting(false)
+    }
+  }
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -27,7 +55,19 @@ export function IngredientSubstitutionsField({
 
   return (
     <section className="space-y-2">
-      <Label htmlFor="substitute-input">Substitutes</Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor="substitute-input">Substitutes</Label>
+        <Button
+          type="button"
+          variant="ghost"
+          size="xs"
+          onClick={suggest}
+          disabled={suggesting}
+        >
+          <SparklesIcon />
+          {suggesting ? 'Suggesting…' : 'Suggest'}
+        </Button>
+      </div>
       {ingredient.substitutions.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {ingredient.substitutions.map((substitute) => (
@@ -44,6 +84,30 @@ export function IngredientSubstitutionsField({
             </Badge>
           ))}
         </div>
+      )}
+      {remainingSuggestions.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-muted-foreground">Suggested:</span>
+          {remainingSuggestions.map((suggestion) => (
+            <Badge
+              key={suggestion}
+              variant="outline"
+              render={
+                <button
+                  type="button"
+                  onClick={() => addSubstitution(ingredient.id, suggestion)}
+                />
+              }
+              className="cursor-pointer hover:bg-muted"
+            >
+              <PlusIcon />
+              {suggestion}
+            </Badge>
+          ))}
+        </div>
+      )}
+      {suggestionsFailed && (
+        <p className="text-xs text-destructive">Couldn't get suggestions</p>
       )}
       <form onSubmit={submit} className="flex gap-2">
         <Input
