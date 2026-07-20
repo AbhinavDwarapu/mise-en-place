@@ -86,6 +86,10 @@ classDiagram
     categories: IngredientCategory by normalized name
   }
 
+  class SubstituteSuggestionsCache {
+    suggestions: string[] by normalized name
+  }
+
   Ingredient "1" *-- "1" Quantity : quantity
   ShoppingListItem "1" *-- "1" Quantity : quantity
   Recipe "1" *-- "*" RecipeIngredient : ingredients
@@ -106,10 +110,16 @@ classDiagram
 - **Quantity's `unit`** is free text (`g`, `bag`, `tub`).
 - **`substitutions`** are free-text names ("frozen spinach", "kale"), not
   links to other `Ingredient` records. An ingredient can list a substitute
-  that is not in the kitchen. The backend's `suggestions` service can
-  recommend 2–3 substitutes through an LLM, but a suggestion is ephemeral
-  UI until the user taps it — tapping adds it through the same
-  `addSubstitution` path as a typed entry, so the model never gains a
+  that is not in the kitchen. The backend's `suggestions` service
+  recommends 2–3 substitutes through an LLM, fetched automatically each
+  time the ingredient sheet opens. Results are cached per normalized
+  ingredient name in `SubstituteSuggestionsCache`
+  (`groceries/state/substitute-suggestions-store.ts`, persisted as
+  `substitute-suggestions-v1`), so a reopened sheet shows the previous set
+  instantly while the fresh call is in flight — and keeps it when the call
+  fails or the device is offline. A suggestion only becomes ingredient data
+  when the user taps it — tapping adds it through the same
+  `addSubstitution` path as a typed entry, so `Ingredient` never gains a
   "suggested" state.
 - **`RecipeIngredientSource`** is a tagged union, not a class with both
   fields present at once:

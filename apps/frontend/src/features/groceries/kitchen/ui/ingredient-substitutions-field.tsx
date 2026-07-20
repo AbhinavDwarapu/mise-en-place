@@ -1,5 +1,5 @@
 import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { fetchSubstituteSuggestions } from '../../boundary/suggestions-api'
 import { normalizeIngredientName } from '../../logic/categories'
 import { useKitchenStore } from '../../state/kitchen-store'
@@ -27,7 +27,7 @@ export function IngredientSubstitutionsField({
     (state) => state.setSuggestions
   )
   const [draft, setDraft] = useState('')
-  const [suggesting, setSuggesting] = useState(false)
+  const [suggesting, setSuggesting] = useState(true)
   const [suggestionsFailed, setSuggestionsFailed] = useState(false)
 
   const remainingSuggestions = suggestions.filter(
@@ -37,22 +37,32 @@ export function IngredientSubstitutionsField({
       )
   )
 
-  const suggest = async () => {
+  const requestSuggestions = useCallback(
+    (name: string, existing: string[]) =>
+      fetchSubstituteSuggestions(name, existing)
+        .then((fetched) => {
+          setSuggestions(name, fetched)
+          setSuggestionsFailed(false)
+        })
+        .catch(() => setSuggestionsFailed(true))
+        .finally(() => setSuggesting(false)),
+    [setSuggestions]
+  )
+
+  const ingredientName = ingredient.name
+  useEffect(() => {
+    const existing =
+      useKitchenStore
+        .getState()
+        .ingredients.find((item) => item.name === ingredientName)
+        ?.substitutions ?? []
+    requestSuggestions(ingredientName, existing)
+  }, [ingredientName, requestSuggestions])
+
+  const suggestNow = () => {
     setSuggesting(true)
     setSuggestionsFailed(false)
-    try {
-      setSuggestions(
-        ingredient.name,
-        await fetchSubstituteSuggestions(
-          ingredient.name,
-          ingredient.substitutions
-        )
-      )
-    } catch {
-      setSuggestionsFailed(true)
-    } finally {
-      setSuggesting(false)
-    }
+    requestSuggestions(ingredient.name, ingredient.substitutions)
   }
 
   const submit = (event: FormEvent) => {
@@ -70,7 +80,7 @@ export function IngredientSubstitutionsField({
           type="button"
           variant="ghost"
           size="xs"
-          onClick={suggest}
+          onClick={suggestNow}
           disabled={suggesting}
         >
           <SparklesIcon />
