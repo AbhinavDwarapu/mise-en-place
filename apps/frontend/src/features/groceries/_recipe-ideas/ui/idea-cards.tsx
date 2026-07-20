@@ -1,6 +1,6 @@
 import { CheckIcon, PlusIcon } from 'lucide-react'
-import { useState } from 'react'
 import type { RecipeIdea } from '../../boundary/suggestions-api'
+import { useGroceryStore } from '../../state/grocery-store'
 import { addIdeaToThisWeek } from '../state/add-idea'
 import { useRecipeIdeas } from '../state/use-recipe-ideas'
 import { Button } from '@/shared/ui/button'
@@ -15,12 +15,10 @@ export function IdeaCards({
   kitchenNames: string[]
 }) {
   const { ideas, status, refresh } = useRecipeIdeas(selectedNames, kitchenNames)
-  const [addedNames, setAddedNames] = useState<string[]>([])
+  const recipes = useGroceryStore((state) => state.recipes)
 
-  const add = (idea: RecipeIdea, color: string) => {
-    addIdeaToThisWeek(idea, color)
-    setAddedNames((current) => [...current, idea.name])
-  }
+  const alreadyAdded = (idea: RecipeIdea) =>
+    recipes.some((recipe) => recipe.name === idea.name)
 
   return (
     <section className="space-y-2">
@@ -54,8 +52,8 @@ export function IdeaCards({
                   key={idea.name}
                   idea={idea}
                   color={color}
-                  added={addedNames.includes(idea.name)}
-                  onAdd={() => add(idea, color)}
+                  added={alreadyAdded(idea)}
+                  onAdd={() => addIdeaToThisWeek(idea, color)}
                 />
               )
             })}

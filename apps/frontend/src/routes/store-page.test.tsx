@@ -2,19 +2,23 @@ import { cleanup, render, screen, waitFor, within } from '@testing-library/react
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { useKitchenStore, useShoppingListStore } from '@/features/groceries'
+import { useGroceryStore } from '@/features/groceries'
 import { useStoreSessionStore } from '@/features/groceries/_store-mode'
 import { fetchCategories } from '@/features/groceries/boundary/suggestions-api'
 import { useCategoryCacheStore } from '@/features/groceries/state/category-cache-store'
-import { COUNT_UNIT } from '@/features/groceries/state/kitchen-constants'
+import { COUNT_UNIT } from '@/features/groceries/state/grocery-constants'
 import { StorePage } from './store-page'
 
 vi.mock('@/features/groceries/boundary/suggestions-api')
 
 beforeEach(() => {
   localStorage.clear()
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState({ items: [] })
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
+  useGroceryStore.setState({
+    items: useGroceryStore
+      .getState()
+      .items.filter((item) => item.location === 'kitchen'),
+  })
   useStoreSessionStore.setState(useStoreSessionStore.getInitialState(), true)
   useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
   vi.mocked(fetchCategories).mockReset().mockResolvedValue({})
@@ -23,7 +27,19 @@ beforeEach(() => {
 afterEach(cleanup)
 
 function addListItem(name: string, quantity = { amount: 1, unit: COUNT_UNIT }) {
-  return useShoppingListStore.getState().addItem(name, quantity)
+  return useGroceryStore.getState().addItem(name, 'shopping-list', quantity)
+}
+
+function listItems() {
+  return useGroceryStore
+    .getState()
+    .items.filter((item) => item.location === 'shopping-list')
+}
+
+function kitchenItems() {
+  return useGroceryStore
+    .getState()
+    .items.filter((item) => item.location === 'kitchen')
 }
 
 function renderStorePage() {
@@ -188,9 +204,7 @@ describe('alternatives', () => {
     await user.click(screen.getByRole('button', { name: 'kale' }))
 
     expect(screen.getByText('kale')).toBeInTheDocument()
-    expect(useShoppingListStore.getState().items).toEqual([
-      { ...spinach, name: 'kale' },
-    ])
+    expect(listItems()).toEqual([{ ...spinach, name: 'kale' }])
   })
 
   it('undoes a swap, restoring the original name', async () => {
@@ -213,8 +227,8 @@ describe('alternatives', () => {
 
   it('follows the item to its new aisle when a swap changes category', async () => {
     const user = userEvent.setup()
-    const basil = useKitchenStore.getState().addIngredient('Basil')
-    useKitchenStore.getState().addSubstitution(basil.id, 'frozen basil')
+    const basil = useGroceryStore.getState().addItem('Basil', 'kitchen')
+    useGroceryStore.getState().addSubstitution(basil.id, 'frozen basil')
     addListItem('Basil')
     addListItem('Tomatoes')
     renderStorePage()
@@ -257,11 +271,12 @@ describe('completing the shop', () => {
     const pecorino = addListItem('Pecorino', { amount: 200, unit: 'g' })
     addListItem('Milk')
     addListItem('Bread')
-    useKitchenStore.getState().addRecipeIngredient(
-      'rec-taco-night',
-      { kind: 'shopping-list', shoppingListItemId: pecorino.id },
-      { amount: 150, unit: 'g' }
-    )
+    useGroceryStore
+      .getState()
+      .addRecipeIngredient('rec-taco-night', pecorino.id, {
+        amount: 150,
+        unit: 'g',
+      })
     renderStorePage()
 
     await user.click(screen.getByRole('checkbox', { name: 'Pecorino' }))
@@ -269,21 +284,18 @@ describe('completing the shop', () => {
     await user.click(screen.getByRole('button', { name: 'Skip Bread' }))
     await user.click(screen.getByRole('button', { name: 'Complete shop' }))
 
-    const remainingNames = useShoppingListStore
-      .getState()
-      .items.map((item) => item.name)
-    expect(remainingNames).toEqual(['Milk', 'Bread'])
+    expect(listItems().map((item) => item.name)).toEqual(['Milk', 'Bread'])
 
-    const boughtPecorino = useKitchenStore
-      .getState()
-      .ingredients.find((ingredient) => ingredient.name === 'Pecorino')!
+    const boughtPecorino = kitchenItems().find(
+      (item) => item.name === 'Pecorino'
+    )!
     expect(boughtPecorino.quantity).toEqual({ amount: 200, unit: 'g' })
 
-    const tacoNight = useKitchenStore
+    const tacoNight = useGroceryStore
       .getState()
       .recipes.find((recipe) => recipe.id === 'rec-taco-night')!
     expect(tacoNight.ingredients).toContainEqual({
-      source: { kind: 'kitchen', ingredientId: boughtPecorino.id },
+      itemId: boughtPecorino.id,
       needed: { amount: 150, unit: 'g' },
     })
 
@@ -299,12 +311,12 @@ describe('completing the shop', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Baby spinach' }))
     await user.click(screen.getByRole('button', { name: 'Complete shop' }))
 
-    const spinachIngredients = useKitchenStore
-      .getState()
-      .ingredients.filter((ingredient) => ingredient.name === 'Baby spinach')
-    expect(spinachIngredients).toHaveLength(1)
-    expect(spinachIngredients[0].id).toBe('ing-baby-spinach')
-    expect(useShoppingListStore.getState().items).toEqual([])
+    const spinachItems = kitchenItems().filter(
+      (item) => item.name === 'Baby spinach'
+    )
+    expect(spinachItems).toHaveLength(1)
+    expect(spinachItems[0].id).toBe('ing-baby-spinach')
+    expect(listItems()).toEqual([])
   })
 })
 

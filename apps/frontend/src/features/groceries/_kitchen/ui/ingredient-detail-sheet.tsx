@@ -1,4 +1,6 @@
-import type { Ingredient } from '../../types'
+import { categoryFor } from '../../logic/categories'
+import { useCategoryCacheStore } from '../../state/category-cache-store'
+import type { GroceryItem } from '../../types'
 import { Button } from '@/shared/ui/button'
 import {
   Drawer,
@@ -17,7 +19,7 @@ import { IngredientSubstitutionsField } from './ingredient-substitutions-field'
 import { IngredientUsedByList } from './ingredient-used-by-list'
 
 interface IngredientDetailSheetProps {
-  ingredient: Ingredient | null
+  ingredient: GroceryItem | null
   onClose: () => void
 }
 
@@ -25,6 +27,8 @@ export function IngredientDetailSheet({
   ingredient,
   onClose,
 }: IngredientDetailSheetProps) {
+  const categories = useCategoryCacheStore((state) => state.categories)
+
   return (
     <Drawer
       open={ingredient !== null}
@@ -39,7 +43,7 @@ export function IngredientDetailSheet({
             <DrawerHeader>
               <DrawerTitle>{ingredient.name}</DrawerTitle>
               <DrawerDescription className="capitalize">
-                {ingredient.category}
+                {categoryFor(ingredient.name, categories)}
               </DrawerDescription>
             </DrawerHeader>
 

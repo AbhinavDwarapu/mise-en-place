@@ -1,12 +1,12 @@
 import { MinusIcon, PlusIcon } from 'lucide-react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import type { Recipe } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
 export function RecipeServingsField({ recipe }: { recipe: Recipe }) {
-  const updateRecipe = useKitchenStore((state) => state.updateRecipe)
+  const updateRecipe = useGroceryStore((state) => state.updateRecipe)
 
   const setServings = (servings: number) =>
     updateRecipe(recipe.id, { servings })

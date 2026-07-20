@@ -1,12 +1,12 @@
-import { useState, type FormEvent } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useState, type SubmitEvent } from 'react'
+import { useGroceryStore } from '../../state/grocery-store'
 import { Button } from '@/shared/ui/button'
 
 export function AddRecipeInput() {
-  const addRecipe = useKitchenStore((state) => state.addRecipe)
+  const addRecipe = useGroceryStore((state) => state.addRecipe)
   const [name, setName] = useState('')
 
-  const submit = (event: FormEvent) => {
+  const submit = (event: SubmitEvent) => {
     event.preventDefault()
     if (name.trim() === '') return
     addRecipe(name)

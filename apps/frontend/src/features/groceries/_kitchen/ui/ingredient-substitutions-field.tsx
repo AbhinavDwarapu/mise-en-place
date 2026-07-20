@@ -1,8 +1,8 @@
 import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useState, type SubmitEvent } from 'react'
+import { useGroceryStore } from '../../state/grocery-store'
 import { useSubstituteSuggestions } from '../../state/use-substitute-suggestions'
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
@@ -11,10 +11,10 @@ import { Label } from '@/shared/ui/label'
 export function IngredientSubstitutionsField({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
-  const addSubstitution = useKitchenStore((state) => state.addSubstitution)
-  const removeSubstitution = useKitchenStore(
+  const addSubstitution = useGroceryStore((state) => state.addSubstitution)
+  const removeSubstitution = useGroceryStore(
     (state) => state.removeSubstitution
   )
   const { suggestions, status, refresh } = useSubstituteSuggestions(ingredient)
@@ -27,7 +27,7 @@ export function IngredientSubstitutionsField({
       )
   )
 
-  const submit = (event: FormEvent) => {
+  const submit = (event: SubmitEvent) => {
     event.preventDefault()
     if (draft.trim() === '') return
     addSubstitution(ingredient.id, draft)

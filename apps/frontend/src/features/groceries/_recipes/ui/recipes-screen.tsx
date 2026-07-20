@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import { AddRecipeInput } from './add-recipe-input'
 import { RecipeDetailSheet } from './recipe-detail-sheet'
 import { RecipeList } from './recipe-list'
 
 export function RecipesScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const recipes = useKitchenStore((state) => state.recipes)
+  const recipes = useGroceryStore((state) => state.recipes)
   const selected = recipes.find((recipe) => recipe.id === selectedId) ?? null
 
   return (

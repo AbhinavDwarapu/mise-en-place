@@ -1,49 +1,18 @@
 import { XIcon } from 'lucide-react'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import {
-  useShoppingListStore,
-  type ShoppingListItem,
-} from '../../state/shopping-list-store'
-import type { Ingredient, Quantity, Recipe, RecipeIngredient } from '../../types'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { Quantity, Recipe } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 
-function sourceKey(entry: RecipeIngredient): string {
-  return entry.source.kind === 'kitchen'
-    ? `kitchen:${entry.source.ingredientId}`
-    : `shopping-list:${entry.source.shoppingListItemId}`
-}
-
-function resolveName(
-  entry: RecipeIngredient,
-  ingredients: Ingredient[],
-  shoppingListItems: ShoppingListItem[]
-): string {
-  const source = entry.source
-  if (source.kind === 'kitchen') {
-    const ingredientId = source.ingredientId
-    return (
-      ingredients.find((ingredient) => ingredient.id === ingredientId)
-        ?.name ?? 'Unknown ingredient'
-    )
-  }
-  const shoppingListItemId = source.shoppingListItemId
-  return (
-    shoppingListItems.find((item) => item.id === shoppingListItemId)?.name ??
-    'Unknown item'
-  )
-}
-
 export function RecipeIngredientList({ recipe }: { recipe: Recipe }) {
-  const ingredients = useKitchenStore((state) => state.ingredients)
-  const shoppingListItems = useShoppingListStore((state) => state.items)
-  const updateQuantity = useKitchenStore(
+  const items = useGroceryStore((state) => state.items)
+  const updateQuantity = useGroceryStore(
     (state) => state.updateRecipeIngredientQuantity
   )
-  const removeIngredient = useKitchenStore(
+  const removeIngredient = useGroceryStore(
     (state) => state.removeRecipeIngredient
   )
 
@@ -55,29 +24,25 @@ export function RecipeIngredientList({ recipe }: { recipe: Recipe }) {
       ) : (
         <ul className="divide-y divide-border rounded-3xl border">
           {recipe.ingredients.map((entry) => {
-            const name = resolveName(entry, ingredients, shoppingListItems)
+            const item = items.find((candidate) => candidate.id === entry.itemId)
+            const name = item?.name ?? 'Unknown item'
+            const inKitchen = item?.location === 'kitchen'
             return (
-              <li key={sourceKey(entry)} className="space-y-2 px-3 py-2.5">
+              <li key={entry.itemId} className="space-y-2 px-3 py-2.5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-1.5">
                     <p className="truncate text-sm font-medium text-foreground">
                       {name}
                     </p>
-                    <Badge
-                      variant={
-                        entry.source.kind === 'kitchen' ? 'secondary' : 'outline'
-                      }
-                    >
-                      {entry.source.kind === 'kitchen'
-                        ? 'In kitchen'
-                        : 'On list'}
+                    <Badge variant={inKitchen ? 'secondary' : 'outline'}>
+                      {inKitchen ? 'In kitchen' : 'On list'}
                     </Badge>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon-xs"
                     aria-label={`Remove ${name}`}
-                    onClick={() => removeIngredient(recipe.id, entry.source)}
+                    onClick={() => removeIngredient(recipe.id, entry.itemId)}
                   >
                     <XIcon />
                   </Button>
@@ -94,7 +59,7 @@ export function RecipeIngredientList({ recipe }: { recipe: Recipe }) {
                       const amount = Number(event.target.value)
                       if (Number.isFinite(amount) && amount >= 0) {
                         const needed: Quantity = { ...entry.needed, amount }
-                        updateQuantity(recipe.id, entry.source, needed)
+                        updateQuantity(recipe.id, entry.itemId, needed)
                       }
                     }}
                   />
@@ -111,7 +76,7 @@ export function RecipeIngredientList({ recipe }: { recipe: Recipe }) {
                         ...entry.needed,
                         unit: unit.trim() === '' ? COUNT_UNIT : unit,
                       }
-                      updateQuantity(recipe.id, entry.source, needed)
+                      updateQuantity(recipe.id, entry.itemId, needed)
                     }}
                   />
                 </div>

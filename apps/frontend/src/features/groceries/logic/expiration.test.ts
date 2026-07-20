@@ -1,34 +1,41 @@
 import { describe, expect, it } from 'vitest'
-import type { Ingredient } from '../types'
+import type { GroceryItem } from '../types'
 import {
-  daysToMs,
   daysUntilExpiry,
-  expiresAfterMsForDate,
   expiresAt,
   expiryDateInputValue,
+  expiryFromDateInput,
+  expiryFromDays,
   expiryLabel,
 } from './expiration'
 
-const spinach: Ingredient = {
+const spinach: GroceryItem = {
   id: 'ing-1',
   name: 'Baby spinach',
-  category: 'produce',
+  location: 'kitchen',
   quantity: { amount: 1, unit: 'bag' },
-  expiresAfterMs: daysToMs(5),
+  expiresAtIso: '2026-07-15T12:00:00.000Z',
   addedAtIso: '2026-07-10T12:00:00.000Z',
   substitutions: [],
 }
 
-const salt: Ingredient = {
+const salt: GroceryItem = {
   ...spinach,
   id: 'ing-2',
   name: 'Salt',
-  category: 'pantry',
-  expiresAfterMs: null,
+  expiresAtIso: null,
 }
 
+describe('expiryFromDays', () => {
+  it('lands the given number of days after the start instant', () => {
+    expect(expiryFromDays(spinach.addedAtIso, 5)).toBe(
+      '2026-07-15T12:00:00.000Z'
+    )
+  })
+})
+
 describe('expiresAt', () => {
-  it('adds the expiry window to the added date', () => {
+  it('reads the stored expiry instant', () => {
     expect(expiresAt(spinach)).toEqual(new Date('2026-07-15T12:00:00.000Z'))
   })
 
@@ -72,10 +79,10 @@ describe('expiryDateInputValue', () => {
   })
 })
 
-describe('expiresAfterMsForDate', () => {
+describe('expiryFromDateInput', () => {
   it('round-trips a chosen expiry date back through expiryDateInputValue', () => {
-    const expiresAfterMs = expiresAfterMsForDate(spinach.addedAtIso, '2026-08-01')
-    expect(expiryDateInputValue({ ...spinach, expiresAfterMs })).toBe(
+    const expiresAtIso = expiryFromDateInput('2026-08-01')
+    expect(expiryDateInputValue({ ...spinach, expiresAtIso })).toBe(
       '2026-08-01'
     )
   })

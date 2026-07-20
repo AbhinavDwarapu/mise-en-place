@@ -1,12 +1,13 @@
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 
 export function alternativesFor(
   itemName: string,
-  ingredients: Ingredient[]
+  items: GroceryItem[]
 ): string[] {
   const normalized = itemName.trim().toLowerCase()
-  const match = ingredients.find(
-    (ingredient) => ingredient.name.toLowerCase() === normalized
+  const match = items.find(
+    (item) =>
+      item.location === 'kitchen' && item.name.toLowerCase() === normalized
   )
   return match?.substitutions ?? []
 }

@@ -1,17 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { daysToMs } from '../../logic/expiration'
-import type { Ingredient } from '../../types'
+import { expiryFromDays } from '../../logic/expiration'
+import type { GroceryItem } from '../../types'
 import { expiringFirst, shortExpiryLabel } from './expiring-first'
 
 const now = new Date('2026-07-10T12:00:00.000Z')
 
-function ingredient(name: string, expiresInDays: number | null): Ingredient {
+function ingredient(name: string, expiresInDays: number | null): GroceryItem {
   return {
     id: name,
     name,
-    category: 'produce',
+    location: 'kitchen',
     quantity: { amount: 1, unit: 'x' },
-    expiresAfterMs: expiresInDays === null ? null : daysToMs(expiresInDays),
+    expiresAtIso:
+      expiresInDays === null
+        ? null
+        : expiryFromDays(now.toISOString(), expiresInDays),
     addedAtIso: now.toISOString(),
     substitutions: [],
   }

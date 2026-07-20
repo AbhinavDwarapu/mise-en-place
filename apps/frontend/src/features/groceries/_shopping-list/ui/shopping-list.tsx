@@ -1,16 +1,15 @@
 import { MinusIcon, PlusIcon, XIcon } from 'lucide-react'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import {
-  useShoppingListStore,
-  type ShoppingListItem,
-} from '../../state/shopping-list-store'
+import { COUNT_UNIT } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 
 export function ShoppingList() {
-  const items = useShoppingListStore((state) => state.items)
+  const items = useGroceryStore((state) => state.items)
+  const listItems = items.filter((item) => item.location === 'shopping-list')
 
-  if (items.length === 0) {
+  if (listItems.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-muted-foreground">
         Your shopping list is empty. Add your first item above.
@@ -20,26 +19,26 @@ export function ShoppingList() {
 
   return (
     <ul className="divide-y divide-border">
-      {items.map((item) => (
+      {listItems.map((item) => (
         <ShoppingListRow key={item.id} item={item} />
       ))}
     </ul>
   )
 }
 
-function ShoppingListRow({ item }: { item: ShoppingListItem }) {
-  const updateItemQuantity = useShoppingListStore(
-    (state) => state.updateItemQuantity
-  )
-  const removeItem = useShoppingListStore((state) => state.removeItem)
+function ShoppingListRow({ item }: { item: GroceryItem }) {
+  const updateItem = useGroceryStore((state) => state.updateItem)
+  const deleteItem = useGroceryStore((state) => state.deleteItem)
 
   const setAmount = (amount: number) =>
-    updateItemQuantity(item.id, { ...item.quantity, amount })
+    updateItem(item.id, { quantity: { ...item.quantity, amount } })
 
   const setUnit = (unit: string) =>
-    updateItemQuantity(item.id, {
-      ...item.quantity,
-      unit: unit.trim() === '' ? COUNT_UNIT : unit,
+    updateItem(item.id, {
+      quantity: {
+        ...item.quantity,
+        unit: unit.trim() === '' ? COUNT_UNIT : unit,
+      },
     })
 
   return (
@@ -89,7 +88,7 @@ function ShoppingListRow({ item }: { item: ShoppingListItem }) {
           variant="ghost"
           size="icon-sm"
           aria-label={`Remove ${item.name}`}
-          onClick={() => removeItem(item.id)}
+          onClick={() => deleteItem(item.id)}
         >
           <XIcon />
         </Button>

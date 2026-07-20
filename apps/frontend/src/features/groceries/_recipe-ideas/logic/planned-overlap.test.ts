@@ -1,28 +1,28 @@
 import { describe, expect, it } from 'vitest'
-import type { Ingredient, Recipe } from '../../types'
+import type { GroceryItem, Recipe } from '../../types'
 import { plannedOverlaps } from './planned-overlap'
 
-function ingredient(id: string, name: string): Ingredient {
+function ingredient(id: string, name: string): GroceryItem {
   return {
     id,
     name,
-    category: 'produce',
+    location: 'kitchen',
     quantity: { amount: 1, unit: 'x' },
-    expiresAfterMs: null,
+    expiresAtIso: null,
     addedAtIso: '2026-07-10T12:00:00.000Z',
     substitutions: [],
   }
 }
 
-function recipe(id: string, name: string, ingredientIds: string[]): Recipe {
+function recipe(id: string, name: string, itemIds: string[]): Recipe {
   return {
     id,
     name,
     color: '#94a3b8',
     servings: 2,
     cookingThisWeek: false,
-    ingredients: ingredientIds.map((ingredientId) => ({
-      source: { kind: 'kitchen' as const, ingredientId },
+    ingredients: itemIds.map((itemId) => ({
+      itemId,
       needed: { amount: 1, unit: 'unit' },
     })),
   }

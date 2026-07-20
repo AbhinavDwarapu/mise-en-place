@@ -1,52 +1,37 @@
 import { useState, type ReactNode } from 'react'
-import { searchIngredientSources } from '../../logic/ingredient-picker'
+import { searchGroceryItems } from '../../logic/item-search'
 import { recipesUsing } from '../../logic/recipe-usage'
-import { COUNT_UNIT } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import {
-  useShoppingListStore,
-  type ShoppingListItem,
-} from '../../state/shopping-list-store'
-import type { Ingredient, RecipeIngredientSource } from '../../types'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Input } from '@/shared/ui/input'
 
-const DEFAULT_QUANTITY = { amount: 1, unit: COUNT_UNIT }
-
 export function AddShoppingListItemInput() {
   const [query, setQuery] = useState('')
-  const ingredients = useKitchenStore((state) => state.ingredients)
-  const recipes = useKitchenStore((state) => state.recipes)
-  const shoppingListItems = useShoppingListStore((state) => state.items)
-  const addItem = useShoppingListStore((state) => state.addItem)
-  const updateItemQuantity = useShoppingListStore(
-    (state) => state.updateItemQuantity
-  )
+  const items = useGroceryStore((state) => state.items)
+  const recipes = useGroceryStore((state) => state.recipes)
+  const addItem = useGroceryStore((state) => state.addItem)
+  const updateItem = useGroceryStore((state) => state.updateItem)
 
-  const results = searchIngredientSources(
-    query,
-    ingredients,
-    shoppingListItems
-  )
+  const results = searchGroceryItems(query, items)
   const hasResults =
-    results.haveMatches.length > 0 ||
-    results.onListMatches.length > 0 ||
+    results.inKitchen.length > 0 ||
+    results.onList.length > 0 ||
     results.canCreateNew
 
-  const neededBy = (source: RecipeIngredientSource) =>
-    recipesUsing(source, recipes)
+  const neededBy = (itemId: string) =>
+    recipesUsing(itemId, recipes)
       .map((recipe) => recipe.name)
       .join(', ')
 
-  const addFromKitchen = (ingredient: Ingredient) => {
-    addItem(ingredient.name, ingredient.quantity)
+  const addFromKitchen = (ingredient: GroceryItem) => {
+    addItem(ingredient.name, 'shopping-list', ingredient.quantity)
     setQuery('')
   }
 
-  const addMore = (item: ShoppingListItem) => {
-    updateItemQuantity(item.id, {
-      ...item.quantity,
-      amount: item.quantity.amount + 1,
+  const addMore = (item: GroceryItem) => {
+    updateItem(item.id, {
+      quantity: { ...item.quantity, amount: item.quantity.amount + 1 },
     })
     setQuery('')
   }
@@ -54,7 +39,7 @@ export function AddShoppingListItemInput() {
   const createNew = () => {
     const trimmed = query.trim()
     if (trimmed === '') return
-    addItem(trimmed, DEFAULT_QUANTITY)
+    addItem(trimmed, 'shopping-list')
     setQuery('')
   }
 
@@ -68,27 +53,21 @@ export function AddShoppingListItemInput() {
       />
       {query.trim() !== '' && hasResults && (
         <ul className="divide-y divide-border rounded-3xl border">
-          {results.haveMatches.map((ingredient) => (
+          {results.inKitchen.map((ingredient) => (
             <SearchRow
               key={ingredient.id}
               name={ingredient.name}
               badge={<Badge variant="secondary">In kitchen</Badge>}
-              neededBy={neededBy({
-                kind: 'kitchen',
-                ingredientId: ingredient.id,
-              })}
+              neededBy={neededBy(ingredient.id)}
               onSelect={() => addFromKitchen(ingredient)}
             />
           ))}
-          {results.onListMatches.map((item) => (
+          {results.onList.map((item) => (
             <SearchRow
               key={item.id}
               name={item.name}
               badge={<Badge variant="outline">On list</Badge>}
-              neededBy={neededBy({
-                kind: 'shopping-list',
-                shoppingListItemId: item.id,
-              })}
+              neededBy={neededBy(item.id)}
               onSelect={() => addMore(item)}
             />
           ))}

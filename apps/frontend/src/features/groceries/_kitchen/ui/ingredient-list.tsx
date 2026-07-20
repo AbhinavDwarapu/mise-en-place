@@ -1,15 +1,20 @@
+import { groupByCategory } from '../../logic/categories'
 import { daysUntilExpiry, expiryLabel } from '../../logic/expiration'
 import { formatQuantity } from '../../logic/quantity'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
-import { groupIngredientsByCategory } from '../logic/group-by-category'
+import { useGroceryStore } from '../../state/grocery-store'
+import { useLlmCategories } from '../../state/use-llm-categories'
+import type { GroceryItem } from '../../types'
 
 export function IngredientList({
   onSelect,
 }: {
   onSelect: (id: string) => void
 }) {
-  const ingredients = useKitchenStore((state) => state.ingredients)
+  const items = useGroceryStore((state) => state.items)
+  const ingredients = items.filter((item) => item.location === 'kitchen')
+  const categoryFor = useLlmCategories(
+    ingredients.map((ingredient) => ingredient.name)
+  )
 
   if (ingredients.length === 0) {
     return (
@@ -19,7 +24,7 @@ export function IngredientList({
     )
   }
 
-  const groups = groupIngredientsByCategory(ingredients)
+  const groups = groupByCategory(ingredients, categoryFor)
 
   return (
     <div>
@@ -29,7 +34,7 @@ export function IngredientList({
             {group.category}
           </h2>
           <ul className="divide-y divide-border">
-            {group.ingredients.map((ingredient) => (
+            {group.items.map((ingredient) => (
               <IngredientRow
                 key={ingredient.id}
                 ingredient={ingredient}
@@ -47,7 +52,7 @@ function IngredientRow({
   ingredient,
   onSelect,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
   onSelect: () => void
 }) {
   const label = expiryLabel(daysUntilExpiry(ingredient))

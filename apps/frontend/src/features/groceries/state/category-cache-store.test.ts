@@ -15,9 +15,9 @@ describe('category cache store', () => {
       .getState()
       .setCategories({ '  Dragon Fruit ': 'produce' })
 
-    expect(useCategoryCacheStore.getState().categories).toEqual({
-      'dragon fruit': 'produce',
-    })
+    expect(useCategoryCacheStore.getState().categories['dragon fruit']).toBe(
+      'produce'
+    )
   })
 
   it('merges new answers over existing ones', () => {
@@ -26,9 +26,16 @@ describe('category cache store', () => {
     setCategories({ halloumi: 'other' })
     setCategories({ halloumi: 'dairy', 'oat milk': 'dairy' })
 
-    expect(useCategoryCacheStore.getState().categories).toEqual({
-      halloumi: 'dairy',
-      'oat milk': 'dairy',
-    })
+    const { categories } = useCategoryCacheStore.getState()
+    expect(categories.halloumi).toBe('dairy')
+    expect(categories['oat milk']).toBe('dairy')
+  })
+
+  it('starts seeded with the demo kitchen categories keywords would miss', () => {
+    const { categories } = useCategoryCacheStore.getState()
+
+    expect(categories['coffee beans']).toBe('other')
+    expect(categories['vanilla ice cream']).toBe('frozen')
+    expect(categories['frozen mixed berries']).toBe('frozen')
   })
 })

@@ -1,14 +1,23 @@
 import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { useKitchenStore } from '../../state/kitchen-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
-import { RecipesScreen } from './recipes-screen'
+import { useGroceryStore } from '../state/grocery-store'
+import { RecipesScreen } from './ui/recipes-screen'
+
+function listItems() {
+  return useGroceryStore
+    .getState()
+    .items.filter((item) => item.location === 'shopping-list')
+}
 
 beforeEach(() => {
   localStorage.clear()
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState({ items: [] })
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
+  useGroceryStore.setState({
+    items: useGroceryStore
+      .getState()
+      .items.filter((item) => item.location === 'kitchen'),
+  })
 })
 
 afterEach(cleanup)
@@ -66,9 +75,9 @@ describe('editing a recipe', () => {
   })
 
   it('adds an ingredient already on the shopping list', async () => {
-    useShoppingListStore
+    useGroceryStore
       .getState()
-      .addItem('Pecorino', { amount: 80, unit: 'g' })
+      .addItem('Pecorino', 'shopping-list', { amount: 80, unit: 'g' })
     const user = userEvent.setup()
     await openDetailSheet(user, /Green smoothies/)
 
@@ -78,7 +87,7 @@ describe('editing a recipe', () => {
     await user.click(screen.getByRole('button', { name: /Pecorino/ }))
 
     expect(screen.getByText('On list')).toBeInTheDocument()
-    expect(useShoppingListStore.getState().items).toHaveLength(1)
+    expect(listItems()).toHaveLength(1)
   })
 
   it('creates a new shopping-list item for an ingredient not yet known', async () => {
@@ -89,9 +98,7 @@ describe('editing a recipe', () => {
     await user.click(screen.getByRole('button', { name: /Create new/ }))
 
     expect(screen.getByText('On list')).toBeInTheDocument()
-    expect(
-      useShoppingListStore.getState().items.map((item) => item.name)
-    ).toContain('Pecorino')
+    expect(listItems().map((item) => item.name)).toContain('Pecorino')
   })
 
   it('updates the quantity for an ingredient', async () => {

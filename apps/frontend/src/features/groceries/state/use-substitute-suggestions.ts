@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { fetchSubstituteSuggestions } from '../boundary/suggestions-api'
 import { normalizeIngredientName } from '../logic/categories'
-import type { Ingredient } from '../types'
+import type { GroceryItem } from '../types'
 
 export type SubstituteSuggestions = {
   suggestions: string[]
@@ -16,7 +16,7 @@ export function clearSubstituteSuggestionsCache() {
 }
 
 export function useSubstituteSuggestions(
-  ingredient: Ingredient
+  ingredient: GroceryItem
 ): SubstituteSuggestions {
   const cacheKey = normalizeIngredientName(ingredient.name)
   const [suggestions, setSuggestions] = useState(

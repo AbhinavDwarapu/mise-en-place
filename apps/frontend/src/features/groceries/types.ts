@@ -12,22 +12,20 @@ export type IngredientCategory =
   | 'pantry'
   | 'other'
 
-export interface Ingredient {
+export type GroceryLocation = 'kitchen' | 'shopping-list'
+
+export interface GroceryItem {
   id: string
   name: string
-  category: IngredientCategory
+  location: GroceryLocation
   quantity: Quantity
-  expiresAfterMs: number | null
+  expiresAtIso: string | null
   addedAtIso: string
   substitutions: string[]
 }
 
-export type RecipeIngredientSource =
-  | { kind: 'kitchen'; ingredientId: string }
-  | { kind: 'shopping-list'; shoppingListItemId: string }
-
 export interface RecipeIngredient {
-  source: RecipeIngredientSource
+  itemId: string
   needed: Quantity
 }
 
@@ -41,7 +39,7 @@ export interface Recipe {
   notes?: string
 }
 
-export interface KitchenData {
-  ingredients: Ingredient[]
+export interface GroceryData {
+  items: GroceryItem[]
   recipes: Recipe[]
 }

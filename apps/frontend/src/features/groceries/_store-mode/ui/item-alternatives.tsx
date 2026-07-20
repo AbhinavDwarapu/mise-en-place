@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { ShoppingListItem } from '../../state/shopping-list-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { alternativesFor } from '../logic/alternatives'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { Button } from '@/shared/ui/button'
@@ -10,26 +9,26 @@ export function ItemAlternatives({
   item,
   onSwapped,
 }: {
-  item: ShoppingListItem
+  item: GroceryItem
   onSwapped: (name: string) => void
 }) {
-  const ingredients = useKitchenStore((state) => state.ingredients)
-  const renameItem = useShoppingListStore((state) => state.renameItem)
+  const items = useGroceryStore((state) => state.items)
+  const updateItem = useGroceryStore((state) => state.updateItem)
   const swappedFrom = useStoreSessionStore((state) => state.swaps[item.id])
   const recordSwap = useStoreSessionStore((state) => state.recordSwap)
   const clearSwap = useStoreSessionStore((state) => state.clearSwap)
   const [open, setOpen] = useState(false)
-  const alternatives = alternativesFor(item.name, ingredients)
+  const alternatives = alternativesFor(item.name, items)
 
   const swapTo = (substitute: string) => {
     recordSwap(item.id, item.name)
-    renameItem(item.id, substitute)
+    updateItem(item.id, { name: substitute })
     setOpen(false)
     onSwapped(substitute)
   }
 
   const undoSwap = () => {
-    renameItem(item.id, swappedFrom)
+    updateItem(item.id, { name: swappedFrom })
     clearSwap(item.id)
     onSwapped(swappedFrom)
   }

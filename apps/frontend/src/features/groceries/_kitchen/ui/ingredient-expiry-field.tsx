@@ -1,13 +1,13 @@
 import {
-  daysToMs,
   daysUntilExpiry,
-  expiresAfterMsForDate,
   expiryDateInputValue,
+  expiryFromDateInput,
+  expiryFromDays,
   expiryLabel,
 } from '../../logic/expiration'
-import { EXPIRY_PRESETS_DAYS } from '../../state/kitchen-constants'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { EXPIRY_PRESETS_DAYS } from '../../state/grocery-constants'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
@@ -15,9 +15,9 @@ import { Label } from '@/shared/ui/label'
 export function IngredientExpiryField({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
-  const updateIngredient = useKitchenStore((state) => state.updateIngredient)
+  const updateItem = useGroceryStore((state) => state.updateItem)
   const expiryStatus = expiryLabel(daysUntilExpiry(ingredient))
 
   return (
@@ -29,27 +29,28 @@ export function IngredientExpiryField({
         )}
       </div>
       <div className="flex flex-wrap gap-2">
-        {EXPIRY_PRESETS_DAYS.map((days) => (
-          <Button
-            key={days}
-            size="sm"
-            variant={
-              ingredient.expiresAfterMs === daysToMs(days)
-                ? 'default'
-                : 'outline'
-            }
-            onClick={() =>
-              updateIngredient(ingredient.id, { expiresAfterMs: daysToMs(days) })
-            }
-          >
-            {days}d
-          </Button>
-        ))}
+        {EXPIRY_PRESETS_DAYS.map((days) => {
+          const presetIso = expiryFromDays(ingredient.addedAtIso, days)
+          return (
+            <Button
+              key={days}
+              size="sm"
+              variant={
+                ingredient.expiresAtIso === presetIso ? 'default' : 'outline'
+              }
+              onClick={() =>
+                updateItem(ingredient.id, { expiresAtIso: presetIso })
+              }
+            >
+              {days}d
+            </Button>
+          )
+        })}
         <Button
           size="sm"
-          variant={ingredient.expiresAfterMs === null ? 'default' : 'outline'}
+          variant={ingredient.expiresAtIso === null ? 'default' : 'outline'}
           onClick={() =>
-            updateIngredient(ingredient.id, { expiresAfterMs: null })
+            updateItem(ingredient.id, { expiresAtIso: null })
           }
         >
           Never
@@ -61,11 +62,8 @@ export function IngredientExpiryField({
         value={expiryDateInputValue(ingredient)}
         onChange={(event) => {
           if (event.target.value === '') return
-          updateIngredient(ingredient.id, {
-            expiresAfterMs: expiresAfterMsForDate(
-              ingredient.addedAtIso,
-              event.target.value
-            ),
+          updateItem(ingredient.id, {
+            expiresAtIso: expiryFromDateInput(event.target.value),
           })
         }}
       />

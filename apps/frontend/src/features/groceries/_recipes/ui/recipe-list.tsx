@@ -1,4 +1,4 @@
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import type { Recipe } from '../../types'
 
 export function RecipeList({
@@ -6,7 +6,7 @@ export function RecipeList({
 }: {
   onSelect: (id: string) => void
 }) {
-  const recipes = useKitchenStore((state) => state.recipes)
+  const recipes = useGroceryStore((state) => state.recipes)
 
   if (recipes.length === 0) {
     return (

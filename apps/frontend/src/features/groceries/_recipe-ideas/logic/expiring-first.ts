@@ -1,14 +1,14 @@
 import { daysUntilExpiry } from '../../logic/expiration'
-import type { Ingredient } from '../../types'
+import type { GroceryItem } from '../../types'
 
 const EXPIRING_SOON_DAYS = 7
 const NEVER_EXPIRES = Number.MAX_SAFE_INTEGER
 
 export function expiringFirst(
-  ingredients: Ingredient[],
+  items: GroceryItem[],
   now: Date = new Date()
-): Ingredient[] {
-  return [...ingredients].sort(
+): GroceryItem[] {
+  return [...items].sort(
     (a, b) =>
       (daysUntilExpiry(a, now) ?? NEVER_EXPIRES) -
       (daysUntilExpiry(b, now) ?? NEVER_EXPIRES)

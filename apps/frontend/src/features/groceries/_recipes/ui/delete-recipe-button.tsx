@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useKitchenStore } from '../../state/kitchen-store'
+import { useGroceryStore } from '../../state/grocery-store'
 import type { Recipe } from '../../types'
 import {
   AlertDialog,
@@ -21,7 +21,7 @@ export function DeleteRecipeButton({
   recipe: Recipe
   onDeleted: () => void
 }) {
-  const deleteRecipe = useKitchenStore((state) => state.deleteRecipe)
+  const deleteRecipe = useGroceryStore((state) => state.deleteRecipe)
   const [open, setOpen] = useState(false)
 
   const confirmDelete = () => {

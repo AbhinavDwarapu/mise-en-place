@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { useShoppingListStore } from '../../state/shopping-list-store'
+import { groupByCategory } from '../../logic/categories'
+import { useGroceryStore } from '../../state/grocery-store'
 import { useLlmCategories } from '../../state/use-llm-categories'
 import type { IngredientCategory } from '../../types'
-import { groupItemsByAisle, pendingCount } from '../logic/aisles'
+import { pendingCount } from '../logic/aisles'
 import { useStoreSessionStore } from '../state/store-session-store'
 import { AisleTabs } from './aisle-tabs'
 import { CompleteShopButton } from './complete-shop-button'
@@ -10,13 +11,14 @@ import { LoyaltyCardStrip } from './loyalty-card-strip'
 import { StoreItemRow } from './store-item-row'
 
 export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
-  const items = useShoppingListStore((state) => state.items)
+  const items = useGroceryStore((state) => state.items)
   const statuses = useStoreSessionStore((state) => state.statuses)
   const [selectedCategory, setSelectedCategory] =
     useState<IngredientCategory | null>(null)
 
-  const categoryFor = useLlmCategories(items.map((item) => item.name))
-  const aisles = groupItemsByAisle(items, categoryFor)
+  const listItems = items.filter((item) => item.location === 'shopping-list')
+  const categoryFor = useLlmCategories(listItems.map((item) => item.name))
+  const aisles = groupByCategory(listItems, categoryFor)
   const fallbackCategory =
     aisles.find((aisle) => pendingCount(aisle.items, statuses) > 0)?.category ??
     aisles[0]?.category

@@ -1,17 +1,16 @@
 import { formatQuantity } from '../../logic/quantity'
 import { quantityNeeded, recipesUsing } from '../../logic/recipe-usage'
-import { useKitchenStore } from '../../state/kitchen-store'
-import type { Ingredient } from '../../types'
+import { useGroceryStore } from '../../state/grocery-store'
+import type { GroceryItem } from '../../types'
 import { Label } from '@/shared/ui/label'
 
 export function IngredientUsedByList({
   ingredient,
 }: {
-  ingredient: Ingredient
+  ingredient: GroceryItem
 }) {
-  const recipes = useKitchenStore((state) => state.recipes)
-  const source = { kind: 'kitchen' as const, ingredientId: ingredient.id }
-  const usedBy = recipesUsing(source, recipes)
+  const recipes = useGroceryStore((state) => state.recipes)
+  const usedBy = recipesUsing(ingredient.id, recipes)
 
   if (usedBy.length === 0) return null
 
@@ -20,7 +19,7 @@ export function IngredientUsedByList({
       <Label>Used by</Label>
       <ul className="divide-y divide-border rounded-3xl border">
         {usedBy.map((recipe) => {
-          const needed = quantityNeeded(recipe, source)
+          const needed = quantityNeeded(recipe, ingredient.id)
           return (
             <li key={recipe.id} className="flex items-center gap-2.5 px-3 py-2.5">
               <span

@@ -1,27 +1,24 @@
-import dayjs from 'dayjs'
-import duration from 'dayjs/plugin/duration'
-import type { Ingredient } from '../types'
+import type { GroceryItem } from '../types'
 
-dayjs.extend(duration)
+const DAY_MS = 86_400_000
 
-export function daysToMs(days: number): number {
-  return dayjs.duration(days, 'day').asMilliseconds()
+export function expiryFromDays(fromIso: string, days: number): string {
+  return new Date(new Date(fromIso).getTime() + days * DAY_MS).toISOString()
 }
 
-export function expiresAt(ingredient: Ingredient): Date | null {
-  if (ingredient.expiresAfterMs === null) return null
-  return dayjs(ingredient.addedAtIso)
-    .add(ingredient.expiresAfterMs, 'millisecond')
-    .toDate()
+export function expiresAt(item: GroceryItem): Date | null {
+  return item.expiresAtIso === null
+    ? null
+    : new Date(item.expiresAtIso)
 }
 
 export function daysUntilExpiry(
-  ingredient: Ingredient,
+  item: GroceryItem,
   now: Date = new Date()
 ): number | null {
-  const expiry = expiresAt(ingredient)
+  const expiry = expiresAt(item)
   if (expiry === null) return null
-  return Math.ceil(dayjs(expiry).diff(now, 'day', true))
+  return Math.ceil((expiry.getTime() - now.getTime()) / DAY_MS)
 }
 
 export function expiryLabel(daysLeft: number | null): string | null {
@@ -31,14 +28,14 @@ export function expiryLabel(daysLeft: number | null): string | null {
   return `Exp ~${daysLeft}d`
 }
 
-export function expiryDateInputValue(ingredient: Ingredient): string {
-  const expiry = expiresAt(ingredient)
-  return expiry === null ? '' : dayjs(expiry).format('YYYY-MM-DD')
+export function expiryDateInputValue(item: GroceryItem): string {
+  const expiry = expiresAt(item)
+  if (expiry === null) return ''
+  const pad = (value: number) => String(value).padStart(2, '0')
+  return `${expiry.getFullYear()}-${pad(expiry.getMonth() + 1)}-${pad(expiry.getDate())}`
 }
 
-export function expiresAfterMsForDate(
-  addedAtIso: string,
-  expiryDateInput: string
-): number {
-  return dayjs(expiryDateInput).diff(dayjs(addedAtIso), 'millisecond')
+export function expiryFromDateInput(dateInput: string): string {
+  const [year, month, day] = dateInput.split('-').map(Number)
+  return new Date(year, month - 1, day).toISOString()
 }

@@ -2,15 +2,14 @@ import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { fetchRecipeIdeas } from '../../boundary/suggestions-api'
-import { daysToMs } from '../../logic/expiration'
-import { useKitchenStore } from '../../state/kitchen-store'
-import { useShoppingListStore } from '../../state/shopping-list-store'
-import { clearRecipeIdeasCache } from '../state/use-recipe-ideas'
+import { fetchRecipeIdeas } from '../boundary/suggestions-api'
+import { expiryFromDays } from '../logic/expiration'
+import { useGroceryStore } from '../state/grocery-store'
+import { clearRecipeIdeasCache } from './state/use-recipe-ideas'
 import { HomePage } from '@/routes/home-page'
 import { IdeasPage } from '@/routes/ideas-page'
 
-vi.mock('../../boundary/suggestions-api')
+vi.mock('../boundary/suggestions-api')
 
 const saag = {
   name: 'Saag-style greens',
@@ -25,20 +24,23 @@ const flatbreads = {
 }
 
 function seedKitchen() {
-  const kitchen = useKitchenStore.getState()
-  const spinach = kitchen.addIngredient('Spinach')
-  kitchen.updateIngredient(spinach.id, { expiresAfterMs: daysToMs(2) })
-  const yogurt = kitchen.addIngredient('Yogurt')
-  kitchen.updateIngredient(yogurt.id, { expiresAfterMs: daysToMs(4) })
-  const salt = kitchen.addIngredient('Salt')
-  kitchen.updateIngredient(salt.id, { expiresAfterMs: null })
+  const store = useGroceryStore.getState()
+  const spinach = store.addItem('Spinach', 'kitchen')
+  store.updateItem(spinach.id, {
+    expiresAtIso: expiryFromDays(spinach.addedAtIso, 2),
+  })
+  const yogurt = store.addItem('Yogurt', 'kitchen')
+  store.updateItem(yogurt.id, {
+    expiresAtIso: expiryFromDays(yogurt.addedAtIso, 4),
+  })
+  const salt = store.addItem('Salt', 'kitchen')
+  store.updateItem(salt.id, { expiresAtIso: null })
 }
 
 beforeEach(() => {
   localStorage.clear()
-  useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useKitchenStore.setState({ ingredients: [], recipes: [] })
-  useShoppingListStore.setState({ items: [] })
+  useGroceryStore.setState(useGroceryStore.getInitialState(), true)
+  useGroceryStore.setState({ items: [], recipes: [] })
   clearRecipeIdeasCache()
   vi.mocked(fetchRecipeIdeas).mockReset().mockResolvedValue([saag, flatbreads])
   seedKitchen()
@@ -88,7 +90,7 @@ describe('reaching recipe ideas', () => {
 
   it('reveals the rest of the kitchen behind the more chip', async () => {
     for (let index = 1; index <= 6; index += 1) {
-      useKitchenStore.getState().addIngredient(`Extra ${index}`)
+      useGroceryStore.getState().addItem(`Extra ${index}`, 'kitchen')
     }
     const user = userEvent.setup()
     renderApp('/ideas')
@@ -142,16 +144,13 @@ describe('exploring ideas', () => {
 
 describe('already planned recipes', () => {
   it('points at an existing recipe using a selected ingredient and plans it', async () => {
-    const kitchen = useKitchenStore.getState()
-    const spinach = kitchen.ingredients.find(
-      (entry) => entry.name === 'Spinach'
-    )!
-    const frittata = kitchen.addRecipe('Sat. frittata')
-    kitchen.addRecipeIngredient(
-      frittata.id,
-      { kind: 'kitchen', ingredientId: spinach.id },
-      { amount: 1, unit: 'unit' }
-    )
+    const store = useGroceryStore.getState()
+    const spinach = store.items.find((entry) => entry.name === 'Spinach')!
+    const frittata = store.addRecipe('Sat. frittata')
+    store.addRecipeIngredient(frittata.id, spinach.id, {
+      amount: 1,
+      unit: 'unit',
+    })
     const user = userEvent.setup()
     renderApp('/ideas')
 
@@ -171,7 +170,7 @@ describe('already planned recipes', () => {
       screen.queryByRole('button', { name: 'Add to this week' })
     ).not.toBeInTheDocument()
     expect(
-      useKitchenStore
+      useGroceryStore
         .getState()
         .recipes.find((entry) => entry.id === frittata.id)?.cookingThisWeek
     ).toBe(true)
