@@ -26,6 +26,23 @@ export async function fetchSubstituteSuggestions(
   return substitutes
 }
 
+export interface RecipeIdea {
+  name: string
+  usedIngredients: string[]
+  extraIngredients: string[]
+}
+
+export async function fetchRecipeIdeas(
+  selected: string[],
+  kitchen: string[]
+): Promise<RecipeIdea[]> {
+  const { ideas } = await post<{ ideas: RecipeIdea[] }>('/suggestions/recipes', {
+    selected,
+    kitchen,
+  })
+  return ideas
+}
+
 export async function fetchCategories(
   names: string[]
 ): Promise<Record<string, IngredientCategory>> {
