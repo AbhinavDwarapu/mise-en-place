@@ -1,7 +1,9 @@
 import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { fetchSubstituteSuggestions } from '../../boundary/suggestions-api'
+import { normalizeIngredientName } from '../../logic/categories'
 import { useKitchenStore } from '../../state/kitchen-store'
+import { useSubstituteSuggestionsStore } from '../../state/substitute-suggestions-store'
 import type { Ingredient } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -17,8 +19,14 @@ export function IngredientSubstitutionsField({
   const removeSubstitution = useKitchenStore(
     (state) => state.removeSubstitution
   )
+  const suggestions =
+    useSubstituteSuggestionsStore(
+      (state) => state.suggestions[normalizeIngredientName(ingredient.name)]
+    ) ?? []
+  const setSuggestions = useSubstituteSuggestionsStore(
+    (state) => state.setSuggestions
+  )
   const [draft, setDraft] = useState('')
-  const [suggestions, setSuggestions] = useState<string[]>([])
   const [suggesting, setSuggesting] = useState(false)
   const [suggestionsFailed, setSuggestionsFailed] = useState(false)
 
@@ -34,6 +42,7 @@ export function IngredientSubstitutionsField({
     setSuggestionsFailed(false)
     try {
       setSuggestions(
+        ingredient.name,
         await fetchSubstituteSuggestions(
           ingredient.name,
           ingredient.substitutions
