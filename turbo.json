@@ -2,6 +2,7 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "globalPassThroughEnv": ["JAVA_HOME", "ANDROID_HOME", "ANDROID_SDK_ROOT"],
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
