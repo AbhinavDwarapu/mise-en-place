@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { daysToMs } from '../logic/expiration'
+import { expiryFromDays } from '../logic/expiration'
 import {
   COUNT_UNIT,
   DEFAULT_EXPIRY_DAYS,
@@ -45,8 +45,8 @@ describe('addIngredient', () => {
     expect(ingredient.name).toBe('Baby spinach')
     expect(ingredient.category).toBe('produce')
     expect(ingredient.quantity).toEqual({ amount: 1, unit: COUNT_UNIT })
-    expect(ingredient.expiresAfterMs).toBe(
-      daysToMs(DEFAULT_EXPIRY_DAYS.produce!)
+    expect(ingredient.expiresAtIso).toBe(
+      expiryFromDays(now.toISOString(), DEFAULT_EXPIRY_DAYS.produce!)
     )
     expect(ingredient.addedAtIso).toBe(now.toISOString())
     expect(ingredient.substitutions).toEqual([])
@@ -60,8 +60,8 @@ describe('addIngredient', () => {
   })
 
   it('leaves shelf-stable categories without an expiry', () => {
-    expect(addIngredient('Olive oil').expiresAfterMs).toBeNull()
-    expect(addIngredient('Mystery paste').expiresAfterMs).toBeNull()
+    expect(addIngredient('Olive oil').expiresAtIso).toBeNull()
+    expect(addIngredient('Mystery paste').expiresAtIso).toBeNull()
   })
 })
 
@@ -71,12 +71,12 @@ describe('updateIngredient', () => {
 
     useKitchenStore.getState().updateIngredient(ingredient.id, {
       quantity: { amount: 2, unit: 'bag' },
-      expiresAfterMs: daysToMs(3),
+      expiresAtIso: '2026-07-22T12:00:00.000Z',
     })
 
     const updated = findIngredient(ingredient.id)!
     expect(updated.quantity).toEqual({ amount: 2, unit: 'bag' })
-    expect(updated.expiresAfterMs).toBe(daysToMs(3))
+    expect(updated.expiresAtIso).toBe('2026-07-22T12:00:00.000Z')
     expect(updated.name).toBe('Baby spinach')
   })
 

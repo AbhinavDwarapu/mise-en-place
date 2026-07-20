@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fetchRecipeIdeas } from '../../boundary/suggestions-api'
-import { daysToMs } from '../../logic/expiration'
+import { expiryFromDays } from '../../logic/expiration'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { useShoppingListStore } from '../../state/shopping-list-store'
 import { clearRecipeIdeasCache } from '../state/use-recipe-ideas'
@@ -27,11 +27,15 @@ const flatbreads = {
 function seedKitchen() {
   const kitchen = useKitchenStore.getState()
   const spinach = kitchen.addIngredient('Spinach')
-  kitchen.updateIngredient(spinach.id, { expiresAfterMs: daysToMs(2) })
+  kitchen.updateIngredient(spinach.id, {
+    expiresAtIso: expiryFromDays(spinach.addedAtIso, 2),
+  })
   const yogurt = kitchen.addIngredient('Yogurt')
-  kitchen.updateIngredient(yogurt.id, { expiresAfterMs: daysToMs(4) })
+  kitchen.updateIngredient(yogurt.id, {
+    expiresAtIso: expiryFromDays(yogurt.addedAtIso, 4),
+  })
   const salt = kitchen.addIngredient('Salt')
-  kitchen.updateIngredient(salt.id, { expiresAfterMs: null })
+  kitchen.updateIngredient(salt.id, { expiresAtIso: null })
 }
 
 beforeEach(() => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { daysToMs } from '../../logic/expiration'
+import { expiryFromDays } from '../../logic/expiration'
 import type { Ingredient } from '../../types'
 import { expiringFirst, shortExpiryLabel } from './expiring-first'
 
@@ -11,7 +11,10 @@ function ingredient(name: string, expiresInDays: number | null): Ingredient {
     name,
     category: 'produce',
     quantity: { amount: 1, unit: 'x' },
-    expiresAfterMs: expiresInDays === null ? null : daysToMs(expiresInDays),
+    expiresAtIso:
+      expiresInDays === null
+        ? null
+        : expiryFromDays(now.toISOString(), expiresInDays),
     addedAtIso: now.toISOString(),
     substitutions: [],
   }

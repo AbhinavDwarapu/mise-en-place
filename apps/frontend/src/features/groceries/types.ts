@@ -17,7 +17,7 @@ export interface Ingredient {
   name: string
   category: IngredientCategory
   quantity: Quantity
-  expiresAfterMs: number | null
+  expiresAtIso: string | null
   addedAtIso: string
   substitutions: string[]
 }

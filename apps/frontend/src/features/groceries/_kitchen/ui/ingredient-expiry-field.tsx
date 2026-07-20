@@ -1,8 +1,8 @@
 import {
-  daysToMs,
   daysUntilExpiry,
-  expiresAfterMsForDate,
   expiryDateInputValue,
+  expiryFromDateInput,
+  expiryFromDays,
   expiryLabel,
 } from '../../logic/expiration'
 import { EXPIRY_PRESETS_DAYS } from '../../state/kitchen-constants'
@@ -29,27 +29,28 @@ export function IngredientExpiryField({
         )}
       </div>
       <div className="flex flex-wrap gap-2">
-        {EXPIRY_PRESETS_DAYS.map((days) => (
-          <Button
-            key={days}
-            size="sm"
-            variant={
-              ingredient.expiresAfterMs === daysToMs(days)
-                ? 'default'
-                : 'outline'
-            }
-            onClick={() =>
-              updateIngredient(ingredient.id, { expiresAfterMs: daysToMs(days) })
-            }
-          >
-            {days}d
-          </Button>
-        ))}
+        {EXPIRY_PRESETS_DAYS.map((days) => {
+          const presetIso = expiryFromDays(ingredient.addedAtIso, days)
+          return (
+            <Button
+              key={days}
+              size="sm"
+              variant={
+                ingredient.expiresAtIso === presetIso ? 'default' : 'outline'
+              }
+              onClick={() =>
+                updateIngredient(ingredient.id, { expiresAtIso: presetIso })
+              }
+            >
+              {days}d
+            </Button>
+          )
+        })}
         <Button
           size="sm"
-          variant={ingredient.expiresAfterMs === null ? 'default' : 'outline'}
+          variant={ingredient.expiresAtIso === null ? 'default' : 'outline'}
           onClick={() =>
-            updateIngredient(ingredient.id, { expiresAfterMs: null })
+            updateIngredient(ingredient.id, { expiresAtIso: null })
           }
         >
           Never
@@ -62,10 +63,7 @@ export function IngredientExpiryField({
         onChange={(event) => {
           if (event.target.value === '') return
           updateIngredient(ingredient.id, {
-            expiresAfterMs: expiresAfterMsForDate(
-              ingredient.addedAtIso,
-              event.target.value
-            ),
+            expiresAtIso: expiryFromDateInput(event.target.value),
           })
         }}
       />

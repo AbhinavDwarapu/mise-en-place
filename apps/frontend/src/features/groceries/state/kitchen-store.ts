@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { inferCategory } from '../logic/categories'
-import { daysToMs } from '../logic/expiration'
+import { expiryFromDays } from '../logic/expiration'
 import { sourceEquals } from '../logic/recipe-usage'
 import type {
   Ingredient,
@@ -65,14 +65,17 @@ export const useKitchenStore = create<KitchenStore>()(
       addIngredient: (name) => {
         const category = inferCategory(name)
         const defaultExpiryDays = DEFAULT_EXPIRY_DAYS[category]
+        const addedAtIso = new Date().toISOString()
         const ingredient: Ingredient = {
           id: crypto.randomUUID(),
           name: name.trim(),
           category,
           quantity: { amount: 1, unit: COUNT_UNIT },
-          expiresAfterMs:
-            defaultExpiryDays === null ? null : daysToMs(defaultExpiryDays),
-          addedAtIso: new Date().toISOString(),
+          expiresAtIso:
+            defaultExpiryDays === null
+              ? null
+              : expiryFromDays(addedAtIso, defaultExpiryDays),
+          addedAtIso,
           substitutions: [],
         }
         set((state) => ({ ingredients: [...state.ingredients, ingredient] }))

@@ -23,7 +23,7 @@ classDiagram
     name: string
     category: IngredientCategory
     quantity: Quantity
-    expiresAfterMs: number | null
+    expiresAtIso: string | null
     addedAtIso: string
     substitutions: string[]
   }
@@ -105,8 +105,11 @@ classDiagram
 
 ## Semantics the diagram cannot show
 
-- **Expiry** is a duration, not a date: an ingredient expires at
-  `addedAtIso + expiresAfterMs`. `null` means it never expires.
+- **Expiry** is an absolute instant: an ingredient expires at
+  `expiresAtIso`, and `null` means it never expires. The preset chips
+  ("expires after buying") compute it from `addedAtIso` plus a
+  per-category number of days; the date input stores the picked date
+  directly.
 - **Quantity's `unit`** is free text (`g`, `bag`, `tub`).
 - **`substitutions`** are free-text names ("frozen spinach", "kale"), not
   links to other `Ingredient` records. An ingredient can list a substitute

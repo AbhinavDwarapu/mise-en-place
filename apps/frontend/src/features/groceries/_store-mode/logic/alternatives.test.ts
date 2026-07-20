@@ -9,7 +9,7 @@ function ingredient(name: string, substitutions: string[] = []): Ingredient {
     name,
     category: 'produce',
     quantity: { amount: 1, unit: COUNT_UNIT },
-    expiresAfterMs: null,
+    expiresAtIso: null,
     addedAtIso: '2026-07-19T12:00:00.000Z',
     substitutions,
   }

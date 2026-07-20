@@ -8,7 +8,7 @@ function ingredient(id: string, category: Ingredient['category']): Ingredient {
     name: id,
     category,
     quantity: { amount: 1, unit: 'unit' },
-    expiresAfterMs: null,
+    expiresAtIso: null,
     addedAtIso: '2026-07-19T12:00:00.000Z',
     substitutions: [],
   }

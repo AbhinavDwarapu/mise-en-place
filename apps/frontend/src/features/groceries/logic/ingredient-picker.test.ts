@@ -9,7 +9,7 @@ const pecorinoRomano: Ingredient = {
   name: 'Pecorino romano',
   category: 'dairy',
   quantity: { amount: 80, unit: 'g' },
-  expiresAfterMs: null,
+  expiresAtIso: null,
   addedAtIso: '2026-07-18T09:00:00.000Z',
   substitutions: [],
 }
@@ -19,7 +19,7 @@ const blackPepper: Ingredient = {
   name: 'Black pepper',
   category: 'pantry',
   quantity: { amount: 1, unit: COUNT_UNIT },
-  expiresAfterMs: null,
+  expiresAtIso: null,
   addedAtIso: '2026-07-18T09:00:00.000Z',
   substitutions: [],
 }
