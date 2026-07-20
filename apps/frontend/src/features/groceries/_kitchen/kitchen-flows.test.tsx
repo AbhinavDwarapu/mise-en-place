@@ -10,13 +10,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   fetchCategories,
   fetchSubstituteSuggestions,
-} from '../../boundary/suggestions-api'
-import { useCategoryCacheStore } from '../../state/category-cache-store'
-import { useGroceryStore } from '../../state/grocery-store'
-import { clearSubstituteSuggestionsCache } from '../../state/use-substitute-suggestions'
-import { KitchenScreen } from './kitchen-screen'
+} from '../boundary/suggestions-api'
+import { useCategoryCacheStore } from '../state/category-cache-store'
+import { useGroceryStore } from '../state/grocery-store'
+import { clearSubstituteSuggestionsCache } from '../state/use-substitute-suggestions'
+import { KitchenScreen } from './ui/kitchen-screen'
 
-vi.mock('../../boundary/suggestions-api')
+vi.mock('../boundary/suggestions-api')
 
 beforeEach(() => {
   localStorage.clear()

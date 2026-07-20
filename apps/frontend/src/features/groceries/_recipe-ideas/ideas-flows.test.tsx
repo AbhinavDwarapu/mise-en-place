@@ -2,14 +2,14 @@ import { cleanup, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { fetchRecipeIdeas } from '../../boundary/suggestions-api'
-import { expiryFromDays } from '../../logic/expiration'
-import { useGroceryStore } from '../../state/grocery-store'
-import { clearRecipeIdeasCache } from '../state/use-recipe-ideas'
+import { fetchRecipeIdeas } from '../boundary/suggestions-api'
+import { expiryFromDays } from '../logic/expiration'
+import { useGroceryStore } from '../state/grocery-store'
+import { clearRecipeIdeasCache } from './state/use-recipe-ideas'
 import { HomePage } from '@/routes/home-page'
 import { IdeasPage } from '@/routes/ideas-page'
 
-vi.mock('../../boundary/suggestions-api')
+vi.mock('../boundary/suggestions-api')
 
 const saag = {
   name: 'Saag-style greens',
