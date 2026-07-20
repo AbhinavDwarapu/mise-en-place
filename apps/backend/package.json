@@ -11,7 +11,9 @@
     "testing": "encore test"
   },
   "dependencies": {
-    "encore.dev": "^1.57.11"
+    "ai": "^7.0.31",
+    "encore.dev": "^1.57.11",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",
