@@ -11,8 +11,8 @@ export function KitchenScreen() {
 
   return (
     <>
-      <IngredientList onSelect={setSelectedId} />
       <AddIngredientInput />
+      <IngredientList onSelect={setSelectedId} />
       <IngredientDetailSheet
         ingredient={selected}
         onClose={() => setSelectedId(null)}

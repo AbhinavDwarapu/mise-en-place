@@ -1,5 +1,5 @@
 import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import { useGroceryStore } from '../../state/grocery-store'
 import { useSubstituteSuggestions } from '../../state/use-substitute-suggestions'
 import type { GroceryItem } from '../../types'
@@ -27,7 +27,7 @@ export function IngredientSubstitutionsField({
       )
   )
 
-  const submit = (event: FormEvent) => {
+  const submit = (event: SubmitEvent) => {
     event.preventDefault()
     if (draft.trim() === '') return
     addSubstitution(ingredient.id, draft)
