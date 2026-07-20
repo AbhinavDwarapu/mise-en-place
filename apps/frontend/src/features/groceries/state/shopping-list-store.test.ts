@@ -5,7 +5,7 @@ import { useShoppingListStore } from './shopping-list-store'
 const now = new Date('2026-07-19T12:00:00Z')
 
 beforeEach(() => {
-  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useShoppingListStore.setState({ items: [] })
   vi.useFakeTimers()
   vi.setSystemTime(now)
 })

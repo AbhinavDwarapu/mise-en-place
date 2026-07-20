@@ -14,7 +14,7 @@ vi.mock('@/features/groceries/boundary/suggestions-api')
 beforeEach(() => {
   localStorage.clear()
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
-  useShoppingListStore.setState(useShoppingListStore.getInitialState(), true)
+  useShoppingListStore.setState({ items: [] })
   useStoreSessionStore.setState(useStoreSessionStore.getInitialState(), true)
   useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
   vi.mocked(fetchCategories).mockReset().mockResolvedValue({})
