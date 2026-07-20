@@ -1,6 +1,7 @@
 import { IonRouterOutlet } from '@ionic/react'
 import { Redirect, Route } from 'react-router-dom'
 import { AppTabBar } from './app-tab-bar'
+import { DevPage } from './dev-page'
 import { HomePage } from './home-page'
 import { IdeasPage } from './ideas-page'
 import { KitchenPage } from './kitchen-page'
@@ -12,6 +13,7 @@ export function AppTabs() {
     <div className="flex h-full w-full flex-col">
       <div className="relative flex-1 overflow-hidden">
         <IonRouterOutlet>
+          <Route exact path="/dev" component={DevPage} />
           <Route exact path="/home" component={HomePage} />
           <Route exact path="/ideas" component={IdeasPage} />
           <Route exact path="/kitchen" component={KitchenPage} />
