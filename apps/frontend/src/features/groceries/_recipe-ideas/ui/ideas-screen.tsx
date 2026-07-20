@@ -1,9 +1,10 @@
 import { CheckIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { daysUntilExpiry } from '../../logic/expiration'
 import { useKitchenStore } from '../../state/kitchen-store'
 import type { Ingredient } from '../../types'
 import { expiringFirst, shortExpiryLabel } from '../logic/expiring-first'
+import { IdeaCards } from './idea-cards'
 import { cn } from '@/shared/lib/utils'
 
 const VISIBLE_CHIPS = 8
@@ -13,6 +14,19 @@ export function IdeasScreen() {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [showAll, setShowAll] = useState(false)
 
+  const sorted = useMemo(() => expiringFirst(ingredients), [ingredients])
+  const selectedNames = useMemo(
+    () =>
+      sorted
+        .filter((ingredient) => selectedIds.includes(ingredient.id))
+        .map((ingredient) => ingredient.name),
+    [sorted, selectedIds]
+  )
+  const kitchenNames = useMemo(
+    () => sorted.map((ingredient) => ingredient.name),
+    [sorted]
+  )
+
   if (ingredients.length === 0) {
     return (
       <p className="px-4 py-8 text-center text-muted-foreground">
@@ -21,7 +35,6 @@ export function IdeasScreen() {
     )
   }
 
-  const sorted = expiringFirst(ingredients)
   const visible = showAll ? sorted : sorted.slice(0, VISIBLE_CHIPS)
   const hiddenCount = sorted.length - visible.length
 
@@ -55,6 +68,9 @@ export function IdeasScreen() {
           </li>
         )}
       </ul>
+      {selectedNames.length > 0 && (
+        <IdeaCards selectedNames={selectedNames} kitchenNames={kitchenNames} />
+      )}
     </div>
   )
 }
