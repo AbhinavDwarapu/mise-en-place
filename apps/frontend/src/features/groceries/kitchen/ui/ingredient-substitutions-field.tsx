@@ -1,9 +1,7 @@
 import { PlusIcon, SparklesIcon, XIcon } from 'lucide-react'
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { fetchSubstituteSuggestions } from '../../boundary/suggestions-api'
-import { normalizeIngredientName } from '../../logic/categories'
+import { useState, type FormEvent } from 'react'
 import { useKitchenStore } from '../../state/kitchen-store'
-import { useSubstituteSuggestionsStore } from '../../state/substitute-suggestions-store'
+import { useSubstituteSuggestions } from '../../state/use-substitute-suggestions'
 import type { Ingredient } from '../../types'
 import { Badge } from '@/shared/ui/badge'
 import { Button } from '@/shared/ui/button'
@@ -19,16 +17,8 @@ export function IngredientSubstitutionsField({
   const removeSubstitution = useKitchenStore(
     (state) => state.removeSubstitution
   )
-  const cachedSuggestions = useSubstituteSuggestionsStore(
-    (state) => state.suggestions[normalizeIngredientName(ingredient.name)]
-  )
-  const suggestions = cachedSuggestions ?? []
-  const setSuggestions = useSubstituteSuggestionsStore(
-    (state) => state.setSuggestions
-  )
+  const { suggestions, status, refresh } = useSubstituteSuggestions(ingredient)
   const [draft, setDraft] = useState('')
-  const [suggesting, setSuggesting] = useState(cachedSuggestions === undefined)
-  const [suggestionsFailed, setSuggestionsFailed] = useState(false)
 
   const remainingSuggestions = suggestions.filter(
     (suggestion) =>
@@ -36,35 +26,6 @@ export function IngredientSubstitutionsField({
         (existing) => existing.toLowerCase() === suggestion.toLowerCase()
       )
   )
-
-  const requestSuggestions = useCallback(
-    (name: string, existing: string[]) =>
-      fetchSubstituteSuggestions(name, existing)
-        .then((fetched) => {
-          setSuggestions(name, fetched)
-          setSuggestionsFailed(false)
-        })
-        .catch(() => setSuggestionsFailed(true))
-        .finally(() => setSuggesting(false)),
-    [setSuggestions]
-  )
-
-  const ingredientName = ingredient.name
-  const existingSubstitutions = ingredient.substitutions
-  useEffect(() => {
-    const alreadyCached =
-      useSubstituteSuggestionsStore.getState().suggestions[
-        normalizeIngredientName(ingredientName)
-      ] !== undefined
-    if (alreadyCached) return
-    requestSuggestions(ingredientName, existingSubstitutions)
-  }, [ingredientName, existingSubstitutions, requestSuggestions])
-
-  const suggestNow = () => {
-    setSuggesting(true)
-    setSuggestionsFailed(false)
-    requestSuggestions(ingredient.name, ingredient.substitutions)
-  }
 
   const submit = (event: FormEvent) => {
     event.preventDefault()
@@ -81,11 +42,11 @@ export function IngredientSubstitutionsField({
           type="button"
           variant="ghost"
           size="xs"
-          onClick={suggestNow}
-          disabled={suggesting}
+          onClick={refresh}
+          disabled={status === 'loading'}
         >
           <SparklesIcon />
-          {suggesting ? 'Suggesting…' : 'Suggest More'}
+          {status === 'loading' ? 'Suggesting…' : 'Suggest More'}
         </Button>
       </div>
       {ingredient.substitutions.length > 0 && (
@@ -126,7 +87,7 @@ export function IngredientSubstitutionsField({
           ))}
         </div>
       )}
-      {suggestionsFailed && (
+      {status === 'failed' && (
         <p className="text-xs text-destructive">Couldn't get suggestions</p>
       )}
       <form onSubmit={submit} className="flex gap-2">

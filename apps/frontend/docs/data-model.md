@@ -114,10 +114,11 @@ classDiagram
   recommends 2–3 substitutes through an LLM, fetched automatically when
   the ingredient sheet opens with nothing cached for that name. Results
   are cached per normalized ingredient name in `SubstituteSuggestionsCache`
-  (`groceries/state/substitute-suggestions-store.ts`, persisted as
-  `substitute-suggestions-v1`); a reopened sheet serves the cached set
-  as-is — no background refresh that would swap chips mid-view — and a new
-  fetch only happens on demand from the sheet's refresh action. A
+  (an in-memory map inside `groceries/state/use-substitute-suggestions.ts`,
+  living for the app session, not across restarts); a reopened sheet
+  serves the cached set as-is — no background refresh that would swap
+  chips mid-view — and a new fetch only happens on demand from the sheet's
+  refresh action. A
   suggestion only becomes ingredient data when the user taps it — tapping
   adds it through the same `addSubstitution` path as a typed entry, so
   `Ingredient` never gains a "suggested" state.

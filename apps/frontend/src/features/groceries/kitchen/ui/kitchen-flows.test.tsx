@@ -8,7 +8,7 @@ import {
 import { useCategoryCacheStore } from '../../state/category-cache-store'
 import { useKitchenStore } from '../../state/kitchen-store'
 import { useShoppingListStore } from '../../state/shopping-list-store'
-import { useSubstituteSuggestionsStore } from '../../state/substitute-suggestions-store'
+import { clearSubstituteSuggestionsCache } from '../../state/use-substitute-suggestions'
 import { KitchenScreen } from './kitchen-screen'
 
 vi.mock('../../boundary/suggestions-api')
@@ -18,10 +18,7 @@ beforeEach(() => {
   useKitchenStore.setState(useKitchenStore.getInitialState(), true)
   useShoppingListStore.setState({ items: [] })
   useCategoryCacheStore.setState(useCategoryCacheStore.getInitialState(), true)
-  useSubstituteSuggestionsStore.setState(
-    useSubstituteSuggestionsStore.getInitialState(),
-    true
-  )
+  clearSubstituteSuggestionsCache()
   vi.mocked(fetchSubstituteSuggestions).mockReset().mockResolvedValue([])
   vi.mocked(fetchCategories).mockReset().mockResolvedValue({})
 })
