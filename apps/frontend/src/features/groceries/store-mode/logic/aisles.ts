@@ -1,4 +1,3 @@
-import { inferCategory } from '../../logic/categories'
 import { INGREDIENT_CATEGORIES } from '../../state/kitchen-constants'
 import type { ShoppingListItem } from '../../state/shopping-list-store'
 import type { IngredientCategory } from '../../types'
@@ -9,10 +8,13 @@ export interface Aisle {
   items: ShoppingListItem[]
 }
 
-export function groupItemsByAisle(items: ShoppingListItem[]): Aisle[] {
+export function groupItemsByAisle(
+  items: ShoppingListItem[],
+  categoryFor: (name: string) => IngredientCategory
+): Aisle[] {
   return INGREDIENT_CATEGORIES.map((category) => ({
     category,
-    items: items.filter((item) => inferCategory(item.name) === category),
+    items: items.filter((item) => categoryFor(item.name) === category),
   })).filter((aisle) => aisle.items.length > 0)
 }
 

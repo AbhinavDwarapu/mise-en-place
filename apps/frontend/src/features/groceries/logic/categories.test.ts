@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { inferCategory } from './categories'
+import { categoryFor, inferCategory } from './categories'
 
 describe('inferCategory', () => {
   it('matches known keywords regardless of casing', () => {
@@ -21,5 +21,26 @@ describe('inferCategory', () => {
 
   it('falls back to other for unknown names', () => {
     expect(inferCategory('Mystery paste')).toBe('other')
+  })
+})
+
+describe('categoryFor', () => {
+  it('prefers the cached category over keyword inference', () => {
+    expect(categoryFor('Mystery paste', { 'mystery paste': 'pantry' })).toBe(
+      'pantry'
+    )
+    expect(categoryFor('Frozen peas', { 'frozen peas': 'produce' })).toBe(
+      'produce'
+    )
+  })
+
+  it('normalises the name before looking it up', () => {
+    expect(categoryFor('  Dragon Fruit ', { 'dragon fruit': 'produce' })).toBe(
+      'produce'
+    )
+  })
+
+  it('falls back to keyword inference on a cache miss', () => {
+    expect(categoryFor('Whole milk', {})).toBe('dairy')
   })
 })

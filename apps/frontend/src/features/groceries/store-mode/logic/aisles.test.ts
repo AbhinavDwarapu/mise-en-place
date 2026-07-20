@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { inferCategory } from '../../logic/categories'
 import { COUNT_UNIT } from '../../state/kitchen-constants'
 import type { ShoppingListItem } from '../../state/shopping-list-store'
 import { groupItemsByAisle, pendingCount } from './aisles'
@@ -19,7 +20,7 @@ const mysteryPaste = listItem('paste', 'Mystery paste')
 
 describe('groupItemsByAisle', () => {
   it('groups by inferred category in the fixed aisle order', () => {
-    const aisles = groupItemsByAisle([frozenPeas, milk, tomatoes])
+    const aisles = groupItemsByAisle([frozenPeas, milk, tomatoes], inferCategory)
 
     expect(aisles).toEqual([
       { category: 'produce', items: [tomatoes] },
@@ -29,19 +30,25 @@ describe('groupItemsByAisle', () => {
   })
 
   it('omits aisles with no items', () => {
-    const aisles = groupItemsByAisle([milk])
+    const aisles = groupItemsByAisle([milk], inferCategory)
 
     expect(aisles.map((aisle) => aisle.category)).toEqual(['dairy'])
   })
 
   it('puts unrecognised names in the other aisle', () => {
-    const aisles = groupItemsByAisle([mysteryPaste])
+    const aisles = groupItemsByAisle([mysteryPaste], inferCategory)
 
     expect(aisles).toEqual([{ category: 'other', items: [mysteryPaste] }])
   })
 
+  it('follows the provided lookup over keyword inference', () => {
+    const aisles = groupItemsByAisle([mysteryPaste], () => 'pantry')
+
+    expect(aisles).toEqual([{ category: 'pantry', items: [mysteryPaste] }])
+  })
+
   it('returns no aisles for an empty list', () => {
-    expect(groupItemsByAisle([])).toEqual([])
+    expect(groupItemsByAisle([], inferCategory)).toEqual([])
   })
 })
 

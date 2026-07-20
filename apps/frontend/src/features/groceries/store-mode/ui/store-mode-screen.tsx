@@ -15,7 +15,7 @@ export function StoreModeScreen({ onComplete }: { onComplete: () => void }) {
   const [selectedCategory, setSelectedCategory] =
     useState<IngredientCategory | null>(null)
 
-  const aisles = groupItemsByAisle(items)
+  const aisles = groupItemsByAisle(items, inferCategory)
   const fallbackCategory =
     aisles.find((aisle) => pendingCount(aisle.items, statuses) > 0)?.category ??
     aisles[0]?.category
