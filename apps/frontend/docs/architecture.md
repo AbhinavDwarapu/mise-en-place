@@ -11,22 +11,22 @@ The frontend (`apps/frontend/src`) is split into three areas. Every file has one
 ```
 apps/frontend/src/
 ├─ shared/      shadcn UI, helpers, clients for the outside world
-├─ features/    one folder per capability — can nest, see below
+├─ features/    one folder per capability (can nest, see below)
 └─ routes/      Ionic routing, page layouts, screen assembly
 ```
 
 | Area | Holds | Examples |
 | --- | --- | --- |
 | `shared/` | Feature-agnostic UI (`ui/`) and helpers (`lib/`). Never contains business types, stores, or domain logic. | `Button`, `cn` |
-| `features/*` | One folder per capability. A feature is the four segments below, child feature folders, or both — see "Nested features." | `groceries`, `groceries/kitchen`, `groceries/recipes`, `groceries/shopping-list` |
+| `features/*` | One folder per capability. A feature is the four segments below, child feature folders, or both. See "Nested features." | `groceries`, `groceries/kitchen`, `groceries/recipes`, `groceries/shopping-list` |
 | `routes/` | The route table, tabs, and page layouts. Imports whichever leaf feature(s) a screen needs. | route definitions, tab bar, page shells |
 
 ## Nested features
 
 A feature folder can hold child feature folders instead of (or alongside)
 its own segments. When two or more sibling features need the same store,
-business rule, or type, it moves up to their nearest common parent feature
-— not out to `shared/`. `shared/` is reserved for things with no domain
+business rule, or type, it moves up to their nearest common parent feature,
+not out to `shared/`. `shared/` is reserved for things with no domain
 knowledge at all (UI kit, generic helpers); it's never a place to put a
 type or store just because more than one feature reads it.
 
@@ -38,17 +38,17 @@ features/groceries/
 ├─ types.ts             Ingredient, Recipe, RecipeIngredientSource, ShoppingListItem, Quantity
 ├─ state/                kitchen-store.ts, shopping-list-store.ts, ...
 ├─ logic/                categories.ts, recipe-usage.ts, ingredient-picker.ts, ...
-├─ kitchen/               ui/ only — ingredient inventory screen
+├─ kitchen/               ui/ only: ingredient inventory screen
 │  └─ ui/
-├─ recipes/               ui/ only — recipe management + this-week strip
+├─ recipes/               ui/ only: recipe management + this-week strip
 │  └─ ui/
-└─ shopping-list/         ui/ only — shopping list screen
+└─ shopping-list/         ui/ only: shopping list screen
    └─ ui/
 ```
 
 `ingredient-picker.ts` is the clearest example of why this beats a flat
 `shared/`: it reads both `Ingredient` and `ShoppingListItem` to power
-search. It isn't owned by `kitchen` or `shopping-list` individually — it's
+search. It isn't owned by `kitchen` or `shopping-list` individually. It's
 owned by `groceries`, their common parent, where it sits next to the two
 stores it reads without either of *them* knowing about each other.
 
@@ -69,10 +69,10 @@ flowchart TD
 
 - `shared/` imports only `shared/`.
 - A feature may import its own ancestors' `state/`/`logic/`/`types.ts` (never their `ui/`) via relative path. This is the normal way a child reads the parent it lives in.
-- Sibling features — whether top-level (`kitchen` vs `shopping-list`) or nested (two children of the same parent) — never import each other, at any depth.
-- An ancestor must never import from a descendant. If a parent's store needed something from a child's `ui/`, that's a sign the file is in the wrong place — the dependency direction should never invert.
+- Sibling features, whether top-level (`kitchen` vs `shopping-list`) or nested (two children of the same parent), never import each other, at any depth.
+- An ancestor must never import from a descendant. If a parent's store needed something from a child's `ui/`, that's a sign the file is in the wrong place. The dependency direction should never invert.
 - Import a leaf feature through its barrel, `@/features/<path>` (e.g. `@/features/groceries/kitchen`). Deep imports are fine from `@/shared/*`.
-- Inside a feature — including a child reaching an ancestor's segments — use relative paths.
+- Inside a feature, including a child reaching an ancestor's segments, use relative paths.
 
 ## The four segments
 
@@ -90,7 +90,7 @@ Edge cases:
 - `boundary/` is anything that crosses out of the app: network calls, the native bridge, persistence. Purpose decides, so a cached copy of the API client still counts as boundary.
 - `crypto.randomUUID` and `Date.now` look impure but never leave the process, so they stay in `logic/`.
 - A file that mixes segments gets split: a pure function next to a hook, or a store with an inline fetch, becomes two files.
-- A leaf feature (no children) usually only needs `ui/` once its state/logic has moved up to a parent — that's expected, not a smell.
+- A leaf feature (no children) usually only needs `ui/` once its state/logic has moved up to a parent. That's expected, not a smell.
 
 The `index.ts` barrel and a root `types.ts` sit outside the segments. Tests sit next to the files they test.
 
